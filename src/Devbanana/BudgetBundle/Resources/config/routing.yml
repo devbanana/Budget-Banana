@@ -1,0 +1,3 @@
+devbanana_budget_homepage:
+    path:     /
+    defaults: { _controller: DevbananaBudgetBundle:Default:index }

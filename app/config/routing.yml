@@ -1,0 +1,4 @@
+devbanana_budget:
+    resource: "@DevbananaBudgetBundle/Resources/config/routing.yml"
+    prefix:   /
+

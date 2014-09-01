@@ -1,0 +1,7 @@
+parameters:
+#    devbanana_budget.example.class: Devbanana\BudgetBundle\Example
+
+services:
+#    devbanana_budget.example:
+#        class: %devbanana_budget.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
