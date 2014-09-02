@@ -1,4 +1,5 @@
 devbanana_budget:
-    resource: "@DevbananaBudgetBundle/Resources/config/routing.yml"
+    resource: "@DevbananaBudgetBundle/Controller"
     prefix:   /
+    type: annotation
 
