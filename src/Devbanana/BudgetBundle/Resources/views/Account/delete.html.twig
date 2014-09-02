@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Delete {{ entity.name }}{% endblock %}
+
+{% block body %}
+    <h1>Confirm</h1>
+
+    <p>
+        Are you sure you would like to delete the account <em>{{ entity.name }}</em>?
+    </p>
+
+    {{ form(form) }}
+
+    <p>
+        <a href="{{ path("accounts_show", { "id": entity.id }) }}">
+            Cancel
+        </a>
+        </p>
+{% endblock %}

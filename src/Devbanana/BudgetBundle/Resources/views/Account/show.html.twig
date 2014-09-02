@@ -1,0 +1,38 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ entity.name }}{% endblock %}
+
+{% block body -%}
+    <h1>{{ entity.name }}</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ entity.name }}</td>
+            </tr>
+            <tr>
+                <th>Balance</th>
+                <td>${{ entity.balance }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('accounts') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('accounts_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>
+        <a href="{{ path("accounts_delete", { "id": entity.id }) }}">
+            Delete
+        </a>
+    </li>
+</ul>
+{% endblock %}
