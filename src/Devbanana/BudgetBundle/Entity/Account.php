@@ -41,7 +41,7 @@ class Account
      */
     public function __construct()
     {
-        $this->balance = 0;
+        $this->balance = 0.00;
     }
 
     /**
