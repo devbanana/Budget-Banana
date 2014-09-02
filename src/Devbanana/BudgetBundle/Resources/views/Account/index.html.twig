@@ -1,42 +1,48 @@
 {% extends '::base.html.twig' %}
 
+{% block title %}Accounts{% endblock %}
+
 {% block body -%}
     <h1>Account list</h1>
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Balance</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('accounts_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.name }}</td>
-                <td>{{ entity.balance }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('accounts_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('accounts_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% if entities is empty %}
+        <p>You have not created any accounts. <a href="{{ path('accounts_new') }}">Create one now.</a></p>
+    {% else %}
+
+        <table class="records_list">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Balance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td><a href="{{ path('accounts_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    <td>{{ entity.balance }}</td>
+                    <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('accounts_edit', { 'id': entity.id }) }}">edit</a>
+                        </li>
+                                <li>
+                                    {{ form(delete_form) }}
+                        </li>
+                    </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
 
         <ul>
         <li>
             <a href="{{ path('accounts_new') }}">
-                Create a new entry
+                New Account
             </a>
         </li>
     </ul>
