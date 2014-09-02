@@ -18,6 +18,8 @@ use Devbanana\BudgetBundle\Form\AccountType;
 class AccountController extends Controller
 {
 
+    // {{{ public function indexAction()
+
     /**
      * Lists all Account entities.
      *
@@ -35,6 +37,11 @@ class AccountController extends Controller
             'entities' => $entities,
         );
     }
+
+    // }}}
+
+    // {{{ public function createAction(Request)
+
     /**
      * Creates a new Account entity.
      *
@@ -62,6 +69,10 @@ class AccountController extends Controller
         );
     }
 
+    // }}}
+
+    // {{{ private function createCreateForm(Entity)
+
     /**
      * Creates a form to create a Account entity.
      *
@@ -81,6 +92,10 @@ class AccountController extends Controller
         return $form;
     }
 
+    // }}}
+
+    // {{{ public function newAction()
+
     /**
      * Displays a form to create a new Account entity.
      *
@@ -99,6 +114,10 @@ class AccountController extends Controller
         );
     }
 
+    // }}}
+
+    // {{{ public function showAction(mixed)
+
     /**
      * Finds and displays a Account entity.
      *
@@ -116,13 +135,14 @@ class AccountController extends Controller
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-
         return array(
             'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
         );
     }
+
+    // }}}
+
+    // {{{ public function editAction(mixed)
 
     /**
      * Displays a form to edit an existing Account entity.
@@ -142,14 +162,16 @@ class AccountController extends Controller
         }
 
         $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         );
     }
+
+    // }}}
+
+    // {{{ private function createEditForm(Account)
 
     /**
     * Creates a form to edit a Account entity.
@@ -169,6 +191,11 @@ class AccountController extends Controller
 
         return $form;
     }
+
+    // }}}
+
+    // {{{ public function updateAction(Request, mixed)
+
     /**
      * Edits an existing Account entity.
      *
@@ -186,7 +213,6 @@ class AccountController extends Controller
             throw $this->createNotFoundException('Unable to find Account entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
@@ -199,34 +225,75 @@ class AccountController extends Controller
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         );
     }
+
+    // }}}
+
+    // {{{ public function deleteAction(mixed)
+
     /**
      * Deletes a Account entity.
      *
-     * @Route("/{id}", name="accounts_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="accounts_delete")
+     * @Method("GET")
+     * @Template()
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction($id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Account entity.');
+                throw $this->createNotFoundException('Unable to find Account.');
             }
 
+        $form = $this->createDeleteForm($id);
+
+        return array(
+                'entity' => $entity,
+                'form' => $form->createView()
+                );
+    }
+
+    // }}}
+
+    // {{{ public function confirmDeleteAction(Request, mixed)
+
+    /**
+      
+      /**
+       * @Route("/{id}", name="accounts_delete_confirm")
+       * @Method("DELETE")
+       * */
+    public function confirmDeleteAction(Request $request, $id)
+    {
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find Account.');
+            }
+
+        $form = $this->createDeleteForm($id);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
             $em->remove($entity);
             $em->flush();
-        }
 
         return $this->redirect($this->generateUrl('accounts'));
+        }
+
+        return array(
+                'entity' => $entity,
+                'form' => $form->createView()
+                );
     }
+
+    // }}}
+
+    // {{{ private function createDeleteForm(mixed)
 
     /**
      * Creates a form to delete a Account entity by id.
@@ -238,10 +305,13 @@ class AccountController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('accounts_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('accounts_delete_confirm', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }
+
+    // }}}
+
 }

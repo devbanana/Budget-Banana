@@ -21,14 +21,14 @@
             {% for entity in entities %}
                 <tr>
                     <td><a href="{{ path('accounts_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
-                    <td>{{ entity.balance }}</td>
+                    <td>${{ entity.balance }}</td>
                     <td>
                     <ul>
                         <li>
                             <a href="{{ path('accounts_edit', { 'id': entity.id }) }}">edit</a>
                         </li>
-                                <li>
-                                    {{ form(delete_form) }}
+                        <li>
+                            <a href="{{ path("accounts_delete", { "id": entity.id }) }}">Delete</a>
                         </li>
                     </ul>
                     </td>

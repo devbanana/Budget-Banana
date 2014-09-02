@@ -1,9 +1,24 @@
 {% extends '::base.html.twig' %}
 
-{% block body -%}
-    <h1>Account creation</h1>
+{% block title %}Create an Account{% endblock %}
 
-    {{ form(form) }}
+{% block body -%}
+    <h1>New Account</h1>
+
+    <p>
+        Use the form below to create a new account.
+    </p>
+
+    <p>
+        An account is the place you keep your money. It could be a checking or
+        savings account, or even loose cash.
+    </p>
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.balance) }}
+    {{ form_end(form) }}
 
         <ul class="record_actions">
     <li>

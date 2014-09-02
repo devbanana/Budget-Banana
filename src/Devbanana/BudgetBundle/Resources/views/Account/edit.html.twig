@@ -1,7 +1,7 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Account edit</h1>
+    <h1>Modify Account</h1>
 
     {{ form(edit_form) }}
 
@@ -11,6 +11,10 @@
             Back to the list
         </a>
     </li>
-    <li>{{ form(delete_form) }}</li>
+    <li>
+        <a href="{{ path("accounts_delete", { "id": entity.id }) }}">
+            Delete
+        </a>
+    </li>
 </ul>
 {% endblock %}
