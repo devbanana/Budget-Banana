@@ -1,5 +1,5 @@
 devbanana_budget:
     resource: "@DevbananaBudgetBundle/Controller"
-    type: annotation
     prefix:   /
+    type: annotation
 
