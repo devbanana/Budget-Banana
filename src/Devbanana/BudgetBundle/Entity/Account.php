@@ -31,7 +31,7 @@ class Account
     /**
      * @var string
      *
-     * @ORM\Column(name="balance", type="decimal")
+     * @ORM\Column(name="balance", type="decimal", precision=14, scale=2)
      */
     private $balance;
 
