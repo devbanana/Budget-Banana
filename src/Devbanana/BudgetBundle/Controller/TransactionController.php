@@ -28,6 +28,16 @@ class TransactionController extends Controller
             );    }
 
     /**
+     * @Route("/new")
+     * @Method("GET")
+     * @Template()
+     */
+    public function newAction()
+    {
+        return array(
+            );    }
+
+    /**
      * @Route("/{id}", name="transactions_show")
      * @Method("GET")
      * @Template()
@@ -35,16 +45,6 @@ class TransactionController extends Controller
     public function showAction($id)
     {
         return array(
-            );    }
-
-    /**
-     * @Route("/transactions/new")
-     * @Template()
-     */
-    public function newAction()
-    {
-        return array(
-                // ...
             );    }
 
     /**
