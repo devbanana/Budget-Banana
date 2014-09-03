@@ -45,9 +45,9 @@ class Transaction
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Subtransaction", mappedBy="transaction")
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="transaction")
      */
-    private $subtransactions;
+    private $lineItems;
 
 
     /**
@@ -133,39 +133,39 @@ class Transaction
      */
     public function __construct()
     {
-        $this->subtransactions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
-     * Add subtransactions
+     * Add lineItems
      *
-     * @param \Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
      * @return Transaction
      */
-    public function addSubtransaction(\Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions)
+    public function addLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
     {
-        $this->subtransactions[] = $subtransactions;
+        $this->lineItems[] = $lineItems;
 
         return $this;
     }
 
     /**
-     * Remove subtransactions
+     * Remove lineItems
      *
-     * @param \Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
      */
-    public function removeSubtransaction(\Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions)
+    public function removeLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
     {
-        $this->subtransactions->removeElement($subtransactions);
+        $this->lineItems->removeElement($lineItems);
     }
 
     /**
-     * Get subtransactions
+     * Get lineItems
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getSubtransactions()
+    public function getLineItems()
     {
-        return $this->subtransactions;
+        return $this->lineItems;
     }
 }

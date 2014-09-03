@@ -5,12 +5,12 @@ namespace Devbanana\BudgetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Subtransaction
+ * LineItem
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\SubtransactionRepository")
+ * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\LineItemRepository")
  */
-class Subtransaction
+class LineItem
 {
     /**
      * @var integer
@@ -46,14 +46,14 @@ class Subtransaction
      * @var Transaction
      *
      * @ORM\ManyToOne(targetEntity="Transaction",
-     * inversedBy="subtransactions")
+     * inversedBy="lineItems")
      */
     private $transaction;
 
     /**
      * @var Account
      *
-     * @ORM\ManyToOne(targetEntity="Account", inversedBy="subtransactions")
+     * @ORM\ManyToOne(targetEntity="Account", inversedBy="lineItems")
      */
     private $account;
 
@@ -72,7 +72,7 @@ class Subtransaction
      * Set type
      *
      * @param string $type
-     * @return Subtransaction
+     * @return LineItem
      */
     public function setType($type)
     {
@@ -95,7 +95,7 @@ class Subtransaction
      * Set inflow
      *
      * @param string $inflow
-     * @return Subtransaction
+     * @return LineItem
      */
     public function setInflow($inflow)
     {
@@ -118,7 +118,7 @@ class Subtransaction
      * Set outflow
      *
      * @param string $outflow
-     * @return Subtransaction
+     * @return LineItem
      */
     public function setOutflow($outflow)
     {
@@ -141,7 +141,7 @@ class Subtransaction
      * Set transaction
      *
      * @param \Devbanana\BudgetBundle\Entity\Transaction $transaction
-     * @return Subtransaction
+     * @return LineItem
      */
     public function setTransaction(\Devbanana\BudgetBundle\Entity\Transaction $transaction = null)
     {
@@ -164,7 +164,7 @@ class Subtransaction
      * Set account
      *
      * @param \Devbanana\BudgetBundle\Entity\Account $account
-     * @return Subtransaction
+     * @return LineItem
      */
     public function setAccount(\Devbanana\BudgetBundle\Entity\Account $account = null)
     {
