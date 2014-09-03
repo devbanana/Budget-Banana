@@ -28,7 +28,7 @@ class TransactionController extends Controller
             );    }
 
     /**
-     * @Route("/new")
+     * @Route("/new", name="transactions_create")
      * @Method("GET")
      * @Template()
      */
