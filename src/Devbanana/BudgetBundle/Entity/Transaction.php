@@ -5,12 +5,12 @@ namespace Devbanana\BudgetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Account
+ * Transaction
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\AccountRepository")
+ * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\TransactionRepository")
  */
-class Account
+class Transaction
 {
     /**
      * @var integer
@@ -22,34 +22,33 @@ class Account
     private $id;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="date", type="date")
      */
-    private $name;
+    private $date;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="balance", type="decimal", precision=14, scale=2)
+     * @ORM\Column(name="inflow", type="decimal", precision=14, scale=2)
      */
-    private $balance;
+    private $inflow;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="outflow", type="decimal", precision=14, scale=2)
+     */
+    private $outflow;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Subtransaction", mappedBy="account")
+     * @ORM\OneToMany(targetEntity="Subtransaction", mappedBy="transaction")
      */
     private $subtransactions;
 
-
-    /**
-     * Construct the object
-     */
-    public function __construct()
-    {
-        $this->balance = 0.00;
-    }
 
     /**
      * Get id
@@ -62,56 +61,86 @@ class Account
     }
 
     /**
-     * Set name
+     * Set date
      *
-     * @param string $name
-     * @return Account
+     * @param \DateTime $date
+     * @return Transaction
      */
-    public function setName($name)
+    public function setDate($date)
     {
-        $this->name = $name;
+        $this->date = $date;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get date
      *
-     * @return string 
+     * @return \DateTime 
      */
-    public function getName()
+    public function getDate()
     {
-        return $this->name;
+        return $this->date;
     }
 
     /**
-     * Set balance
+     * Set inflow
      *
-     * @param string $balance
-     * @return Account
+     * @param string $inflow
+     * @return Transaction
      */
-    public function setBalance($balance)
+    public function setInflow($inflow)
     {
-        $this->balance = $balance;
+        $this->inflow = $inflow;
 
         return $this;
     }
 
     /**
-     * Get balance
+     * Get inflow
      *
      * @return string 
      */
-    public function getBalance()
+    public function getInflow()
     {
-        return $this->balance;
+        return $this->inflow;
+    }
+
+    /**
+     * Set outflow
+     *
+     * @param string $outflow
+     * @return Transaction
+     */
+    public function setOutflow($outflow)
+    {
+        $this->outflow = $outflow;
+
+        return $this;
+    }
+
+    /**
+     * Get outflow
+     *
+     * @return string 
+     */
+    public function getOutflow()
+    {
+        return $this->outflow;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->subtransactions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Add subtransactions
      *
      * @param \Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions
-     * @return Account
+     * @return Transaction
      */
     public function addSubtransaction(\Devbanana\BudgetBundle\Entity\Subtransaction $subtransactions)
     {
