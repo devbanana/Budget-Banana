@@ -6,6 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Devbanana\BudgetBundle\Form\TransactionType;
+use Devbanana\BudgetBundle\Form\LineItemType;
+use Devbanana\BudgetBundle\Entity\Transaction;
+use Devbanana\BudgetBundle\Entity\LineItem;
 
 /**
  * @Route("/transactions")
@@ -34,7 +38,18 @@ class TransactionController extends Controller
      */
     public function newAction()
     {
+        $transaction = new Transaction;
+        $transaction->setDate(new \DateTime('9/2/2014'));
+        $li1 = new LineItem;
+        $transaction->getLineItems()->add($li1);
+
+        $form = $this->createForm(new TransactionType(), $transaction);
+        $form->add('submit', 'submit', array(
+                    'label' => 'Add',
+                    ));
+
         return array(
+                'form' => $form->createView(),
             );    }
 
     /**

@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TransactionType extends AbstractType
+class LineItemType extends AbstractType
 {
         /**
      * @param FormBuilderInterface $builder
@@ -15,12 +15,12 @@ class TransactionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date', 'date', array(
-                        'years' => range(date('Y'), date('Y')+1),
+            ->add('account')
+            ->add('inflow', 'money', array(
+                        'currency' => 'USD',
                         ))
-            ->add('lineitems', 'collection', array(
-                        'type' => new LineItemType(),
-                        'allow_add' => true,
+            ->add('outflow', 'money', array(
+                        'currency' => 'USD',
                         ))
         ;
     }
@@ -31,7 +31,7 @@ class TransactionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Devbanana\BudgetBundle\Entity\Transaction'
+            'data_class' => 'Devbanana\BudgetBundle\Entity\LineItem'
         ));
     }
 
@@ -40,6 +40,6 @@ class TransactionType extends AbstractType
      */
     public function getName()
     {
-        return 'devbanana_budgetbundle_transaction';
+        return 'devbanana_budgetbundle_lineitem';
     }
 }

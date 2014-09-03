@@ -1,7 +1,179 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}DevbananaBudgetBundle:Transaction:new{% endblock %}
+{% block title %}Add Transaction{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Transaction:new page</h1>
+<h1>Add Transaction</h1>
+
+{{ form_start(form) }}
+
+<table border="0" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Date</th>
+<th>Inflow</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>
+{{ form_widget(form.date) }}
+</td>
+<td>
+<span id="inflow">$0.00</span>
+</td>
+<td>
+<span id="outflow">$0.00</span>
+</td>
+<td>
+<span id="balance">$0.00</span>
+</td>
+</tr>
+</table>
+
+<h2>Line Items</h2>
+
+<table border="1" rules="rows" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Account</th>
+<th>Inflow</th>
+<th>Outflow</th>
+</tr>
+</thead>
+
+<tbody class="lineitems" data-prototype="{{ '<td>'|e }}{{ form_widget(form.lineitems.vars.prototype.account)|e }}{{ '</td>'|e }}{{ '<td>'|e }}{{ form_widget(form.lineitems.vars.prototype.inflow)|e }}{{ '</td>'|e }}{{ '<td>'|e }}{{ form_widget(form.lineitems.vars.prototype.outflow)|e }}{{ '</td>'|e }}">
+{% for lineitem in form.lineitems %}
+<tr class="lineitem">
+<td>
+{{ form_widget(lineitem.account) }}
+</td>
+<td>
+{{ form_widget(lineitem.inflow) }}
+</td>
+<td>
+{{ form_widget(lineitem.outflow) }}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('bundles/devbananabudget/js/jquery.min.js') }}"></script>
+
+<script type="text/javascript">
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
+var $collectionHolder;
+
+// setup an "add a lineitem" link
+var $addLineItemLink = $('<a href="#" class="add_lineitem_link">Add Another Lineitem</a>');
+var $newLinkRow = $('<tr></tr>');
+var $newLinkCell = $('<td colspan="4"></td>');
+$newLinkCell.append($addLineItemLink);
+$newLinkRow.append($newLinkCell);
+
+            // Get the ul that holds the collection of lineitems
+            $collectionHolder = $('tbody.lineitems');
+
+                // add the "add a lineitem" anchor and li to the lineitems ul
+                $collectionHolder.append($newLinkRow);
+
+                    $collectionHolder.data('index', $collectionHolder.find('tr').length-1);
+
+                        $addLineItemLink.on('click', function(e) {
+                                    // prevent the link from creating a "#" on the URL
+                                    e.preventDefault();
+
+                                            // add a new lineitem form
+                                            addLineItemForm($collectionHolder, $newLinkRow);
+                                                });
+
+for (var i = 0; i < $collectionHolder.data('index'); i++)
+{
+$('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').on(
+'input propertychange paste', updateBalance);
+$('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').on(
+'input propertychange paste', updateBalance);
+}
+
+function updateBalance(e)
+{
+var id = $(e.target).attr('id');
+
+var lineitems = $('tbody.lineitems').find('tr.lineitem');
+var inflow = 0.00;
+var outflow = 0.00;
+
+for (var i = 0; i < lineitems.length; i++)
+{
+inflow += parseFloat(
+$('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').val() || 0);
+outflow += parseFloat(
+$('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').val() || 0);
+}
+
+$('#inflow').html('$' + inflow.formatMoney(2));
+$('#outflow').html('-$' + outflow.formatMoney(2));
+
+var balance = inflow - outflow;
+if (balance < 0) {
+balance = '-$' + Math.abs(balance).formatMoney();
+}
+else {
+balance = '$' + balance.formatMoney();
+}
+
+$('#balance').html(balance);
+
+}
+
+                        function addLineItemForm($collectionHolder, $newLinkRow)
+                        {
+                                // Get the data-prototype
+                                var prototype = $collectionHolder.data('prototype');
+
+                                    // get the new index
+                                    var index = $collectionHolder.data('index');
+
+                                        // Replace '__name__' in the prototype's HTML to
+                                        // instead be a number based on how many items we have
+                                        var newForm = prototype.replace(/__name__/g, index);
+
+                                            // increase the index with one for the next item
+                                            $collectionHolder.data('index', index + 1);
+
+                                                // Display the form in the page in a row,
+                                                // before the "Add a lineitem" link row
+                                                var $newFormRow = $('<tr class="lineitem"></tr>').append(newForm);
+                                                    $newLinkRow.before($newFormRow);
+
+                                                    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_inflow').on(
+                                                    'input propertychange paste',
+                                                    updateBalance);
+                                                    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_outflow').on(
+                                                    'input propertychange paste',
+                                                    updateBalance);
+
+                        }
+</script>
 {% endblock %}

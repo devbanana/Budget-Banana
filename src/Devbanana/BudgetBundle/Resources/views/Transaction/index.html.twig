@@ -1,7 +1,44 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}DevbananaBudgetBundle:Transaction:index{% endblock %}
+{% block title %}Transactions{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Transaction:index page</h1>
+    <h1>Transactions</h1>
+
+    {% if entities is empty %}
+        <p>
+            There are no transactions.
+            <a href="{{ path("transactions_create") }}">
+                Create one now.
+            </a>
+        </p>
+    {% else %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Inflow</th>
+                    <th>Outflow</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for entity in entities %}
+                    <tr>
+                        <th>{{ entity.date|date("Y-m-d") }}</th>
+                        <td>${{ entity.inflow }}</td>
+                        <td>${{ entity.outflow }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <ul>
+        <li>
+            <a href="{{ path("transactions_create") }}">
+                Add Transaction
+            </a>
+        </li>
+    </ul>
 {% endblock %}
