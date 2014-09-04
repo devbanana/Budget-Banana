@@ -77,10 +77,8 @@ $(this).parents('tr').find('td.payee').find('select').html($(html).html());
 
 }
 
-function updateBalance(e)
+function updateBalance()
 {
-    var id = $(e.target).attr('id');
-
     var lineitems = $('tbody.lineitems').find('tr.lineitem');
     var inflow = 0.00;
     var outflow = 0.00;
