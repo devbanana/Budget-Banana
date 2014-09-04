@@ -13,6 +13,7 @@
         "doctrine/doctrine-bundle": "~1.2",
         "doctrine/migrations": "1.0.*@dev",
         "doctrine/doctrine-migrations-bundle": "2.1.*@dev",
+        "doctrine/doctrine-fixtures-bundle": "2.2.*",
         "friendsofsymfony/jsrouting-bundle": "2.0.*@dev",
         "twig/extensions": "~1.0",
         "symfony/assetic-bundle": "~2.3",
