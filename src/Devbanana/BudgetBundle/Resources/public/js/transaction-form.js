@@ -128,6 +128,9 @@ function addLineItemForm($collectionHolder, $newLinkRow)
     var $newFormRow = $('<tr class="lineitem"></tr>').append(newForm);
     $newLinkRow.before($newFormRow);
 
+    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_type').on(
+            'change',
+            updateType);
     $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_inflow').on(
             'input propertychange paste',
             updateBalance);
