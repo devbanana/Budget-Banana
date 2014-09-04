@@ -28,6 +28,13 @@ class Payee
      */
     private $name;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="payee")
+     */
+    private $lineItems;
+
 
     /**
      * Get id
@@ -60,5 +67,45 @@ class Payee
     public function getName()
     {
         return $this->name;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add lineItems
+     *
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
+     * @return Payee
+     */
+    public function addLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
+    {
+        $this->lineItems[] = $lineItems;
+
+        return $this;
+    }
+
+    /**
+     * Remove lineItems
+     *
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
+     */
+    public function removeLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
+    {
+        $this->lineItems->removeElement($lineItems);
+    }
+
+    /**
+     * Get lineItems
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLineItems()
+    {
+        return $this->lineItems;
     }
 }

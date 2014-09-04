@@ -24,9 +24,16 @@ class Budget
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="month", type="datetime")
+     * @ORM\Column(name="month", type="date")
      */
     private $month;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="BudgetCategories", mappedBy="budget")
+     */
+    private $categories;
 
 
     /**
@@ -60,5 +67,58 @@ class Budget
     public function getMonth()
     {
         return $this->month;
+    }
+
+    /**
+     * Set categories
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategories $categories
+     * @return Budget
+     */
+    public function setCategories(\Devbanana\BudgetBundle\Entity\BudgetCategories $categories = null)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Devbanana\BudgetBundle\Entity\BudgetCategories 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategories $categories
+     * @return Budget
+     */
+    public function addCategory(\Devbanana\BudgetBundle\Entity\BudgetCategories $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategories $categories
+     */
+    public function removeCategory(\Devbanana\BudgetBundle\Entity\BudgetCategories $categories)
+    {
+        $this->categories->removeElement($categories);
     }
 }

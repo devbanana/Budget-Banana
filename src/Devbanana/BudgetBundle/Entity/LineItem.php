@@ -57,6 +57,20 @@ class LineItem
      */
     private $account;
 
+    /**
+     * @var Payee
+     *
+     * @ORM\ManyToOne(targetEntity="Payee", inversedBy="lineItems")
+     */
+    private $payee;
+
+    /**
+     * @var Payer
+     *
+     * @ORM\ManyToOne(targetEntity="Payer", inversedBy="lineItems")
+     */
+    private $payer;
+
 
     /**
      * Get id
@@ -181,5 +195,51 @@ class LineItem
     public function getAccount()
     {
         return $this->account;
+    }
+
+    /**
+     * Set payee
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Payee $payee
+     * @return LineItem
+     */
+    public function setPayee(\Devbanana\BudgetBundle\Entity\Payee $payee = null)
+    {
+        $this->payee = $payee;
+
+        return $this;
+    }
+
+    /**
+     * Get payee
+     *
+     * @return \Devbanana\BudgetBundle\Entity\Payee 
+     */
+    public function getPayee()
+    {
+        return $this->payee;
+    }
+
+    /**
+     * Set payer
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Payer $payer
+     * @return LineItem
+     */
+    public function setPayer(\Devbanana\BudgetBundle\Entity\Payer $payer = null)
+    {
+        $this->payer = $payer;
+
+        return $this;
+    }
+
+    /**
+     * Get payer
+     *
+     * @return \Devbanana\BudgetBundle\Entity\Payer 
+     */
+    public function getPayer()
+    {
+        return $this->payer;
     }
 }
