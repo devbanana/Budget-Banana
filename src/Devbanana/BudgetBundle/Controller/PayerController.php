@@ -17,7 +17,7 @@ class PayerController extends Controller
      * @Method("POST")
      * @Template()
      */
-    public function payersGetListAjaxAction()
+    public function listAjaxAction()
     {
         $form = $this->createFormBuilder()
             ->add('payers', 'entity', array(
