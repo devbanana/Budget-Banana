@@ -15,6 +15,14 @@ class LineItemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('type', 'choice', array(
+                        'choices' => array(
+                            'expense' => 'Expense',
+                            'income' => 'Income',
+                            'transfer' => 'Transfer',
+                            ),
+                        'required' => true,
+                        ))
             ->add('account')
             ->add('inflow', 'money', array(
                         'currency' => 'USD',
