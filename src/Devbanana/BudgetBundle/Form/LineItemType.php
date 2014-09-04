@@ -24,6 +24,7 @@ class LineItemType extends AbstractType
                         'required' => true,
                         ))
             ->add('account')
+            ->add('payee')
             ->add('inflow', 'money', array(
                         'currency' => 'USD',
                         ))

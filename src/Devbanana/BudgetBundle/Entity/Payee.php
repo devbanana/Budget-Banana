@@ -108,4 +108,9 @@ class Payee
     {
         return $this->lineItems;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }
