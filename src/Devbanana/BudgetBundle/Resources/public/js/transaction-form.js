@@ -25,6 +25,8 @@ $addLineItemLink.on('click', function(e) {
 
 for (var i = 0; i < $collectionHolder.data('index'); i++)
 {
+    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_type').on(
+            'change', updateType);
     $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').on(
             'input propertychange paste', updateBalance);
     $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').on(
@@ -45,6 +47,22 @@ Number.prototype.formatMoney = function(c, d, t){
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+
+function updateType()
+{
+if ($(this).val() == 'income') {
+// Replace payees with payers
+$.ajax({
+url: Routing.generate('payers_get_list_ajax'),
+method: "POST",
+context: this,
+success: function (html)
+{
+$(this).parents('tr').find('td.payee').find('select').html($(html).html());
+}
+});
+}
+}
 
 function updateBalance(e)
 {
