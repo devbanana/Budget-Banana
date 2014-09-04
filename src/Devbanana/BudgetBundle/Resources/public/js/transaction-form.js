@@ -62,6 +62,19 @@ $(this).parents('tr').find('td.payee').find('select').html($(html).html());
 }
 });
 }
+else if ($(this).val() != 'income') {
+// Replace payers with payees
+$.ajax({
+url: Routing.generate('payees_get_list_ajax'),
+method: "POST",
+context: this,
+success: function (html)
+{
+$(this).parents('tr').find('td.payee').find('select').html($(html).html());
+}
+});
+}
+
 }
 
 function updateBalance(e)

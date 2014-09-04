@@ -1,0 +1,35 @@
+<?php
+
+namespace Devbanana\BudgetBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+/**
+ * @Route("/payees")
+ */
+class PayeeController extends Controller
+{
+    /**
+     * @Route("/list/ajax", name="payees_get_list_ajax",
+     * options={"expose":true})
+     * @Method("POST")
+     * @Template()
+     */
+    public function listAjaxAction()
+    {
+        $form = $this->createFormBuilder()
+            ->add('payees', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Payee',
+                        'property' => 'name',
+                        'empty_value' => '',
+                        ))
+            ->getForm()
+            ;
+        return array(
+                'form' => $form->createView(),
+            );    }
+
+}
