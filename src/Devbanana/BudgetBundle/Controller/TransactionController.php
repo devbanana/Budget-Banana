@@ -39,7 +39,7 @@ class TransactionController extends Controller
     public function newAction()
     {
         $transaction = new Transaction;
-        $transaction->setDate(new \DateTime('9/2/2014'));
+        $transaction->setDate(new \DateTime(date('Y-m-d', time())));
         $li1 = new LineItem;
         $transaction->getLineItems()->add($li1);
 
