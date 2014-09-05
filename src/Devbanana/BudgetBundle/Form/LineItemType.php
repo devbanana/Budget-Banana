@@ -25,6 +25,11 @@ class LineItemType extends AbstractType
                         ))
             ->add('account')
             ->add('payee')
+            ->add('category', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:BudgetCategories',
+                        'empty_value' => '',
+                        'choices' => array(),
+                        ))
             ->add('inflow', 'money', array(
                         'currency' => 'USD',
                         ))

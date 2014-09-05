@@ -152,4 +152,9 @@ class Category
     {
         $this->budgets->removeElement($budgets);
     }
+
+    public function __toString()
+    {
+        return $this->getMasterCategory()->getName() . ' > ' . $this->getName();
+    }
 }

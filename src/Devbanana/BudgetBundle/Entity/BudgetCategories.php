@@ -56,6 +56,13 @@ class BudgetCategories
      */
     private $category;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="category")
+     */
+    private $lineItems;
+
 
     /**
      * Get id
@@ -140,6 +147,9 @@ class BudgetCategories
      */
     public function __construct()
     {
+        $this->budgeted = 0.00;
+        $this->outflow = 0.00;
+        $this->balance = 0.00;
         $this->budget = new \Doctrine\Common\Collections\ArrayCollection();
         $this->category = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -234,5 +244,56 @@ class BudgetCategories
         $this->category = $category;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getCategory()->__toString();
+    }
+
+    /**
+     * Set lineItems
+     *
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
+     * @return BudgetCategories
+     */
+    public function setLineItems(\Devbanana\BudgetBundle\Entity\LineItem $lineItems = null)
+    {
+        $this->lineItems = $lineItems;
+
+        return $this;
+    }
+
+    /**
+     * Get lineItems
+     *
+     * @return \Devbanana\BudgetBundle\Entity\LineItem 
+     */
+    public function getLineItems()
+    {
+        return $this->lineItems;
+    }
+
+    /**
+     * Add lineItems
+     *
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
+     * @return BudgetCategories
+     */
+    public function addLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
+    {
+        $this->lineItems[] = $lineItems;
+
+        return $this;
+    }
+
+    /**
+     * Remove lineItems
+     *
+     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
+     */
+    public function removeLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
+    {
+        $this->lineItems->removeElement($lineItems);
     }
 }

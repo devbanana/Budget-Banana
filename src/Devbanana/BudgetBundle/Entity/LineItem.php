@@ -71,6 +71,13 @@ class LineItem
      */
     private $payer;
 
+    /**
+     * @var BudgetCategory
+     *
+     * @ORM\ManyToOne(targetEntity="BudgetCategories", inversedBy="lineItems")
+     */
+    private $category;
+
 
     /**
      * Get id
@@ -241,5 +248,58 @@ class LineItem
     public function getPayer()
     {
         return $this->payer;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->category = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add category
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
+     * @return LineItem
+     */
+    public function addCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category)
+    {
+        $this->category[] = $category;
+
+        return $this;
+    }
+
+    /**
+     * Remove category
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
+     */
+    public function removeCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category)
+    {
+        $this->category->removeElement($category);
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
+     * @return LineItem
+     */
+    public function setCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
     }
 }
