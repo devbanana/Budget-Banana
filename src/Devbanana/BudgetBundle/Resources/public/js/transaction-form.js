@@ -24,9 +24,9 @@ $addLineItemLink.on('click', function(e) {
         });
 
 $('#devbanana_budgetbundle_transaction_date_year').on('change',
-updateCategories);
+        updateCategories);
 $('#devbanana_budgetbundle_transaction_date_month').on('change',
-updateCategories);
+        updateCategories);
 
 for (var i = 0; i < $collectionHolder.data('index'); i++)
 {
@@ -55,10 +55,10 @@ String.prototype.endsWith = function(suffix) {
 
 function updateCategories()
 {
-var month = $('#devbanana_budgetbundle_transaction_date_month').val();
-var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val();
+    var year = $('#devbanana_budgetbundle_transaction_date_year').val();
 
-$.ajax({
+    $.ajax({
 url: Routing.generate('budgetcategories_list_ajax', { month: month, year: year }),
 method: "POST",
 success: function (html)
@@ -78,9 +78,9 @@ $(lineitems[i]).find('td.category').find('select').html($(html).html());
 
 function updateType()
 {
-if ($(this).val() == 'income') {
-// Replace payees with payers
-$.ajax({
+    if ($(this).val() == 'income') {
+        // Replace payees with payers
+        $.ajax({
 url: Routing.generate('payers_get_list_ajax'),
 method: "POST",
 context: this,
@@ -94,8 +94,8 @@ $(this).parents('tr').find('td.payee').find('select').html($(html).html());
 updateIncomeMonths($(this).parents('tr'));
 }
 else if ($(this).val() != 'income') {
-// Replace payers with payees
-$.ajax({
+    // Replace payers with payees
+    $.ajax({
 url: Routing.generate('payees_get_list_ajax'),
 method: "POST",
 context: this,
@@ -177,38 +177,38 @@ function addLineItemForm($collectionHolder, $newLinkRow)
 // This is only populated when the income type is selected
 function updateIncomeMonths(row)
 {
-var year = $('#devbanana_budgetbundle_transaction_date_year').val();
-var month = $('#devbanana_budgetbundle_transaction_date_month').val() - 1;
+    var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val() - 1;
 
-var d1 = new Date(year, month, 1, 0, 0, 0, 0);
-var d2 = new Date(year, month+1, 1, 0, 0, 0, 0);
+    var d1 = new Date(year, month, 1, 0, 0, 0, 0);
+    var d2 = new Date(year, month+1, 1, 0, 0, 0, 0);
 
-var months = new Array();
-months[0] = 'January';
-months[1] = 'February';
-months[2] = 'March';
-months[3] = 'April';
-months[4] = 'May';
-months[5] = 'June';
-months[6] = 'July';
-months[7] = 'August';
-months[8] = 'September';
-months[9] = 'October';
-months[10] = 'November';
-months[11] = 'December';
+    var months = new Array();
+    months[0] = 'January';
+    months[1] = 'February';
+    months[2] = 'March';
+    months[3] = 'April';
+    months[4] = 'May';
+    months[5] = 'June';
+    months[6] = 'July';
+    months[7] = 'August';
+    months[8] = 'September';
+    months[9] = 'October';
+    months[10] = 'November';
+    months[11] = 'December';
 
-var categorySelect = $(row).find('td.category').find('select');
-categorySelect.html('');
-categorySelect.append(
-        $('<option value="" selected="selected"></option>'));
-categorySelect.append(
-        $('<option value="' + d1.getYear() + '-' + d1.getMonth()+1 +
-            '">Income for ' + months[d1.getMonth()] +
-            '</option>'));
-categorySelect.append(
-        $('<option value="' + d2.getYear() + '-' + d2.getMonth()+1 +
-            '">Income for ' + months[d2.getMonth()] +
-            '</option>'));
+    var categorySelect = $(row).find('td.category').find('select');
+    categorySelect.html('');
+    categorySelect.append(
+            $('<option value="" selected="selected"></option>'));
+    categorySelect.append(
+            $('<option value="' + d1.getYear() + '-' + d1.getMonth()+1 +
+                '">Income for ' + months[d1.getMonth()] +
+                '</option>'));
+    categorySelect.append(
+            $('<option value="' + d2.getYear() + '-' + d2.getMonth()+1 +
+                '">Income for ' + months[d2.getMonth()] +
+                '</option>'));
 
 }
 
