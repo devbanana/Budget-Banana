@@ -16,6 +16,7 @@ class TransactionType extends AbstractType
     {
         $builder
             ->add('date', 'date', array(
+                        'format' => \IntlDateFormatter::FULL,
                         'years' => range(date('Y'), date('Y')+1),
                         ))
             ->add('lineitems', 'collection', array(
