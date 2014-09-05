@@ -3,7 +3,7 @@ var $collectionHolder;
 // setup an "add a lineitem" link
 var $addLineItemLink = $('<a href="#" class="add_lineitem_link">Add Another Lineitem</a>');
 var $newLinkRow = $('<tr></tr>');
-var $newLinkCell = $('<td colspan="5"></td>');
+var $newLinkCell = $('<td colspan="6"></td>');
 $newLinkCell.append($addLineItemLink);
 $newLinkRow.append($newLinkCell);
 
@@ -22,6 +22,11 @@ $addLineItemLink.on('click', function(e) {
         // add a new lineitem form
         addLineItemForm($collectionHolder, $newLinkRow);
         });
+
+$('#devbanana_budgetbundle_transaction_date_year').on('change',
+updateCategories);
+$('#devbanana_budgetbundle_transaction_date_month').on('change',
+updateCategories);
 
 for (var i = 0; i < $collectionHolder.data('index'); i++)
 {
@@ -47,6 +52,29 @@ Number.prototype.formatMoney = function(c, d, t){
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+
+function updateCategories()
+{
+var month = $('#devbanana_budgetbundle_transaction_date_month').val();
+var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+
+$.ajax({
+url: Routing.generate('budgetcategories_list_ajax', { month: month, year: year }),
+method: "POST",
+success: function (html)
+{
+var lineitems = $('tbody.lineitems').find('tr.lineitem');
+
+for (var i = 0; i < lineitems.length; i++)
+{
+if ($(lineitems[i]).find('td.type').find('select').val() != 'income') {
+$(lineitems[i]).find('td.category').find('select').html($(html).html());
+}
+}
+
+}
+});
+}
 
 function updateType()
 {
@@ -137,3 +165,6 @@ function addLineItemForm($collectionHolder, $newLinkRow)
             updateBalance);
 
 }
+
+// Update categories on load
+updateCategories();
