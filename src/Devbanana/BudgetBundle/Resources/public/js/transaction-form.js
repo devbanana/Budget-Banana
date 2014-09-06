@@ -71,10 +71,6 @@ Number.prototype.formatMoney = function(c, d, t){
     return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
 };
 
-String.prototype.endsWith = function(suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
-
 function updateCategories()
 {
     var month = $('#devbanana_budgetbundle_transaction_date_month').val();
