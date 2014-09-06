@@ -68,7 +68,7 @@ Number.prototype.formatMoney = function(c, d, t){
         s = n < 0 ? "-" : "", 
         i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
         j = (j = i.length) > 3 ? j % 3 : 0;
-    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    return s + '$' + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
 };
 
 String.prototype.endsWith = function(suffix) {
@@ -114,31 +114,21 @@ function typeListener()
 
 function updateBalance()
 {
-    var lineitems = $('tbody.lineitems').find('tr.lineitem');
+    var $lineitems = $('tbody.lineitems>tr.lineitem');
     var inflow = 0.00;
     var outflow = 0.00;
 
-    for (var i = 0; i < lineitems.length; i++)
-    {
+    $lineitems.each(function()
+            {
         inflow += parseFloat(
-                $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').val() || 0);
+                $(this).find('td.inflow>input').val() || 0);
         outflow += parseFloat(
-                $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').val() || 0);
-    }
+                $(this).find('td.outflow>input').val() || 0);
+    });
 
-    $('#inflow').html('$' + inflow.formatMoney(2));
-    $('#outflow').html('-$' + outflow.formatMoney(2));
-
-    var balance = inflow - outflow;
-    if (balance < 0) {
-        balance = '-$' + Math.abs(balance).formatMoney();
-    }
-    else {
-        balance = '$' + balance.formatMoney();
-    }
-
-    $('#balance').html(balance);
-
+    $('#inflow').html(inflow.formatMoney(2));
+    $('#outflow').html((outflow*-1).formatMoney(2));
+    $('#balance').html((inflow-outflow).formatMoney());
 }
 
 function addLineItemForm($collectionHolder, $newLinkRow)
