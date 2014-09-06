@@ -169,9 +169,9 @@ function accountListener()
 {
     if ($(this).val() == 'add') {
         // Record which dropdown called this dialog
-        $('#account_dialog').data('caller', $(this));
+        var $caller = $(this);
 
-        if (!$('#account_dialog').find('form').length) {
+        if (!$('#account_dialog>form').length) {
             // Fetch the form from the server
             $.ajax({
 url: Routing.generate('accounts_new_ajax'),
@@ -189,8 +189,9 @@ $('#account_dialog').dialog({
 modal: true,
 buttons: {
 Add: function() {
-var form = $('#account_dialog').find('form');
-var data = $(form).serialize();
+var $this = $(this);
+var $form = $this.find('form');
+var data = $form.serialize();
 $.post(
     Routing.generate("accounts_create_ajax"),
     data,
@@ -198,8 +199,8 @@ $.post(
     {
     result = JSON.parse(result);
     refreshAllAccounts(result.id);
-    $('#account_dialog').data('caller').val(result.id);
-    $('#account_dialog').dialog("close");
+    $caller.val(result.id);
+    $this.dialog("close");
     });
 }
 }
