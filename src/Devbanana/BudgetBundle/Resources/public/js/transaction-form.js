@@ -18,7 +18,8 @@ $collectionHolder.append($newLinkRow);
 
 $collectionHolder.data('index', $collectionHolder.find('tr').length-1);
 
-$addLineItemLink.on('click', function(e) {
+$addLineItemLink.on('click', function(e)
+        {
         // prevent the link from creating a "#" on the URL
         e.preventDefault();
 
@@ -108,33 +109,13 @@ $(lineitems[i]).find('td.category').find('select').html($(html).html());
 
 function updateType()
 {
-    if ($(this).val() == 'income') {
-        // Replace payees with payers
-        $.ajax({
-url: Routing.generate('payers_get_list_ajax'),
-method: "POST",
-context: this,
-success: function (html)
-{
-$(this).parents('tr').find('td.payee').find('select').html($(html).html());
-}
-});
+refreshPayees($(this).parents('tr.lineitem'));
 
+    if ($(this).val() == 'income') {
 // Replace categories with months
 updateIncomeMonths($(this).parents('tr'));
 }
 else if ($(this).val() != 'income') {
-    // Replace payers with payees
-    $.ajax({
-url: Routing.generate('payees_get_list_ajax'),
-method: "POST",
-context: this,
-success: function (html)
-{
-$(this).parents('tr').find('td.payee').find('select').html($(html).html());
-}
-});
-
 // Populate with categories
 updateCategories();
 }
@@ -306,25 +287,97 @@ function populateAccounts(row, result)
 
     // Add empty element
     $(account).append(
-        $('<option value="" selected="selected"></option>')
+            getEmptyOption()
         );
 
     for (var i = 0; i < result.accounts.length; i++)
     {
     $(account).append(
-        $('<option value="' + result.accounts[i].id + '">' +
-            result.accounts[i].name + '</option>')
+            getOption(result.accounts[i].id, result.accounts[i].name)
         );
     }
 
     $(account).append(
-        $('<option value="add">Add Account</option>')
+            getAddOption('Add Account')
         );
+}
+
+function refreshPayees(row)
+{
+var type = $(row).find('td.type>select');
+var route;
+var populateFunction;
+
+if ($(type).val() == 'expense') {
+route = 'payees_list_ajax';
+populateFunction = populatePayees;
+}
+else if ($(type).val() == 'income') {
+    route = 'payers_list_ajax';
+    populateFunction = populatePayers;
+}
+// TODO: Transfer type
+
+    $.ajax({
+url: Routing.generate(route),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+populateFunction(row, result);
+}
+            });
+}
+
+function populatePayees(row, result)
+{
+    var payees = $(row).find('td.payee>select');
+    $(payees).html('');
+
+    $(payees).append(getEmptyOption());
+
+    $.each(result.payees, function(index, payee)
+            {
+            $(payees).append(getOption(payee.id, payee.name));
+            });
+
+    $(payees).append(getAddOption('Add Payee'));
+}
+
+function populatePayers(row, result)
+{
+    var payers = $(row).find('td.payee>select');
+    $(payers).html('');
+
+    $(payers).append(getEmptyOption());
+
+    $.each(result.payers, function(index, payer)
+            {
+            $(payers).append(getOption(payer.id, payer.name));
+            });
+
+    $(payers).append(getAddOption('Add Payer'));
 }
 
 function refreshRow(row)
 {
     refreshAccounts(row);
+    refreshPayees(row);
+}
+
+function getEmptyOption()
+{
+    return $('<option value="" selected="selected"></option>');
+}
+
+function getAddOption(text)
+{
+    return $('<option value="add">' + text + '</option>');
+}
+
+function getOption(value, text)
+{
+    return $('<option value="' + value + '">' + text + '</option>');
 }
 
 // Update categories on load

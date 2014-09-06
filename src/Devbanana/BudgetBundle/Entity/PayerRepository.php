@@ -12,4 +12,12 @@ use Doctrine\ORM\EntityRepository;
  */
 class PayerRepository extends EntityRepository
 {
+    public function findAllOrderedByName()
+    {
+        $q = $this->createQueryBuilder('p')
+            ->orderBy('p.name', 'ASC')
+            ->getQuery();
+
+        return $q->getResult();
+    }
 }
