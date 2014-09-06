@@ -2,6 +2,7 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -17,7 +18,7 @@ class BudgetCategoriesController extends Controller
     /**
      * @Route("/list/ajax/{year}/{month}",
      * name="budgetcategories_list_ajax", options={"expose":true})
-     * @Template()
+     * @Method("POST")
      */
     public function listAjaxAction($year, $month)
     {
@@ -37,21 +38,22 @@ class BudgetCategoriesController extends Controller
 
             $categories = $budget->getCategories();
 
-        $choices = array();
-        foreach ($categories as $category)
-        {
-            $choices[$category->getId()] = "$category";
-        }
+            $content = array();
+            $content['categories'] = array();
 
-        $form = $this->createFormBuilder()
-            ->add('category', 'choice', array(
-                        'choices' => $choices,
-                        'empty_value' => ''
-                        ))
-            ->getForm();
+            foreach ($categories as $category)
+            {
+                $content['categories'][] = array(
+                        'id' => $category->getId(),
+                        'name' => "$category",
+                        );
+            }
 
-        return array(
-                'form' => $form->createView(),
-            );    }
+            $response = new Response;
+            $response->headers->set('Content-Type', 'Application/JSON');
+            $response->setContent(json_encode($content));
+
+            return $response;
+            }
 
 }

@@ -232,4 +232,9 @@ class BudgetCategories
     {
         return $this->lineItems;
     }
+
+    public function __toString()
+    {
+        return $this->category->__toString();
+    }
 }

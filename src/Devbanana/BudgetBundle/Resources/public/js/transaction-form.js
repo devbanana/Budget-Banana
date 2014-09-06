@@ -83,16 +83,16 @@ function updateCategories()
     $.ajax({
 url: Routing.generate('budgetcategories_list_ajax', { month: month, year: year }),
 method: "POST",
-success: function (html)
+success: function (result)
 {
-var lineitems = $('tbody.lineitems').find('tr.lineitem');
+result = JSON.parse(result);
 
-for (var i = 0; i < lineitems.length; i++)
-{
-if ($(lineitems[i]).find('td.type').find('select').val() != 'income') {
-$(lineitems[i]).find('td.category').find('select').html($(html).html());
+$('tr.lineitem').each(function()
+    {
+if ($(this).find('td.type>select').val() != 'income') {
+populateCategories(this, result);
 }
-}
+});
 
 }
 });
@@ -339,10 +339,49 @@ function populatePayers(row, result)
     $(payers).append(getAddOption('Add Payer'));
 }
 
+function refreshCategories(row)
+{
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val();
+    var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+
+    if ($(row).find('td.type>select').val() == 'income') {
+        updateIncomeMonths(row);
+    }
+    else {
+    $.ajax({
+url: Routing.generate('budgetcategories_list_ajax',
+         { month: month, year: year }),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+populateCategories(row, result);
+}
+            });
+}
+}
+
+function populateCategories(row, result)
+{
+    var categories = $(row).find('td.category>select');
+
+    $(categories).html('');
+
+    $(categories).append(getEmptyOption());
+
+    $.each(result.categories, function (index, category)
+            {
+            $(categories).append(getOption(category.id, category.name));
+            });
+
+    $(categories).append(getAddOption('Add Category'));
+}
+
 function refreshRow(row)
 {
     refreshAccounts(row);
     refreshPayees(row);
+    refreshCategories(row);
 }
 
 function getEmptyOption()
