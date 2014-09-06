@@ -154,19 +154,15 @@ function updateIncomeMonths(row)
     months[10] = 'November';
     months[11] = 'December';
 
-    var categorySelect = $(row).find('td.category').find('select');
+    var categorySelect = $(row).find('td.category>select');
     categorySelect.html('');
+    categorySelect.append(getEmptyOption());
     categorySelect.append(
-            $('<option value="" selected="selected"></option>'));
+            getOption(d1.getYear() + '-' + (d1.getMonth()+1),
+                'Income for ' + months[d1.getMonth()]));
     categorySelect.append(
-            $('<option value="' + d1.getYear() + '-' + d1.getMonth()+1 +
-                '">Income for ' + months[d1.getMonth()] +
-                '</option>'));
-    categorySelect.append(
-            $('<option value="' + d2.getYear() + '-' + d2.getMonth()+1 +
-                '">Income for ' + months[d2.getMonth()] +
-                '</option>'));
-
+            getOption(d2.getYear() + '-' + (d2.getMonth()+1),
+                'Income for ' + months[d2.getMonth()]));
 }
 
 function accountListener()
