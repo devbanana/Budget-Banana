@@ -89,6 +89,7 @@ class LineItem
         return $this->id;
     }
 
+
     /**
      * Set type
      *
@@ -249,57 +250,27 @@ class LineItem
     {
         return $this->payer;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->category = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
-     * Add category
+     * Set category
      *
-     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
+     * @param \Devbanana\BudgetBundle\Entity\BudgetCategories $category
      * @return LineItem
      */
-    public function addCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category)
+    public function setCategory(\Devbanana\BudgetBundle\Entity\BudgetCategories $category = null)
     {
-        $this->category[] = $category;
+        $this->category = $category;
 
         return $this;
-    }
-
-    /**
-     * Remove category
-     *
-     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
-     */
-    public function removeCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category)
-    {
-        $this->category->removeElement($category);
     }
 
     /**
      * Get category
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Devbanana\BudgetBundle\Entity\BudgetCategories 
      */
     public function getCategory()
     {
         return $this->category;
-    }
-
-    /**
-     * Set category
-     *
-     * @param \Devbanana\BudgetBundle\Entity\BudgetCategory $category
-     * @return LineItem
-     */
-    public function setCategory(\Devbanana\BudgetBundle\Entity\BudgetCategory $category = null)
-    {
-        $this->category = $category;
-
-        return $this;
     }
 }

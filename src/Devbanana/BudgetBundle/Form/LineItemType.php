@@ -23,11 +23,13 @@ class LineItemType extends AbstractType
                             ),
                         'required' => true,
                         ))
-            ->add('account')
-            ->add('payee')
-            ->add('category', 'entity', array(
-                        'class' => 'DevbananaBudgetBundle:BudgetCategories',
-                        'empty_value' => '',
+            ->add('account', 'choice', array(
+                        'choices' => array(),
+                        ))
+            ->add('payee', 'choice', array(
+                        'choices' => array(),
+                        ))
+            ->add('category', 'choice', array(
                         'choices' => array(),
                         ))
             ->add('inflow', 'money', array(

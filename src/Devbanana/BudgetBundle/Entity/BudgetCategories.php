@@ -75,6 +75,17 @@ class BudgetCategories
     }
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->budgeted = 0.00;
+        $this->outflow = 0.00;
+        $this->balance = 0.00;
+        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Set budgeted
      *
      * @param string $budgeted
@@ -142,83 +153,6 @@ class BudgetCategories
     {
         return $this->balance;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->budgeted = 0.00;
-        $this->outflow = 0.00;
-        $this->balance = 0.00;
-        $this->budget = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->category = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add budget
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Budget $budget
-     * @return BudgetCategories
-     */
-    public function addBudget(\Devbanana\BudgetBundle\Entity\Budget $budget)
-    {
-        $this->budget[] = $budget;
-
-        return $this;
-    }
-
-    /**
-     * Remove budget
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Budget $budget
-     */
-    public function removeBudget(\Devbanana\BudgetBundle\Entity\Budget $budget)
-    {
-        $this->budget->removeElement($budget);
-    }
-
-    /**
-     * Get budget
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getBudget()
-    {
-        return $this->budget;
-    }
-
-    /**
-     * Add category
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Category $category
-     * @return BudgetCategories
-     */
-    public function addCategory(\Devbanana\BudgetBundle\Entity\Category $category)
-    {
-        $this->category[] = $category;
-
-        return $this;
-    }
-
-    /**
-     * Remove category
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Category $category
-     */
-    public function removeCategory(\Devbanana\BudgetBundle\Entity\Category $category)
-    {
-        $this->category->removeElement($category);
-    }
-
-    /**
-     * Get category
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
 
     /**
      * Set budget
@@ -234,6 +168,16 @@ class BudgetCategories
     }
 
     /**
+     * Get budget
+     *
+     * @return \Devbanana\BudgetBundle\Entity\Budget 
+     */
+    public function getBudget()
+    {
+        return $this->budget;
+    }
+
+    /**
      * Set category
      *
      * @param \Devbanana\BudgetBundle\Entity\Category $category
@@ -246,32 +190,14 @@ class BudgetCategories
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->getCategory()->__toString();
-    }
-
     /**
-     * Set lineItems
+     * Get category
      *
-     * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
-     * @return BudgetCategories
+     * @return \Devbanana\BudgetBundle\Entity\Category 
      */
-    public function setLineItems(\Devbanana\BudgetBundle\Entity\LineItem $lineItems = null)
+    public function getCategory()
     {
-        $this->lineItems = $lineItems;
-
-        return $this;
-    }
-
-    /**
-     * Get lineItems
-     *
-     * @return \Devbanana\BudgetBundle\Entity\LineItem 
-     */
-    public function getLineItems()
-    {
-        return $this->lineItems;
+        return $this->category;
     }
 
     /**
@@ -295,5 +221,15 @@ class BudgetCategories
     public function removeLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
     {
         $this->lineItems->removeElement($lineItems);
+    }
+
+    /**
+     * Get lineItems
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLineItems()
+    {
+        return $this->lineItems;
     }
 }
