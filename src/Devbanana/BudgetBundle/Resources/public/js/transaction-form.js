@@ -208,6 +208,99 @@ $.post(
 }
 }
 
+function payeeListener()
+{
+    if ($(this).val() == 'add') {
+    var $caller = $(this);
+    var payType = 'payee';
+    if ($caller.parents('tr.lineitem').find('td.type>select').val()
+            == 'income') {
+        payType = 'payer';
+    }
+
+    if (!$('#payee_dialog').find('form').length) {
+        $.ajax({
+url: Routing.generate(
+         payType == 'payee' ? 'payees_new_ajax' : 'payers_new_ajax'),
+async: false,
+method: "POST",
+success: function (form)
+{
+$('#payee_dialog').append($(form));
+}
+                });
+    }
+
+// Create the dialog
+$('#payee_dialog').dialog({
+modal: true,
+buttons: {
+Add: function ()
+{
+var $this = $(this);
+var $form = $this.find('form');
+var data = $form.serialize();
+$.post(
+Routing.generate(
+    payType == 'payee' ? 'payees_create_ajax' : 'payers_create_ajax'),
+data,
+function (result)
+{
+result = JSON.parse(result);
+if (payType == 'payee') {
+refreshAllPayees();
+}
+else {
+refreshAllPayers();
+}
+$caller.val(result.id);
+$this.dialog('close');
+}
+    );
+}
+}
+        });
+    }
+}
+
+function refreshAllPayees()
+{
+    $.ajax({
+url: Routing.generate('payees_list_ajax'),
+async: false,
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+$('tr.lineitem').each(function()
+    {
+    if ($(this).find('td.type>select').val() != 'income') {
+populatePayees(this, result);
+    }
+    });
+}
+            });
+}
+
+function refreshAllPayers()
+{
+    $.ajax({
+url: Routing.generate('payers_list_ajax'),
+async: false,
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+$('tr.lineitem').each(function()
+    {
+    if ($(this).find('td.type>select').val() == 'income') {
+populatePayers(this, result);
+    }
+    });
+}
+            });
+}
+
 function refreshAllAccounts(id)
 {
     $.ajax({
@@ -391,6 +484,12 @@ function subscribeAccount(row)
     $(account).on('change', accountListener);
 }
 
+function subscribePayee(row)
+{
+    var $payee = $(row).find('td.payee>select');
+$payee.on('change', payeeListener);
+}
+
 function subscribeInflow(row)
 {
     var inflow = $(row).find('td.inflow>input');
@@ -411,6 +510,7 @@ function subscribeEvents(row)
 {
     subscribeType(row);
     subscribeAccount(row);
+    subscribePayee(row);
     subscribeInflow(row);
     subscribeOutflow(row);
 }

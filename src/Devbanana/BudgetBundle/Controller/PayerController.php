@@ -2,6 +2,9 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Devbanana\BudgetBundle\Entity\Payer;
+use Devbanana\BudgetBundle\Form\PayerType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -41,5 +44,50 @@ $response->setContent(json_encode($content));
 
 return $response;
             }
+
+    /**
+     * @Route("/new/ajax", name="payers_new_ajax", options={"expose":true})
+     * @Method("POST")
+     * @Template()
+     */
+    public function newAjaxAction()
+    {
+        $payer = new Payer;
+        $form = $this->createForm(new PayerType(), $payer);
+
+        return array(
+                'form' => $form->createView(),
+                );
+    }
+
+    /**
+     * @Route("/create/ajax", name="payers_create_ajax",
+     * options={"expose":true})
+     * @Method("POST")
+     */
+    function createAjaxAction(Request $request)
+    {
+        $payer = new Payer;
+        $form = $this->createForm(new PayerType(), $payer);
+        $form->handleRequest($request);
+        $content = array();
+
+        if ($form->isValid()) {
+            $content['success'] = true;
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($payer);
+            $em->flush();
+
+            $content['id'] = $payer->getId();
+            $content['name'] = $payer->getName();
+        }
+
+        $response = new Response;
+        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->setContent(json_encode($content));
+
+        return $response;
+    }
 
 }
