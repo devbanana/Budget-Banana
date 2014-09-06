@@ -1,7 +1,8 @@
 var $collectionHolder;
 
 // setup an "add a lineitem" link
-var $addLineItemLink = $('<a href="#" class="add_lineitem_link">Add Another Lineitem</a>');
+var $addLineItemLink = $('<a href="#" class="add_lineitem_link">' +
+        'Add Another Lineitem</a>');
 var $newLinkRow = $('<tr></tr>');
 var $newLinkCell = $('<td colspan="6"></td>');
 $newLinkCell.append($addLineItemLink);
@@ -9,8 +10,10 @@ $newLinkRow.append($newLinkCell);
 
 // Get the tbody that holds the collection of lineitems
 $collectionHolder = $('tbody.lineitems');
+$collectionHolder.data('prototype',
+        $collectionHolder.find('tr.lineitem:first').html());
 
-// add the "add a lineitem" anchor and li to the lineitems tbody
+// add the "add a lineitem" anchor and row to the lineitems tbody
 $collectionHolder.append($newLinkRow);
 
 $collectionHolder.data('index', $collectionHolder.find('tr').length-1);
@@ -28,10 +31,37 @@ $('#devbanana_budgetbundle_transaction_date_year').on('change',
 $('#devbanana_budgetbundle_transaction_date_month').on('change',
         updateCategories);
 
+// Create account dialog
+$('#account_dialog').dialog({
+modal: true,
+autoOpen: false,
+buttons: {
+Add: function() {
+var form = $('#account_dialog').find('form');
+var data = $(form).serialize();
+$.post(
+    Routing.generate("accounts_create_ajax"),
+    data,
+    function (result)
+    {
+    result = JSON.parse(result);
+    refreshAllAccounts(result.id);
+    $($('#account_dialog').data('caller')).val(result.id);
+    $('#account_dialog').dialog("close");
+    });
+}
+}
+});
+
 for (var i = 0; i < $collectionHolder.data('index'); i++)
 {
     $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_type').on(
             'change', updateType);
+    $('#devbanana_budgetbundle_transaction_lineitems_' + i +
+            '_account').append(
+            $('<option value="add">Add Account</option>'));
+    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_account').on(
+            'change', accountChange);
     $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').on(
             'input propertychange paste', updateBalance);
     $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').on(
@@ -163,6 +193,8 @@ function addLineItemForm($collectionHolder, $newLinkRow)
     $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_type').on(
             'change',
             updateType);
+    refreshRow($newFormRow);
+$newFormRow.find('td.account>select').on('change', accountChange);
     $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_inflow').on(
             'input propertychange paste',
             updateBalance);
@@ -210,6 +242,89 @@ function updateIncomeMonths(row)
                 '">Income for ' + months[d2.getMonth()] +
                 '</option>'));
 
+}
+
+function accountChange()
+{
+    if ($(this).val() == 'add') {
+        // Record which dropdown called this dialog
+        $('#account_dialog').data('caller', this);
+
+        if (!$('#account_dialog').find('form').length) {
+            // Fetch the form from the server
+            $.ajax({
+url: Routing.generate('accounts_new_ajax'),
+async: false,
+method: "POST",
+success: function (html)
+{
+$('#account_dialog').append($(html));
+}
+});
+}
+
+$('#account_dialog').dialog('open');
+}
+}
+
+function refreshAllAccounts(id)
+{
+    $.ajax({
+url: Routing.generate('accounts_list_ajax'),
+async: false,
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+// Loop through existing accounts
+$('tr.lineitem').each(function()
+    {
+    populateAccounts(this, result);
+    });
+}
+});
+}
+
+function refreshAccounts(row)
+{
+    $.ajax({
+url: Routing.generate('accounts_list_ajax'),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+populateAccounts(row, result);
+}
+});
+}
+
+function populateAccounts(row, result)
+{
+    // Find accounts dropdown
+    var account = $(row).find('td.account').find('select');
+    $(account).html('');
+
+    // Add empty element
+    $(account).append(
+        $('<option value="" selected="selected"></option>')
+        );
+
+    for (var i = 0; i < result.accounts.length; i++)
+    {
+    $(account).append(
+        $('<option value="' + result.accounts[i].id + '">' +
+            result.accounts[i].name + '</option>')
+        );
+    }
+
+    $(account).append(
+        $('<option value="add">Add Account</option>')
+        );
+}
+
+function refreshRow(row)
+{
+    refreshAccounts(row);
 }
 
 // Update categories on load
