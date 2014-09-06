@@ -54,20 +54,11 @@ $.post(
 }
 });
 
-for (var i = 0; i < $collectionHolder.data('index'); i++)
-{
-    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_type').on(
-            'change', updateType);
-    $('#devbanana_budgetbundle_transaction_lineitems_' + i +
-            '_account').append(
-            $('<option value="add">Add Account</option>'));
-    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_account').on(
-            'change', accountChange);
-    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_outflow').on(
-            'input propertychange paste', updateBalance);
-    $('#devbanana_budgetbundle_transaction_lineitems_' + i + '_inflow').on(
-            'input propertychange paste', updateBalance);
-}
+$('tr.lineitem').each(function()
+        {
+        refreshRow(this);
+        subscribeEvents(this);
+        });
 
 Number.prototype.formatMoney = function(c, d, t){
     var n = this, 
@@ -107,19 +98,18 @@ $(lineitems[i]).find('td.category').find('select').html($(html).html());
 });
 }
 
-function updateType()
+function typeListener()
 {
-refreshPayees($(this).parents('tr.lineitem'));
+    refreshPayees($(this).parents('tr.lineitem'));
 
     if ($(this).val() == 'income') {
-// Replace categories with months
-updateIncomeMonths($(this).parents('tr'));
-}
-else if ($(this).val() != 'income') {
-// Populate with categories
-updateCategories();
-}
-
+        // Replace categories with months
+        updateIncomeMonths($(this).parents('tr'));
+    }
+    else if ($(this).val() != 'income') {
+        // Populate with categories
+        updateCategories();
+    }
 }
 
 function updateBalance()
@@ -171,18 +161,8 @@ function addLineItemForm($collectionHolder, $newLinkRow)
     var $newFormRow = $('<tr class="lineitem"></tr>').append(newForm);
     $newLinkRow.before($newFormRow);
 
-    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_type').on(
-            'change',
-            updateType);
     refreshRow($newFormRow);
-$newFormRow.find('td.account>select').on('change', accountChange);
-    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_inflow').on(
-            'input propertychange paste',
-            updateBalance);
-    $('#devbanana_budgetbundle_transaction_lineitems_' + index + '_outflow').on(
-            'input propertychange paste',
-            updateBalance);
-
+    subscribeEvents($newFormRow);
 }
 
 // Update categories dropdown with list of months that income can be applied to
@@ -225,7 +205,7 @@ function updateIncomeMonths(row)
 
 }
 
-function accountChange()
+function accountListener()
 {
     if ($(this).val() == 'add') {
         // Record which dropdown called this dialog
@@ -288,35 +268,35 @@ function populateAccounts(row, result)
     // Add empty element
     $(account).append(
             getEmptyOption()
-        );
+            );
 
     for (var i = 0; i < result.accounts.length; i++)
     {
-    $(account).append(
-            getOption(result.accounts[i].id, result.accounts[i].name)
-        );
+        $(account).append(
+                getOption(result.accounts[i].id, result.accounts[i].name)
+                );
     }
 
     $(account).append(
             getAddOption('Add Account')
-        );
+            );
 }
 
 function refreshPayees(row)
 {
-var type = $(row).find('td.type>select');
-var route;
-var populateFunction;
+    var type = $(row).find('td.type>select');
+    var route;
+    var populateFunction;
 
-if ($(type).val() == 'expense') {
-route = 'payees_list_ajax';
-populateFunction = populatePayees;
-}
-else if ($(type).val() == 'income') {
-    route = 'payers_list_ajax';
-    populateFunction = populatePayers;
-}
-// TODO: Transfer type
+    if ($(type).val() == 'expense') {
+        route = 'payees_list_ajax';
+        populateFunction = populatePayees;
+    }
+    else if ($(type).val() == 'income') {
+        route = 'payers_list_ajax';
+        populateFunction = populatePayers;
+    }
+    // TODO: Transfer type
 
     $.ajax({
 url: Routing.generate(route),
@@ -326,7 +306,7 @@ success: function (result)
 result = JSON.parse(result);
 populateFunction(row, result);
 }
-            });
+});
 }
 
 function populatePayees(row, result)
@@ -378,6 +358,42 @@ function getAddOption(text)
 function getOption(value, text)
 {
     return $('<option value="' + value + '">' + text + '</option>');
+}
+
+function subscribeType(row)
+{
+    var type = $(row).find('td.type>select');
+    $(type).on('change', typeListener);
+}
+
+function subscribeAccount(row)
+{
+    var account = $(row).find('td.account>select');
+    $(account).on('change', accountListener);
+}
+
+function subscribeInflow(row)
+{
+    var inflow = $(row).find('td.inflow>input');
+    $(inflow).on(
+            'input propertychange paste',
+            updateBalance);
+}
+
+function subscribeOutflow(row)
+{
+    var outflow = $(row).find('td.outflow>input');
+    $(outflow).on(
+            'input propertychange paste',
+            updateBalance);
+}
+
+function subscribeEvents(row)
+{
+    subscribeType(row);
+    subscribeAccount(row);
+    subscribeInflow(row);
+    subscribeOutflow(row);
 }
 
 // Update categories on load
