@@ -5,12 +5,12 @@ namespace Devbanana\BudgetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Account
+ * Payee
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\AccountRepository")
+ * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\PayeeRepository")
  */
-class Account
+class Payee
 {
     /**
      * @var integer
@@ -29,32 +29,12 @@ class Account
     private $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="balance", type="decimal", precision=14, scale=2)
-     */
-    private $balance;
-
-    /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="account")
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="payee")
      */
     private $lineItems;
 
-
-    public function __toString()
-    {
-        return $this->getName();
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->balance = 0.00;
-    }
 
     /**
      * Get id
@@ -70,7 +50,7 @@ class Account
      * Set name
      *
      * @param string $name
-     * @return Account
+     * @return Payee
      */
     public function setName($name)
     {
@@ -88,35 +68,19 @@ class Account
     {
         return $this->name;
     }
-
     /**
-     * Set balance
-     *
-     * @param string $balance
-     * @return Account
+     * Constructor
      */
-    public function setBalance($balance)
+    public function __construct()
     {
-        $this->balance = $balance;
-
-        return $this;
-    }
-
-    /**
-     * Get balance
-     *
-     * @return string 
-     */
-    public function getBalance()
-    {
-        return $this->balance;
+        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Add lineItems
      *
      * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
-     * @return Account
+     * @return Payee
      */
     public function addLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
     {
@@ -143,5 +107,10 @@ class Account
     public function getLineItems()
     {
         return $this->lineItems;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

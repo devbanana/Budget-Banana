@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -71,6 +72,74 @@ class AccountController extends Controller
 
     // }}}
 
+    // {{{ public function createAjaxAction(Request $request)
+
+    /**
+     * @Route("/create/ajax", name="accounts_create_ajax",
+     * options={"expose":true})
+     * @Method("POST")
+     */
+public function createAjaxAction(Request $request)
+{
+    $response = new Response;
+    $response->headers->set('Content-Type', 'Application/JSON');
+    $content = array();
+        $entity = new Account();
+        $form = $this->createCreateForm($entity, false);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+
+$content['id'] = $entity->getId();
+$content['account'] = $entity->getName();
+$content['success'] = true;
+        }
+        else {
+            $content['success'] = false;
+        }
+
+$response->setContent(json_encode($content));
+
+return $response;
+}
+
+    // }}}
+
+// {{{ public function listAjaxAction()
+
+/**
+ * @Route("/list/ajax", name="accounts_list_ajax", options={"expose":true})
+ * @Method("POST")
+ */
+public function listAjaxAction()
+{
+    $em = $this->getDoctrine()->getManager();
+    $accounts = $em->getRepository('DevbananaBudgetBundle:Account')
+        ->findAll();
+
+        $accountsArray = array();
+    foreach ($accounts as $account)
+    {
+        $accountsArray[] = array(
+                'id' => $account->getId(),
+                'name' => $account->getName());
+    }
+
+    $content = array();
+    $content['accounts'] = $accountsArray;
+
+    $response = new Response;
+    $response->headers->set('Content-Type', 'Application/JSON');
+    $response->setContent(json_encode($content));
+
+    return $response;
+}
+
+// }}}
+
     // {{{ private function createCreateForm(Entity)
 
     /**
@@ -80,14 +149,16 @@ class AccountController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Account $entity)
+    private function createCreateForm(Account $entity, $submit = true)
     {
         $form = $this->createForm(new AccountType(), $entity, array(
             'action' => $this->generateUrl('accounts_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        if ($submit) {
+            $form->add('submit', 'submit', array('label' => 'Create'));
+        }
 
         return $form;
     }
@@ -107,6 +178,28 @@ class AccountController extends Controller
     {
         $entity = new Account();
         $form   = $this->createCreateForm($entity);
+
+        return array(
+            'entity' => $entity,
+            'form'   => $form->createView(),
+        );
+    }
+
+    // }}}
+
+    // {{{ public function newAjaxAction()
+
+    /**
+     * Displays a form to create a new Account entity.
+     *
+     * @Route("/new/ajax", name="accounts_new_ajax", options={"expose":true})
+     * @Method("POST")
+     * @Template()
+     */
+    public function newAjaxAction()
+    {
+        $entity = new Account();
+        $form   = $this->createCreateForm($entity, false);
 
         return array(
             'entity' => $entity,

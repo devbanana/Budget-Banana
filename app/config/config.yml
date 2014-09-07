@@ -60,6 +60,12 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
 
+services:
+    kernel.listen.populate_budget_categories:
+            class: Devbanana\BudgetBundle\EventListener\PopulateBudgetCategoriesListener
+            tags:
+                               - { name: doctrine.event_listener, event: onFlush }
+
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
