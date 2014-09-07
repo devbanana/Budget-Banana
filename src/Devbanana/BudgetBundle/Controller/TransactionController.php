@@ -2,6 +2,7 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -32,7 +33,7 @@ class TransactionController extends Controller
             );    }
 
     /**
-     * @Route("/new", name="transactions_create")
+     * @Route("/new", name="transactions_new")
      * @Method("GET")
      * @Template()
      */
@@ -43,7 +44,9 @@ class TransactionController extends Controller
         $li1 = new LineItem;
         $transaction->getLineItems()->add($li1);
 
-        $form = $this->createForm(new TransactionType(), $transaction);
+        $form = $this->createForm(new TransactionType(), $transaction, array(
+                    'action' => $this->generateUrl('transactions_create'),
+                    ));
         $form->add('submit', 'submit', array(
                     'label' => 'Add',
                     ));
@@ -52,14 +55,64 @@ class TransactionController extends Controller
                 'form' => $form->createView(),
             );    }
 
+        /**
+         * @Route("/", name="transactions_create")
+         * @Method("POST")
+         * @Template("DevbananaBudgetBundle:Transaction:new.html.twig")
+         */
+        public function createAction(Request $request)
+        {
+            $em = $this->getDoctrine()->getManager();
+
+            $transactions = $request->request->get('devbanana_budgetbundle_transaction');
+foreach ($transactions['lineitems'] as $i => $lineitem)
+{
+    if (isset($lineitem['assignedMonth'])) {
+        list($year, $month) = explode('-', $lineitem['assignedMonth']);
+        $date = new \DateTime(sprintf('%04d-%02d-%02d', $year, $month, 1));
+
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneByMonth($date);
+
+        if (!$budget) {
+            $budget = new Budget;
+            $budget->setMonth($date);
+            $em->persist($budget);
+            $em->flush();
+        }
+
+        $transactions['lineitems'][$i]['assignedMonth'] = $budget->getId();
+    }
+}
+
+$request->request->set('devbanana_budgetbundle_transaction', $transactions);
+
+$transaction = new Transaction;
+$form = $this->createForm(new TransactionType(), $transaction)
+    ->add('submit', 'submit');
+$form->handleRequest($request);
+
+if ($form->isValid()) {
+    $em->persist($transaction);
+    $em->flush();
+            return $this->redirect($this->generateUrl('transactions_show', array('id' => $transaction->getId())));
+}
+
+return array(
+        'entity' => $transaction,
+        'form' => $form->createView(),
+        );
+        }
+
     /**
      * @Route("/{id}", name="transactions_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Transaction $transaction)
     {
         return array(
+                'entity' => $transaction,
             );    }
 
     /**

@@ -22,6 +22,7 @@ class TransactionType extends AbstractType
             ->add('lineitems', 'collection', array(
                         'type' => new LineItemType(),
                         'allow_add' => true,
+                        'by_reference' => false,
                         ))
         ;
     }

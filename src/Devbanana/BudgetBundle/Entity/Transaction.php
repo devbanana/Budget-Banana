@@ -33,19 +33,20 @@ class Transaction
      *
      * @ORM\Column(name="inflow", type="decimal", precision=14, scale=2)
      */
-    private $inflow;
+    private $inflow = 0.00;
 
     /**
      * @var string
      *
      * @ORM\Column(name="outflow", type="decimal", precision=14, scale=2)
      */
-    private $outflow;
+    private $outflow = 0.00;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="transaction")
+     * @ORM\OneToMany(targetEntity="LineItem", mappedBy="transaction",
+     * cascade={"persist"})
      */
     private $lineItems;
 
@@ -145,6 +146,14 @@ class Transaction
     public function addLineItem(\Devbanana\BudgetBundle\Entity\LineItem $lineItems)
     {
         $this->lineItems[] = $lineItems;
+        $lineItems->setTransaction($this);
+
+        if ($lineItems->getInflow()) {
+            $this->inflow += $lineItems->getInflow();
+        }
+        if ($lineItems->getOutflow()) {
+            $this->outflow += $lineItems->getOutflow();
+        }
 
         return $this;
     }

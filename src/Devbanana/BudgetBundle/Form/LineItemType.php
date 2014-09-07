@@ -23,14 +23,20 @@ class LineItemType extends AbstractType
                             ),
                         'required' => true,
                         ))
-            ->add('account', 'choice', array(
-                        'choices' => array(),
+            ->add('account', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Account',
                         ))
-            ->add('payee', 'choice', array(
-                        'choices' => array(),
+            ->add('payee', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Payee',
                         ))
-            ->add('category', 'choice', array(
-                        'choices' => array(),
+            ->add('payer', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Payer',
+                        ))
+            ->add('category', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:BudgetCategories',
+                        ))
+            ->add('assignedMonth', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Budget',
                         ))
             ->add('inflow', 'money', array(
                         'currency' => 'USD',

@@ -43,11 +43,16 @@ class Account
     private $lineItems;
 
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
     /**
-     * Construct the object
+     * Constructor
      */
     public function __construct()
     {
+        $this->lineItems = new \Doctrine\Common\Collections\ArrayCollection();
         $this->balance = 0.00;
     }
 
@@ -108,7 +113,7 @@ class Account
     }
 
     /**
-     * Add line items
+     * Add lineItems
      *
      * @param \Devbanana\BudgetBundle\Entity\LineItem $lineItems
      * @return Account
@@ -138,10 +143,5 @@ class Account
     public function getLineItems()
     {
         return $this->lineItems;
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 }

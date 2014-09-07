@@ -1,7 +1,9 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}DevbananaBudgetBundle:Transaction:show{% endblock %}
+{% block title %}Show Transaction{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Transaction:show page</h1>
+<h1>Show</h1>
+
+<p>{{ entity.date|date('Y-m-d') }}</p>
 {% endblock %}

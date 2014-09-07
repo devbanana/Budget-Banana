@@ -121,4 +121,9 @@ class Budget
     {
         $this->categories->removeElement($categories);
     }
+
+    public function __toString()
+    {
+        return $this->getMonth()->format('F, Y');
+    }
 }

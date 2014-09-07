@@ -10,8 +10,6 @@ $newLinkRow.append($newLinkCell);
 
 // Get the tbody that holds the collection of lineitems
 $collectionHolder = $('tbody.lineitems');
-$collectionHolder.data('prototype',
-        $collectionHolder.find('tr.lineitem:first').html());
 
 // add the "add a lineitem" anchor and row to the lineitems tbody
 $collectionHolder.append($newLinkRow);
@@ -137,8 +135,7 @@ function updateIncomeMonths(row)
     var year = $('#devbanana_budgetbundle_transaction_date_year').val();
     var month = $('#devbanana_budgetbundle_transaction_date_month').val() - 1;
 
-    var d1 = new Date(year, month, 1, 0, 0, 0, 0);
-    var d2 = new Date(year, month+1, 1, 0, 0, 0, 0);
+    var d = new Date(year, month, 1);
 
     var months = new Array();
     months[0] = 'January';
@@ -154,15 +151,23 @@ function updateIncomeMonths(row)
     months[10] = 'November';
     months[11] = 'December';
 
-    var categorySelect = $(row).find('td.category>select');
-    categorySelect.html('');
-    categorySelect.append(getEmptyOption());
-    categorySelect.append(
-            getOption(d1.getYear() + '-' + (d1.getMonth()+1),
-                'Income for ' + months[d1.getMonth()]));
-    categorySelect.append(
-            getOption(d2.getYear() + '-' + (d2.getMonth()+1),
-                'Income for ' + months[d2.getMonth()]));
+    var $categorySelect = $(row).find('td.category>select');
+    $categorySelect.attr('id',
+            $categorySelect.attr('id').replace('category', 'assigned_month'));
+    $categorySelect.attr('name',
+            $categorySelect.attr('name').replace('category', 'assignedMonth'));
+    $categorySelect.html('');
+    $categorySelect.append(getEmptyOption());
+
+    // Loop for 60 months
+    for (var i = 0; i < 60; i++)
+    {
+    $categorySelect.append(
+            getOption(d.getFullYear() + '-' + (d.getMonth()+1),
+                'Income for ' + months[d.getMonth()] + ' ' + d.getFullYear()));
+
+    d.setMonth(d.getMonth()+1);
+    }
 }
 
 function accountListener()
@@ -384,32 +389,38 @@ populateFunction(row, result);
 
 function populatePayees(row, result)
 {
-    var payees = $(row).find('td.payee>select');
-    $(payees).html('');
+    var $payees = $(row).find('td.payee>select');
+    $payees.attr('id', $payees.attr('id').replace('payer', 'payee'));
+    $payees.attr('name', $payees.attr('name').replace('payer', 'payee'));
+    $payees.html('');
 
-    $(payees).append(getEmptyOption());
+    $payees.append(getEmptyOption());
 
     $.each(result.payees, function(index, payee)
             {
-            $(payees).append(getOption(payee.id, payee.name));
+            $payees.append(getOption(payee.id, payee.name));
             });
 
-    $(payees).append(getAddOption('Add Payee'));
+    $payees.append(getAddOption('Add Payee'));
 }
 
 function populatePayers(row, result)
 {
-    var payers = $(row).find('td.payee>select');
-    $(payers).html('');
+    var $payers = $(row).find('td.payee>select');
 
-    $(payers).append(getEmptyOption());
+    $payers.attr('id', $payers.attr('id').replace('payee', 'payer'));
+    $payers.attr('name', $payers.attr('name').replace('payee', 'payer'));
+
+    $payers.html('');
+
+    $payers.append(getEmptyOption());
 
     $.each(result.payers, function(index, payer)
             {
-            $(payers).append(getOption(payer.id, payer.name));
+            $payers.append(getOption(payer.id, payer.name));
             });
 
-    $(payers).append(getAddOption('Add Payer'));
+    $payers.append(getAddOption('Add Payer'));
 }
 
 function refreshCategories(row)
@@ -436,18 +447,24 @@ populateCategories(row, result);
 
 function populateCategories(row, result)
 {
-    var categories = $(row).find('td.category>select');
+    var $categories = $(row).find('td.category>select');
 
-    $(categories).html('');
+    $categories.attr('id',
+            $categories.attr('id').replace('assigned_month', 'category'));
 
-    $(categories).append(getEmptyOption());
+    $categories.attr('name',
+            $categories.attr('name').replace('assignedMonth', 'category'));
+
+    $categories.html('');
+
+    $categories.append(getEmptyOption());
 
     $.each(result.categories, function (index, category)
             {
-            $(categories).append(getOption(category.id, category.name));
+            $categories.append(getOption(category.id, category.name));
             });
 
-    $(categories).append(getAddOption('Add Category'));
+    $categories.append(getAddOption('Add Category'));
 }
 
 function refreshRow(row)

@@ -31,16 +31,16 @@ class LineItem
     /**
      * @var string
      *
-     * @ORM\Column(name="inflow", type="decimal")
+     * @ORM\Column(name="inflow", type="decimal", precision=14, scale=2)
      */
-    private $inflow;
+    private $inflow = 0.00;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="outflow", type="decimal")
+     * @ORM\Column(name="outflow", type="decimal", precision=14, scale=2)
      */
-    private $outflow;
+    private $outflow = 0.00;
 
     /**
      * @var Transaction
@@ -77,6 +77,13 @@ class LineItem
      * @ORM\ManyToOne(targetEntity="BudgetCategories", inversedBy="lineItems")
      */
     private $category;
+
+    /**
+     * @var \Devbanana\BudgetBundle\Entity\Budget
+     *
+     * @ORM\ManyToOne(targetEntity="Budget")
+     */
+    private $assigned_month;
 
 
     /**
@@ -272,5 +279,28 @@ class LineItem
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set assigned_month
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Budget $assignedMonth
+     * @return LineItem
+     */
+    public function setAssignedMonth(\Devbanana\BudgetBundle\Entity\Budget $assignedMonth = null)
+    {
+        $this->assigned_month = $assignedMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get assigned_month
+     *
+     * @return \Devbanana\BudgetBundle\Entity\Budget 
+     */
+    public function getAssignedMonth()
+    {
+        return $this->assigned_month;
     }
 }
