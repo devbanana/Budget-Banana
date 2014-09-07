@@ -95,7 +95,7 @@ $form->handleRequest($request);
 if ($form->isValid()) {
     $em->persist($transaction);
     $em->flush();
-            return $this->redirect($this->generateUrl('transactions_show', array('id' => $transaction->getId())));
+            return $this->redirect($this->generateUrl('transactions_list'));
 }
 
 return array(

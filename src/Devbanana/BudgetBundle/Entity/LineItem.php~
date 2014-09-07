@@ -310,27 +310,4 @@ class LineItem
     {
         return $this->assigned_month;
     }
-
-    /**
-     * Set memo
-     *
-     * @param string $memo
-     * @return LineItem
-     */
-    public function setMemo($memo)
-    {
-        $this->memo = $memo;
-
-        return $this;
-    }
-
-    /**
-     * Get memo
-     *
-     * @return string 
-     */
-    public function getMemo()
-    {
-        return $this->memo;
-    }
 }
