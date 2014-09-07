@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Form\AccountType;
+use Devbanana\BudgetBundle\Entity\Transaction;
+use Devbanana\BudgetBundle\Entity\LineItem;
 
 /**
  * Account controller.
@@ -59,6 +61,37 @@ class AccountController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
+
+        $startingBalance = $form->get('startingBalance')->getData();
+
+        // Create a starting balance transaction
+        $transaction = new Transaction;
+        $transaction->setDate(new \DateTime());
+
+        $lineItem = new LineItem;
+        $lineItem->setTransaction($transaction);
+        $lineItem->setAccount($entity);
+        $lineItem->setType('income');
+        // TODO: Support expenses, such as for liability accounts
+
+        // Find budget for current month
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByDate($transaction->getDate());
+
+        $lineItem->setAssignedMonth($budget);
+
+        $lineItem->setMemo('Starting Balance');
+
+        if ($startingBalance >= 0) {
+            $lineItem->setInflow($startingBalance);
+        }
+        else {
+            $lineItem->setOutflow(abs($startingBalance));
+        }
+
+        $em->persist($lineItem);
+        $em->persist($transaction);
+
             $em->flush();
 
             return $this->redirect($this->generateUrl('accounts_show', array('id' => $entity->getId())));

@@ -16,10 +16,12 @@ class AccountType extends AbstractType
     {
         $builder
             ->add('name', null, array('label' => 'Account'))
-            ->add('balance', 'money', array(
+            ->add('startingBalance', 'money', array(
                         'label' => 'Starting Balance',
                         'currency' => 'USD',
-                        'grouping' => true))
+                        'grouping' => true,
+                        'mapped' => false,
+                        ))
         ;
     }
     
