@@ -33,7 +33,7 @@ class Account
      *
      * @ORM\Column(name="balance", type="decimal", precision=14, scale=2)
      */
-    private $balance;
+    private $balance = 0.00;
 
     /**
      * @var ArrayCollection
