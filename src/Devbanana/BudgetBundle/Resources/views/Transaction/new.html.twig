@@ -14,26 +14,26 @@
 <table border="0" cellpadding="3" cellspacing="3">
 <thead>
 <tr>
-<th>Date</th>
-<th>Inflow</th>
-<th>Outflow</th>
-<th>Balance</th>
+<th id="date-label">Date</th>
+<th id="inflow-label">Inflow</th>
+<th id="outflow-label">Outflow</th>
+<th id="balance-label">Balance</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-<td>
+<td aria-labelledby="date-label">
 {{ form_widget(form.date) }}
 </td>
-<td>
+<td aria-labelledby="inflow-label">
 <span id="inflow">$0.00</span>
 </td>
-<td>
+<td aria-labelledby="outflow-label">
 <span id="outflow">$0.00</span>
 </td>
-<td>
-<span id="balance">$0.00</span>
+<td aria-labelledby="balance-label">
+<span id="balance" aria-live="polite">$0.00</span>
 </td>
 </tr>
 </table>

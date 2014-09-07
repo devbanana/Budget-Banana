@@ -34,6 +34,9 @@ $('tr.lineitem').each(function()
         {
         refreshRow(this);
         subscribeEvents(this);
+
+$(this).find('td.inflow>input').val('');
+$(this).find('td.outflow>input').val('');
         });
 
 Number.prototype.formatMoney = function(c, d, t){
