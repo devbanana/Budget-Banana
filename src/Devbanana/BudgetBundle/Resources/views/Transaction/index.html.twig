@@ -5,6 +5,16 @@
 {% block body %}
     <h1>Transactions</h1>
 
+    <p>
+    <a href="{{ url('transactions_index',
+{'month': lastMonth|date('n'), 'year': lastMonth|date('Y')}) }}">
+{{ lastMonth|date('F Y') }}
+    </a> | <a href="{{ url('transactions_index',
+{'month': nextMonth|date('n'), 'year': nextMonth|date('Y')}) }}">
+{{ nextMonth|date('F Y') }}
+</a>
+    </p>
+
     {% if entities is empty %}
         <p>
             There are no transactions.

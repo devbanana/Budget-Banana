@@ -18,14 +18,15 @@ use Devbanana\BudgetBundle\Entity\LineItem;
 class TransactionController extends Controller
 {
     /**
-     * @Route("/", name="transactions_index")
+     * @Route("/{year}/{month}", name="transactions_index",
+     *     defaults={"year" = null, "month" = null})
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($year, $month)
     {
-        $month = date('n');
-        $year = date('Y');
+        if (!$month) $month = date('n');
+        if (!$year) $year = date('Y');
 
         $em = $this->getDoctrine()->getManager();
 
@@ -39,8 +40,13 @@ class TransactionController extends Controller
         $entities = $em->getRepository('DevbananaBudgetBundle:Transaction')
             ->findBetween($startMonth, $endMonth);
 
+        $lastMonth = clone $startMonth;
+        $lastMonth->modify('-1 month');
+
         return array(
                 'entities' => $entities,
+                'lastMonth' => $lastMonth,
+                'nextMonth' => $endMonth,
             );    }
 
     /**
