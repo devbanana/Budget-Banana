@@ -17,6 +17,9 @@
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Account</th>
+                    <th>Payer/Payee</th>
+                    <th>Category</th>
                     <th>Inflow</th>
                     <th>Outflow</th>
                 </tr>
@@ -25,9 +28,34 @@
             <tbody>
                 {% for entity in entities %}
                     <tr>
-                        <th>{{ entity.date|date("Y-m-d") }}</th>
-                        <td>${{ entity.inflow }}</td>
-                        <td>${{ entity.outflow }}</td>
+                        <th rowspan="{{ entity.lineItems|length }}">{{ entity.date|date("Y-m-d") }}</th>
+{% for lineItem in entity.lineItems %}
+{% if loop.index > 1 %}
+</tr>
+<tr>
+{% endif %}
+<td>
+<a href="{{ url('accounts_show', {'id': lineItem.account.id}) }}">
+{{ lineItem.account }}
+</a>
+</td>
+<td>
+{% if lineItem.payee %}
+{{ lineItem.payee }}
+{% else %}
+{{ lineItem.payer }}
+{% endif %}
+</td>
+<td>
+{% if lineItem.category %}
+{{ lineItem.category }}
+{% else %}
+Income for {{ lineItem.assignedMonth.month|date('F Y') }}
+{% endif %}
+</td>
+<td>{{ lineItem.inflow }}</td>
+<td>{{ lineItem.outflow }}</td>
+{% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>

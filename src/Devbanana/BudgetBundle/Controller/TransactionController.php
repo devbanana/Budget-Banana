@@ -24,9 +24,20 @@ class TransactionController extends Controller
      */
     public function indexAction()
     {
+        $month = date('n');
+        $year = date('Y');
+
         $em = $this->getDoctrine()->getManager();
+
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByMonthAndYear($month, $year);
+
+        $startMonth = clone $budget->getMonth();
+        $endMonth = clone $startMonth;
+        $endMonth->modify('+1 month');
+
         $entities = $em->getRepository('DevbananaBudgetBundle:Transaction')
-            ->findAll();
+            ->findBetween($startMonth, $endMonth);
 
         return array(
                 'entities' => $entities,
@@ -95,7 +106,7 @@ $form->handleRequest($request);
 if ($form->isValid()) {
     $em->persist($transaction);
     $em->flush();
-            return $this->redirect($this->generateUrl('transactions_list'));
+            return $this->redirect($this->generateUrl('transactions_index'));
 }
 
 return array(

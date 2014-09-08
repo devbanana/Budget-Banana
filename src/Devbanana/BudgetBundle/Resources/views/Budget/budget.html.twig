@@ -18,10 +18,9 @@
 </p>
 
 <table cellpadding="3" cellspacing="3">
-<tr>
+<tr aria-live="polite" aria-atomic="true" aria-relevant="all">
 <th id="available-to-budget-label">Available to Budget</th>
-<td id="available-to-budget"
-aria-live="polite"></td>
+<td id="available-to-budget"></td>
 </tr>
 
 <tr>
@@ -47,7 +46,6 @@ aria-live="polite"></td>
 
 {# Categories #}
 <h2>Categories</h2>
-{{ form_start(form) }}
 <table border="1" cellpadding="3" cellspacing="3">
 <thead>
 <tr>
@@ -69,7 +67,6 @@ aria-live="polite"></td>
 {% endfor %}
 </tbody>
 </table>
-{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
