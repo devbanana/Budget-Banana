@@ -1,0 +1,77 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Budget for {{ entity.month|date('F Y') }}{% endblock %}
+
+{% block body %}
+<h1>Budget for {{ entity.month|date('F Y') }}</h1>
+
+{% set lastMonthMonth = previousBudget.month|date('n') %}
+{% set lastMonthYear = previousBudget.month.format('Y') %}
+{% set nextMonthMonth = nextBudget.month.format('n') %}
+{% set nextMonthYear = nextBudget.month.format('Y') %}
+<p>
+<a href="{{ url('budget', {'month': lastMonthMonth, 'year': lastMonthYear}) }}">
+{{ previousBudget.month|date('F Y') }}
+</a> | <a href="{{ url('budget', {'month': nextMonthMonth, 'year': nextMonthYear}) }}">
+{{ nextBudget.month|date('F Y') }}
+</a>
+</p>
+
+<table cellpadding="3" cellspacing="3">
+<tr>
+<th id="available-to-budget-label">Available to Budget</th>
+<td id="available-to-budget"
+aria-live="polite"></td>
+</tr>
+
+<tr>
+<th>Not Budgeted in <span id="not-budgeted-last-month-month-label"></span></th>
+<td id="not-budgeted-last-month"></td>
+</tr>
+
+<tr>
+<th>Overspent in <span id="overspent-last-month-month-label"></span></th>
+<td id="overspent-last-month"></td>
+</tr>
+
+<tr>
+<th>(+) Income for <span id="income-this-month-month-label"></span></th>
+<td id="income-this-month"></td>
+</tr>
+
+<tr>
+<th>Budgeted in <span id="budgeted-this-month-month-label"></span></th>
+<td id="budgeted-this-month"></td>
+</tr>
+</table>
+
+{# Categories #}
+<h2>Categories</h2>
+{{ form_start(form) }}
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody id="budget" data-id="{{ entity.id }}">
+{% for category in form.categories %}
+<tr class="category" data-id="{{ category.vars.data.id }}">
+<th class="name">{{ category.vars.data }}</th>
+<td class="budgeted">{{ form_widget(category.budgeted) }}</td>
+<td class="outflow">$0.00</td>
+<td class="balance">$0.00</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('bundles/devbananabudget/js/budget.js') }}"></script>
+{% endblock %}

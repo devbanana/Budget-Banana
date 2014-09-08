@@ -60,37 +60,11 @@ class AccountController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $this->em = $em;
             $em->persist($entity);
 
         $startingBalance = $form->get('startingBalance')->getData();
-
-        // Create a starting balance transaction
-        $transaction = new Transaction;
-        $transaction->setDate(new \DateTime());
-
-        $lineItem = new LineItem;
-        $lineItem->setTransaction($transaction);
-        $lineItem->setAccount($entity);
-        $lineItem->setType('income');
-        // TODO: Support expenses, such as for liability accounts
-
-        // Find budget for current month
-        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate());
-
-        $lineItem->setAssignedMonth($budget);
-
-        $lineItem->setMemo('Starting Balance');
-
-        if ($startingBalance >= 0) {
-            $lineItem->setInflow($startingBalance);
-        }
-        else {
-            $lineItem->setOutflow(abs($startingBalance));
-        }
-
-        $em->persist($lineItem);
-        $em->persist($transaction);
+        $this->createTransaction($startingBalance, $entity);
 
             $em->flush();
 
@@ -104,6 +78,38 @@ class AccountController extends Controller
     }
 
     // }}}
+
+    private function createTransaction($startingBalance, $entity)
+    {
+        // Create a starting balance transaction
+        $transaction = new Transaction;
+        $transaction->setDate(new \DateTime());
+
+        $lineItem = new LineItem;
+        $lineItem->setAccount($entity);
+        $lineItem->setType('income');
+        // TODO: Support expenses, such as for liability accounts
+
+        // Find budget for current month
+        $budget = $this->em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByDate($transaction->getDate());
+
+        $lineItem->setAssignedMonth($budget);
+
+        $lineItem->setMemo('Starting Balance');
+
+        if ($startingBalance >= 0) {
+            $lineItem->setInflow($startingBalance);
+        }
+        else {
+            $lineItem->setOutflow(abs($startingBalance));
+        }
+
+        $transaction->addLineItem($lineItem);
+
+        $this->em->persist($lineItem);
+        $this->em->persist($transaction);
+    }
 
     // {{{ public function createAjaxAction(Request $request)
 
@@ -123,7 +129,12 @@ public function createAjaxAction(Request $request)
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $this->em = $em;
             $em->persist($entity);
+
+            $startingBalance = $form->get('startingBalance')->getData();
+            $this->createTransaction($startingBalance, $entity);
+
             $em->flush();
 
 $content['id'] = $entity->getId();

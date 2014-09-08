@@ -3,6 +3,8 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\BudgetBundle\Entity\BudgetCategories;
+use Devbanana\BudgetBundle\Entity\Budget;
 
 /**
  * LineItemRepository
@@ -12,4 +14,47 @@ use Doctrine\ORM\EntityRepository;
  */
 class LineItemRepository extends EntityRepository
 {
+
+    public function getBufferedIncome(Budget $budget)
+    {
+        $qb = $this->createQueryBuilder('l');
+        $query = $qb
+->innerJoin('l.category', 'bc')
+->where($qb->expr()->andX(
+            $qb->expr()->eq('bc.budget', ':budget'),
+            $qb->expr()->neq('l.assignedMonth', ':budget')
+            ))
+->setParameter('budget', $budget)
+->getQuery()
+;
+
+        return $query->getResult();
+    }
+
+    public function getIncomeThisMonth(Budget $budget)
+    {
+        $qb = $this->createQueryBuilder('l');
+        $query = $qb
+            ->where($qb->expr()->andX(
+                        $qb->expr()->eq('l.assignedMonth', ':budget'),
+                        $qb->expr()->eq('l.type', ':type')
+                        ))
+            ->setParameter('budget', $budget)
+            ->setParameter(':type', 'income')
+            ->select(array('l.inflow'))
+            ->getQuery()
+            ;
+
+        $results = $query->getResult();
+
+        $income = '0.00';
+
+        foreach ($results as $result)
+        {
+            $income = bcadd($income, $result['inflow'], 2);
+        }
+
+        return $income;
+    }
+
 }

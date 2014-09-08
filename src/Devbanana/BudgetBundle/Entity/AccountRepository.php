@@ -12,4 +12,27 @@ use Doctrine\ORM\EntityRepository;
  */
 class AccountRepository extends EntityRepository
 {
+
+    public function sumBudgetedAccounts()
+    {
+        // TODO: Accounts are not yet categorized as budgeted or not budgeted
+
+        $qb = $this->createQueryBuilder('a');
+        $query = $qb
+            ->select('a.balance')
+            ->getQuery()
+            ;
+
+        $results = $query->getResult();
+
+        $balance = '0.00';
+
+        foreach ($results as $result)
+        {
+            $balance = bcadd($balance, $result['balance'], 2);
+        }
+
+        return $balance;
+    }
+
 }

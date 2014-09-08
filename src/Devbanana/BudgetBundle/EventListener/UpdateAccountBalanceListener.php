@@ -11,7 +11,6 @@ class UpdateAccountBalanceListener
     public function prePersist(LifecycleEventArgs $e)
     {
         $em = $e->getEntityManager();
-
 $entity = $e->getEntity();
 
 if ($entity instanceof LineItem) {

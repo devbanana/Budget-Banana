@@ -12,4 +12,98 @@ use Doctrine\ORM\EntityRepository;
  */
 class BudgetCategoriesRepository extends EntityRepository
 {
+
+    public function getOutflowForCategory(BudgetCategories $category)
+    {
+        $qb = $this->createQueryBuilder('bc');
+        $query = $qb
+            ->innerJoin('bc.lineItems', 'l')
+            ->select(array('l.outflow'))
+            ->where($qb->expr()->eq('l.category', ':category'))
+            ->setParameter('category', $category)
+            ->getQuery();
+
+        $outflow = '0.00';
+
+        foreach ($query->getResult() as $lineItem)
+        {
+            $outflow = bcsub($outflow, $lineItem['outflow'], 2);
+        }
+
+        return $outflow;
+    }
+
+    public function getBalanceForCategory($category, $budgeted = null)
+    {
+if ($category instanceof BudgetCategories) {
+if (is_null($budgeted)) {
+    $budgeted = $category->getBudgeted();
+}
+
+$previousCategory = $this->getPreviousMonthCategory($category);
+$previousBalance = $this->getBalanceForCategory($previousCategory);
+
+// TODO: If category has carry over into category, then use balance even if
+// negative.
+// If carry over is default of budget, then only use balance if positive.
+if ($previousBalance < 0) {
+$previousBalance = 0;
+}
+
+// NOTE: We must use bcadd here because outflow is always negative
+return bcadd(bcadd($previousBalance, $budgeted, 2),
+        $this->getOutflowForCategory($category),
+        2);
+}
+
+return '0.00';
+    }
+
+protected function getPreviousMonthCategory(BudgetCategories $category)
+{
+    $date = clone $category->getBudget()->getMonth();
+    $date->modify('-1 month');
+
+    $qb = $this->createQueryBuilder('bc');
+$query = $qb
+    ->innerJoin('bc.budget', 'b')
+    ->where($qb->expr()->andX(
+                $qb->expr()->eq('bc.category', ':category'),
+                $qb->expr()->eq('b.month', ':month')
+                ))
+    ->setParameter('category', $category->getCategory())
+    ->setParameter('month', $date)
+    ->getQuery()
+    ;
+
+$previousMonth = $query->getResult();
+
+if ($previousMonth) {
+    return $previousMonth[0];
+}
+return null;
+}
+
+public function getBudgetedThisMonth(Budget $budget)
+{
+    $qb = $this->createQueryBuilder('bc');
+    $query = $qb
+        ->where($qb->expr()->eq('bc.budget', ':budget'))
+        ->setParameter('budget', $budget)
+        ->select(array('bc.budgeted'))
+        ->getQuery()
+        ;
+
+    $results = $query->getResult();
+
+    $budgeted = '0.00';
+
+    foreach ($results as $result)
+    {
+        $budgeted = bcadd($budgeted, $result['budgeted'], 2);
+    }
+
+    return $budgeted;
+}
+
 }

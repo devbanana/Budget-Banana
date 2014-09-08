@@ -11,7 +11,7 @@ use Devbanana\BudgetBundle\Entity\Budget;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 
 /**
- * @Route("/budget")
+ * @Route("/budget-categories")
  */
 class BudgetCategoriesController extends Controller
 {
@@ -55,5 +55,28 @@ class BudgetCategoriesController extends Controller
 
             return $response;
             }
+
+    /**
+     * @Route("/save/ajax/{id}/{budgeted}",
+     *     name="budgetcategories_save_ajax",
+     *     options={"expose":true})
+     */
+    public function saveAjaxAction(BudgetCategories $category, $budgeted)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $category->setBudgeted($budgeted);
+        $em->flush();
+
+        $content = array();
+        $content['outflow'] = $category->getOutflow();
+        $content['balance'] = $category->getBalance();
+
+        $response = new Response;
+        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->setContent(json_encode($content));
+
+        return $response;
+    }
 
 }

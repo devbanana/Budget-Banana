@@ -90,7 +90,7 @@ class LineItem
      *
      * @ORM\ManyToOne(targetEntity="Budget")
      */
-    private $assigned_month;
+    private $assignedMonth;
 
 
     /**
@@ -135,7 +135,9 @@ class LineItem
      */
     public function setInflow($inflow)
     {
-        $this->inflow = $inflow;
+        if ($inflow) {
+            $this->inflow = $inflow;
+        }
 
         return $this;
     }
@@ -158,7 +160,9 @@ class LineItem
      */
     public function setOutflow($outflow)
     {
-        $this->outflow = $outflow;
+        if ($outflow) {
+            $this->outflow = $outflow;
+        }
 
         return $this;
     }
@@ -296,7 +300,7 @@ class LineItem
      */
     public function setAssignedMonth(\Devbanana\BudgetBundle\Entity\Budget $assignedMonth = null)
     {
-        $this->assigned_month = $assignedMonth;
+        $this->assignedMonth = $assignedMonth;
 
         return $this;
     }
@@ -308,7 +312,7 @@ class LineItem
      */
     public function getAssignedMonth()
     {
-        return $this->assigned_month;
+        return $this->assignedMonth;
     }
 
     /**
