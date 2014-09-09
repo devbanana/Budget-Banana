@@ -14,6 +14,8 @@ class UpdateCategoryListener
 $entity = $e->getEntity();
 
 if ($entity instanceof BudgetCategories) {
+    // When a BudgetCategories entity is updated, it means the budgeted
+    // field is updated and so we need to refresh the balance
     $balance = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
     ->getBalanceForCategory($entity);
 
@@ -32,8 +34,27 @@ public function prePersist(LifecycleEventArgs $e)
         if ($category) {
         $outflow = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
             ->getOutflowForCategory($category);
-        $outflow += $entity->getOutflow();
-        $outflow -= $entity->getInflow();
+        $outflow = bcadd($outflow, $entity->getOutflow(), 2);
+        $outflow = bcsub($outflow, $entity->getInflow(), 2);
+
+        $category->setOutflow($outflow);
+        }
+    }
+}
+
+public function preRemove(LifecycleEventArgs $e)
+{
+    $em = $e->getEntityManager();
+    $entity = $e->getEntity();
+
+    if ($entity instanceof LineItem) {
+        $category = $entity->getCategory();
+
+        if ($category) {
+        $outflow = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+            ->getOutflowForCategory($category);
+        $outflow = bcsub($outflow, $entity->getOutflow(), 2);
+        $outflow = bcadd($outflow, $entity->getInflow(), 2);
 
         $category->setOutflow($outflow);
         }

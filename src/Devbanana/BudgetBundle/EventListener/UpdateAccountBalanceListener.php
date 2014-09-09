@@ -17,12 +17,25 @@ if ($entity instanceof LineItem) {
     $balance = $entity->getAccount()->getBalance();
 
     if ($entity->getInflow()) {
-        $balance += $entity->getInflow();
+        $balance = bcadd($balance, $entity->getInflow(), 2);
     }
     elseif ($entity->getOutflow()) {
-        $balance -= $entity->getOutflow();
+        $balance = bcsub($balance, $entity->getOutflow(), 2);
     }
 
+    $entity->getAccount()->setBalance($balance);
+}
+    }
+
+public function preRemove(LifecycleEventArgs $e)
+    {
+        $em = $e->getEntityManager();
+$entity = $e->getEntity();
+
+if ($entity instanceof LineItem) {
+    $balance = $entity->getAccount()->getBalance();
+        $balance = bcsub($balance, $entity->getInflow(), 2);
+        $balance = bcadd($balance, $entity->getOutflow(), 2);
     $entity->getAccount()->setBalance($balance);
 }
     }

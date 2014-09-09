@@ -168,10 +168,10 @@ class Category
     /**
      * Set order
      *
-     * @param \int $order
+     * @param integer $order
      * @return Category
      */
-    public function setOrder(\int $order)
+    public function setOrder($order)
     {
         $this->order = $order;
 
@@ -181,7 +181,7 @@ class Category
     /**
      * Get order
      *
-     * @return \int 
+     * @return integer 
      */
     public function getOrder()
     {

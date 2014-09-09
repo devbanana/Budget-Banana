@@ -18,7 +18,7 @@
     {% if entities is empty %}
         <p>
             There are no transactions.
-            <a href="{{ path("transactions_create") }}">
+            <a href="{{ path("transactions_new") }}">
                 Create one now.
             </a>
         </p>
@@ -32,6 +32,7 @@
                     <th>Category</th>
                     <th>Inflow</th>
                     <th>Outflow</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
 
@@ -63,8 +64,13 @@
 Income for {{ lineItem.assignedMonth.month|date('F Y') }}
 {% endif %}
 </td>
-<td>{{ lineItem.inflow }}</td>
-<td>{{ lineItem.outflow }}</td>
+<td>${{ lineItem.inflow }}</td>
+<td>${{ lineItem.outflow }}</td>
+<td>
+<a href="{{ url("lineitems_delete", {"id": lineItem.id}) }}">
+Delete
+</a>
+</td>
 {% endfor %}
                     </tr>
                 {% endfor %}
@@ -74,7 +80,7 @@ Income for {{ lineItem.assignedMonth.month|date('F Y') }}
 
     <ul>
         <li>
-            <a href="{{ path("transactions_create") }}">
+            <a href="{{ path("transactions_new") }}">
                 Add Transaction
             </a>
         </li>

@@ -69,11 +69,13 @@ services:
             class: Devbanana\BudgetBundle\EventListener\UpdateAccountBalanceListener
             tags:
                                - { name: doctrine.event_listener, event: prePersist }
+                               - { name: doctrine.event_listener, event: preRemove }
     kernel.listen.update_category:
             class: Devbanana\BudgetBundle\EventListener\UpdateCategoryListener
             tags:
                 - { name: doctrine.event_listener, event: preUpdate }
                 - { name: doctrine.event_listener, event: prePersist }
+                - { name: doctrine.event_listener, event: preRemove }
 
 # Swiftmailer Configuration
 swiftmailer:

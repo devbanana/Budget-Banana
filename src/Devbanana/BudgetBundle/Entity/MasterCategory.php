@@ -125,10 +125,10 @@ class MasterCategory
     /**
      * Set order
      *
-     * @param \int $order
+     * @param integer $order
      * @return MasterCategory
      */
-    public function setOrder(\int $order)
+    public function setOrder($order)
     {
         $this->order = $order;
 
@@ -138,7 +138,7 @@ class MasterCategory
     /**
      * Get order
      *
-     * @return \int 
+     * @return integer 
      */
     public function getOrder()
     {

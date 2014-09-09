@@ -18,6 +18,29 @@ use Devbanana\BudgetBundle\Entity\LineItem;
 class TransactionController extends Controller
 {
     /**
+     * @Route("/new", name="transactions_new")
+     * @Method("GET")
+     * @Template()
+     */
+    public function newAction()
+    {
+        $transaction = new Transaction;
+        $transaction->setDate(new \DateTime(date('Y-m-d', time())));
+        $li1 = new LineItem;
+        $transaction->getLineItems()->add($li1);
+
+        $form = $this->createForm(new TransactionType(), $transaction, array(
+                    'action' => $this->generateUrl('transactions_create'),
+                    ));
+        $form->add('submit', 'submit', array(
+                    'label' => 'Add',
+                    ));
+
+        return array(
+                'form' => $form->createView(),
+            );    }
+
+    /**
      * @Route("/{year}/{month}", name="transactions_index",
      *     defaults={"year" = null, "month" = null})
      * @Method("GET")
@@ -47,29 +70,6 @@ class TransactionController extends Controller
                 'entities' => $entities,
                 'lastMonth' => $lastMonth,
                 'nextMonth' => $endMonth,
-            );    }
-
-    /**
-     * @Route("/new", name="transactions_new")
-     * @Method("GET")
-     * @Template()
-     */
-    public function newAction()
-    {
-        $transaction = new Transaction;
-        $transaction->setDate(new \DateTime(date('Y-m-d', time())));
-        $li1 = new LineItem;
-        $transaction->getLineItems()->add($li1);
-
-        $form = $this->createForm(new TransactionType(), $transaction, array(
-                    'action' => $this->generateUrl('transactions_create'),
-                    ));
-        $form->add('submit', 'submit', array(
-                    'label' => 'Add',
-                    ));
-
-        return array(
-                'form' => $form->createView(),
             );    }
 
         /**
@@ -137,16 +137,6 @@ return array(
      * @Template()
      */
     public function editAction($id)
-    {
-        return array(
-                // ...
-            );    }
-
-    /**
-     * @Route("/transactions/{id}/delete")
-     * @Template()
-     */
-    public function deleteAction($id)
     {
         return array(
                 // ...

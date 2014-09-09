@@ -193,6 +193,9 @@ return $response;
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
             ->findOneOrCreateByMonthAndYear($month, $year);
 
+        $categories = $budget->getCategories();
+        $category = $categories[0];
+
         $lastMonth = clone $budget->getMonth();
         $lastMonth->modify('-1 month');
         $previousBudget = $em->getRepository('DevbananaBudgetBundle:Budget')

@@ -1,0 +1,15 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Are You Sure?{% endblock %}
+
+{% block body %}
+<h1>Confirmation</h1>
+
+<p>Are you sure you would like to delete the transaction on {{ entity.transaction.date|date('F j, Y') }} {% if entity.inflow > 0 %}
+with an inflow of ${{ entity.inflow|number_format(2) }}
+{% else %}
+with an outflow of ${{ entity.outflow|number_format(2) }}
+{% endif %}?</p>
+
+{{ form(form) }}
+{% endblock %}

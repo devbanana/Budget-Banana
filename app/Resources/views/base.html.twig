@@ -3,13 +3,33 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>{% block title %}{% endblock %} | Budget Banana</title>
+
         <link type="text/css" rel="stylesheet" href="{{ asset('bundles/devbananabudget/css/budget.css') }}">
+<link rel="stylesheet" href="{{ asset('bundles/devbananabudget/css/blueprint/screen.css') }}" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="{{ asset('bundles/devbananabudget/css/blueprint/print.css') }}" type="text/css" media="print">
+<!--[if lt IE 8]>
+  <link rel="stylesheet" href="{{ asset('bundles/devbananabudget/css/blueprint/ie.css') }}" type="text/css" media="screen, projection">
+<![endif]--></code></pre>
+
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <div><p><a href="{{path('homepage')}}">Home</a></p></div>
+    <div class="container">
+    <div class="span-24">
+        <p><a href="{{path('homepage')}}"><strong>Budget Banana</strong></a></p>
+        </div>
+        <div class="span-24" id="navcontainer">
+        <ul>
+        <li><a href="{{ url('accounts') }}">Accounts</a></li>
+        <li><a href="{{ url('transactions_index') }}">Transactions</a></li>
+        <li><a href="{{ url('budget') }}">Budget</a></li>
+        </ul>
+        </div>
+        <div class="span-24">
         {% block body %}{% endblock %}
+        </div>
+        </div>
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>

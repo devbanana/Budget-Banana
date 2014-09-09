@@ -64,7 +64,9 @@ class AccountController extends Controller
             $em->persist($entity);
 
         $startingBalance = $form->get('startingBalance')->getData();
-        $this->createTransaction($startingBalance, $entity);
+        if ($startingBalance != 0) {
+            $this->createTransaction($startingBalance, $entity);
+        }
 
             $em->flush();
 
