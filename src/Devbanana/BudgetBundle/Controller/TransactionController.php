@@ -29,8 +29,13 @@ class TransactionController extends Controller
         $li1 = new LineItem;
         $transaction->getLineItems()->add($li1);
 
+        $em = $this->getDoctrine()->getManager();
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByDate($transaction->getDate());
+
         $form = $this->createForm(new TransactionType(), $transaction, array(
                     'action' => $this->generateUrl('transactions_create'),
+                    'budget' => $budget,
                     ));
         $form->add('submit', 'submit', array(
                     'label' => 'Add',

@@ -20,7 +20,7 @@ class TransactionType extends AbstractType
                         'years' => range(date('Y'), date('Y')+1),
                         ))
             ->add('lineitems', 'collection', array(
-                        'type' => new LineItemType(),
+                        'type' => new LineItemType(array($options['budget'])),
                         'allow_add' => true,
                         'by_reference' => false,
                         ))
@@ -33,7 +33,8 @@ class TransactionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Devbanana\BudgetBundle\Entity\Transaction'
+            'data_class' => 'Devbanana\BudgetBundle\Entity\Transaction',
+            'budget' => null,
         ));
     }
 

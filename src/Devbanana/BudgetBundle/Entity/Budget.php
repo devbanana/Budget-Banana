@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Budget
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\index(name="month_idx", columns={"month"})})
  * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\BudgetRepository")
  */
 class Budget

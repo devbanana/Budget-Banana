@@ -30,6 +30,7 @@
                     <th>Account</th>
                     <th>Payer/Payee</th>
                     <th>Category</th>
+                    <th>Memo</th>
                     <th>Inflow</th>
                     <th>Outflow</th>
                     <th>Actions</th>
@@ -72,6 +73,9 @@ Transfer to
 {% elseif lineItem.assignedMonth  %}
 Income for {{ lineItem.assignedMonth.month|date('F Y') }}
 {% endif %}
+</td>
+<td>
+{{ lineItem.memo }}
 </td>
 <td>${{ lineItem.inflow }}</td>
 <td>${{ lineItem.outflow }}</td>

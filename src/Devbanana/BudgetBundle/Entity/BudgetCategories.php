@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BudgetCategories
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="sortOrder_idx",
+ * columns={"sortOrder"})})
  * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\BudgetCategoriesRepository")
  */
 class BudgetCategories

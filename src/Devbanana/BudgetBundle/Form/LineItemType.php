@@ -5,9 +5,18 @@ namespace Devbanana\BudgetBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 class LineItemType extends AbstractType
 {
+
+    private $budget;
+
+    public function __construct($budget = null)
+    {
+        $this->budget = $budget;
+    }
+
         /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -37,6 +46,16 @@ class LineItemType extends AbstractType
                         ))
             ->add('category', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
+                        'query_builder' => function (EntityRepository $er)
+                        {
+$qb = $er->createQueryBuilder('bc');
+if ($this->budget) {
+$qb->where($qb->expr()->eq('bc.budget', ':budget'))
+->setParameter('budget', $this->budget);
+}
+$qb->orderBy('bc.order', 'ASC');
+return $qb;
+                        },
                         ))
             ->add('assignedMonth', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Budget',
@@ -47,6 +66,7 @@ class LineItemType extends AbstractType
             ->add('outflow', 'money', array(
                         'currency' => 'USD',
                         ))
+            ->add('memo')
         ;
     }
     
@@ -56,7 +76,7 @@ class LineItemType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Devbanana\BudgetBundle\Entity\LineItem'
+            'data_class' => 'Devbanana\BudgetBundle\Entity\LineItem',
         ));
     }
 
