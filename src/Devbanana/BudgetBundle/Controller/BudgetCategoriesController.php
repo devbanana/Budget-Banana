@@ -46,6 +46,7 @@ class BudgetCategoriesController extends Controller
                 $content['categories'][] = array(
                         'id' => $category->getId(),
                         'name' => "$category",
+                        'balance' => $category->getBalance(),
                         );
             }
 

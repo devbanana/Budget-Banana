@@ -30,15 +30,13 @@ class BudgetCategoriesRepository extends EntityRepository
             $outflow = bcsub($outflow, $lineItem['outflow'], 2);
         }
 
-        return $outflow;
+   return $outflow;
     }
 
-    public function getBalanceForCategory($category, $budgeted = null)
+    public function getBalanceForCategory($category)
     {
 if ($category instanceof BudgetCategories) {
-if (is_null($budgeted)) {
     $budgeted = $category->getBudgeted();
-}
 
 $previousCategory = $this->getPreviousMonthCategory($category);
 $previousBalance = $this->getBalanceForCategory($previousCategory);
@@ -52,7 +50,7 @@ $previousBalance = 0;
 
 // NOTE: We must use bcadd here because outflow is always negative
 return bcadd(bcadd($previousBalance, $budgeted, 2),
-        $this->getOutflowForCategory($category),
+        $category->getOutflow(),
         2);
 }
 

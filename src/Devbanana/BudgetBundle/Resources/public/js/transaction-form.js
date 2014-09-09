@@ -453,7 +453,7 @@ function populateCategories(row, result)
 
     $.each(result.categories, function (index, category)
             {
-            $categories.append(getOption(category.id, category.name));
+            $categories.append(getOption(category.id, category.name + "\t" + parseFloat(category.balance).formatMoney()));
             });
 
     $categories.append(getAddOption('Add Category'));

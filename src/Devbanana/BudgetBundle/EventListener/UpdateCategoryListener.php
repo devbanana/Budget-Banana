@@ -34,8 +34,8 @@ public function prePersist(LifecycleEventArgs $e)
         if ($category) {
         $outflow = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
             ->getOutflowForCategory($category);
-        $outflow = bcadd($outflow, $entity->getOutflow(), 2);
-        $outflow = bcsub($outflow, $entity->getInflow(), 2);
+        $outflow = bcsub($outflow, $entity->getOutflow(), 2);
+        $outflow = bcadd($outflow, $entity->getInflow(), 2);
 
         $category->setOutflow($outflow);
         }
@@ -53,8 +53,8 @@ public function preRemove(LifecycleEventArgs $e)
         if ($category) {
         $outflow = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
             ->getOutflowForCategory($category);
-        $outflow = bcsub($outflow, $entity->getOutflow(), 2);
-        $outflow = bcadd($outflow, $entity->getInflow(), 2);
+        $outflow = bcadd($outflow, $entity->getOutflow(), 2);
+        $outflow = bcsub($outflow, $entity->getInflow(), 2);
 
         $category->setOutflow($outflow);
         }
