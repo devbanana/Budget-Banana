@@ -46,15 +46,39 @@ class TransactionController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($year, $month)
+    public function indexAction(Request $request, $year, $month)
     {
-        if (!$month) $month = date('n');
-        if (!$year) $year = date('Y');
+        $session = $request->getSession();
+        if ($month) {
+            $session->set('transaction-month', $month);
+        }
+        else {
+            if ($session->has('transaction-month')) {
+                $month = $session->get('transaction-month');
+            }
+            else {
+                $month = date('n');
+            }
+        }
+
+        if ($year) {
+            $session->set('transaction-year', $year);
+        }
+        else {
+            if ($session->has('transaction-year')) {
+                $year = $session->get('transaction-year');
+            }
+            else {
+                $year = date('Y');
+            }
+        }
 
         $em = $this->getDoctrine()->getManager();
 
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
             ->findOneOrCreateByMonthAndYear($month, $year);
+
+        $thisMonth = $budget->getMonth();
 
         $startMonth = clone $budget->getMonth();
         $endMonth = clone $startMonth;
@@ -69,6 +93,7 @@ class TransactionController extends Controller
         return array(
                 'entities' => $entities,
                 'lastMonth' => $lastMonth,
+                'thisMonth' => $thisMonth,
                 'nextMonth' => $endMonth,
             );    }
 

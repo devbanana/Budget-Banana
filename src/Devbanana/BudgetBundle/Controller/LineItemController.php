@@ -33,9 +33,27 @@ class LineItemController extends Controller
 $em = $this->getDoctrine()->getManager();
 $em->remove($lineItem);
 
-if (count($lineItem->getTransaction()) == 1) {
+    if ($lineItem->getType() == 'transfer') {
+        // Loop through line items to find the other one
+        foreach ($lineItem->getTransaction()->getLineItems() as $l)
+        {
+            if ($l->getType() == 'transfer'
+                    && $l->getAccount() == $lineItem->getTransferAccount()) {
+                // Found it! Delete it! Utterly destroy it!
+                $em->remove($l);
+            }
+        }
+
+        if (count($lineItem->getTransaction()->getLineItems()) == 2) {
+            // We only have both sides of the transfer in this transaction,
+            // so delete the transaction
+            $em->remove($lineItem->getTransaction());
+        }
+    }
+    elseif (count($lineItem->getTransaction()->getLineItems()) == 1) {
     $em->remove($lineItem->getTransaction());
 }
+
 $em->flush();
 
 return $this->redirect($this->generateUrl('transactions_index'));

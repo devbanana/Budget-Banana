@@ -1,9 +1,9 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}Transactions{% endblock %}
+{% block title %}Transactions for {{ thisMonth|date('F Y') }}{% endblock %}
 
 {% block body %}
-    <h1>Transactions</h1>
+    <h1>Transactions for {{ thisMonth|date('F Y') }}</h1>
 
     <p>
     <a href="{{ url('transactions_index',

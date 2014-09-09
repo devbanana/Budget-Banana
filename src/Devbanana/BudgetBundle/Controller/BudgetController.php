@@ -2,6 +2,7 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -179,13 +180,30 @@ return $response;
      *     defaults={"year" = null, "month" = null})
      * @Template()
      */
-    public function budgetAction($year, $month)
+    public function budgetAction(Request $request, $year, $month)
     {
-        if (!$year) {
-            $year = date('Y');
+        $session = $request->getSession();
+        if ($year) {
+            $session->set('budget-year', $year);
         }
-        if (!$month) {
+        else {
+            if ($session->has('budget-year')) {
+                $year = $session->get('budget-year');
+            }
+            else {
+            $year = date('Y');
+            }
+        }
+        if ($month) {
+            $session->set('budget-month', $month);
+        }
+        else {
+            if ($session->has('budget-month')) {
+                $month = $session->get('budget-month');
+            }
+            else {
             $month = date('m');
+            }
         }
 
         $em = $this->getDoctrine()->getManager();

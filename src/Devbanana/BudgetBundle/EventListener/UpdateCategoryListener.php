@@ -6,6 +6,7 @@ use Devbanana\BudgetBundle\Entity\LineItem;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 use Devbanana\BudgetBundle\Entity\Category;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\EntityManager;
 
 class UpdateCategoryListener
 {
@@ -66,6 +67,32 @@ public function preRemove(LifecycleEventArgs $e)
     $entity = $e->getEntity();
 
     if ($entity instanceof LineItem) {
+        $this->updateTransactionBalanceWhenLineItemIsDeleted($entity, $em);
+        $this->updateCategoryBalanceWhenTransactionIsDeleted($entity, $em);
+    }
+}
+
+private function updateTransactionBalanceWhenLineItemIsDeleted(
+        LineItem $entity,
+        EntityManager $em)
+{
+$entity->getTransaction()->setOutflow(
+        bcadd(
+            $entity->getTransaction()->getOutflow(),
+            $entity->getOutflow(),
+            2
+            ));
+
+$entity->getTransaction()->setInflow(bcsub(
+            $entity->getTransaction()->getInflow(),
+            $entity->getInflow(),
+            2
+            ));
+}
+
+private function updateCategoryBalanceWhenTransactionIsDeleted(
+        LineItem $entity, EntityManager $em)
+{
         $category = $entity->getCategory();
 
         if ($category) {
@@ -76,7 +103,6 @@ public function preRemove(LifecycleEventArgs $e)
 
         $category->setOutflow($outflow);
         }
-    }
 }
 
 }
