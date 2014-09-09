@@ -32,6 +32,9 @@ class LineItemType extends AbstractType
             ->add('payer', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payer',
                         ))
+            ->add('transferAccount', 'entity', array(
+                        'class' => 'DevbananaBudgetBundle:Account',
+                        ))
             ->add('category', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
                         ))

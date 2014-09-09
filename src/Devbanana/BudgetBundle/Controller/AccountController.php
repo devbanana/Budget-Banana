@@ -64,7 +64,7 @@ class AccountController extends Controller
             $em->persist($entity);
 
         $startingBalance = $form->get('startingBalance')->getData();
-        if ($startingBalance != 0) {
+        if (bccomp($startingBalance, '0.00', 2)) {
             $this->createTransaction($startingBalance, $entity);
         }
 
@@ -171,7 +171,9 @@ public function listAjaxAction()
     {
         $accountsArray[] = array(
                 'id' => $account->getId(),
-                'name' => $account->getName());
+                'name' => $account->getName(),
+                'balance' => $account->getBalance(),
+                );
     }
 
     $content = array();

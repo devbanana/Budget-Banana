@@ -110,6 +110,26 @@ $form = $this->createForm(new TransactionType(), $transaction)
 $form->handleRequest($request);
 
 if ($form->isValid()) {
+    // For transfers, create an equivalent transaction on the opposite end
+$lineItems = $transaction->getLineItems();
+foreach ($lineItems as $lineItem)
+{
+    if ($lineItem->getType() == 'transfer') {
+        $newLineItem = new LineItem;
+        $newLineItem->setType('transfer');
+        $newLineItem->setAccount($lineItem->getTransferAccount());
+        $newLineItem->setTransferAccount($lineItem->getAccount());
+        // TODO: Deal with categories for off-budget accounts
+if (bccomp($lineItem->getInflow(), '0.00', 2)) {
+    $newLineItem->setOutflow($lineItem->getInflow());
+}
+if (bccomp($lineItem->getOutflow(), '0.00', 2)) {
+    $newLineItem->setInflow($lineItem->getOutflow());
+}
+$transaction->addLineItem($newLineItem);
+    }
+}
+
     $em->persist($transaction);
     $em->flush();
             return $this->redirect($this->generateUrl('transactions_index'));

@@ -53,14 +53,23 @@
 <td>
 {% if lineItem.payee %}
 {{ lineItem.payee }}
-{% else %}
+{% elseif lineItem.payer %}
 {{ lineItem.payer }}
+{% elseif lineItem.transferAccount %}
+{% if lineItem.inflow != 0 %}
+Transfer from
+{% else %}
+Transfer to
+{% endif %}
+<a href="{{ path('accounts', {'id': lineItem.transferAccount.id}) }}">
+{{ lineItem.transferAccount }}
+</a>
 {% endif %}
 </td>
 <td>
 {% if lineItem.category %}
 {{ lineItem.category }}
-{% else %}
+{% elseif lineItem.assignedMonth  %}
 Income for {{ lineItem.assignedMonth.month|date('F Y') }}
 {% endif %}
 </td>

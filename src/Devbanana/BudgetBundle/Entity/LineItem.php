@@ -92,6 +92,13 @@ class LineItem
      */
     private $assignedMonth;
 
+    /**
+     * The account to transfer to.
+     *
+     * @ORM\ManyToOne(targetEntity="Account")
+     */
+    private $transferAccount;
+
 
     /**
      * Get id
@@ -336,5 +343,28 @@ class LineItem
     public function getMemo()
     {
         return $this->memo;
+    }
+
+    /**
+     * Set transferAccount
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Account $transferAccount
+     * @return LineItem
+     */
+    public function setTransferAccount(\Devbanana\BudgetBundle\Entity\Account $transferAccount = null)
+    {
+        $this->transferAccount = $transferAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get transferAccount
+     *
+     * @return \Devbanana\BudgetBundle\Entity\Account 
+     */
+    public function getTransferAccount()
+    {
+        return $this->transferAccount;
     }
 }
