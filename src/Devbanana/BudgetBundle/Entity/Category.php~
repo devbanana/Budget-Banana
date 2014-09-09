@@ -46,7 +46,7 @@ class Category
     /**
      * How to order categories.
      *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="order", type="int")
      */
     private $order;
 
@@ -163,28 +163,5 @@ class Category
     public function __toString()
     {
         return $this->getMasterCategory()->getName() . ' > ' . $this->getName();
-    }
-
-    /**
-     * Set order
-     *
-     * @param \int $order
-     * @return Category
-     */
-    public function setOrder(\int $order)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return \int 
-     */
-    public function getOrder()
-    {
-        return $this->order;
     }
 }

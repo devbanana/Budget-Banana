@@ -1,0 +1,22 @@
+.treeview ul {padding-left: 20x;}
+.treeview li {list-style-type: none; outline: none; padding: 5px;}
+.treeview li ul {margin-top: 5px;}
+.visually-hidden {position: absolute; left: -999em;} 
+.hasChildren {position: relative;}
+.tree li ul {display: none;}
+.tree a {padding: 2px 5px 2px 0;}
+.tree a.focussed, .activedescendant > a {outline: 2px dotted #f00;}
+.tree li li a {
+    background-image: url("../images/raquo-blue.png");
+    background-repeat: no-repeat;
+    background-position: 8px 0.5em;
+    padding-left: 40px;
+}
+.tree .hasChildren a {background-image: none; padding-left: 30px;}
+.tree li .noChildren a {background-image: url("img/raquo-blue.png"); padding-left: 25px;}
+.toggle {background-position: left top; background-repeat: no-repeat; cursor: pointer; height: 14px; width: 14px; position: absolute; left: 10px; top: 0.4em;}
+.tree .expanded {background-image: url("img/minus-fblue.png");}
+.tree .collapsed {background-image: url("../images/plus-blue.png");}
+.tree .expanded.hover {background-image: url("img/minus-blue-hover.png");}
+.tree .collapsed.hover {background-image: url("img/plus-blue-hover.png");}
+

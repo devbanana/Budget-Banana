@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class MasterCategoryRepository extends EntityRepository
 {
+
+    public function findOrderedMasterCategories()
+    {
+        $qb = $this->createQueryBuilder('mc');
+        $query = $qb
+            ->orderBy('mc.order', 'ASC')
+            ->getQuery()
+            ;
+
+        return $query->getResult();
+    }
+
 }

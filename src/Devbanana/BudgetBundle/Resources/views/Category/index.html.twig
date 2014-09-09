@@ -1,0 +1,31 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+<div class="treeview">
+<h1>Categories</h1>
+<ul class="tree">
+{% for masterCategory in entities %}
+<li>
+<a href="{{ url('master_categories_show', {'id': masterCategory.id}) }}">
+{{ masterCategory.name }}
+</a>
+<ul class="children">
+{% for category in masterCategory.categories %}
+<li>
+<a href="{{ url("categories_show", {"id": category.id}) }}">
+{{ category.name }}
+</a>
+</li>
+{% endfor %}
+</ul>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('bundles/devbananabudget/js/categories.js') }}"></script>
+{% endblock %}

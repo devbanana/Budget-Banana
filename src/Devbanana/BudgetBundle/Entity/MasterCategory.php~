@@ -32,14 +32,13 @@ class MasterCategory
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Category", mappedBy="masterCategory")
-     * @ORM\OrderBy({"order" = "ASC"})
      */
     private $categories;
 
     /**
      * How to order the master category
      *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="order", type="int")
      */
     private $order;
 
@@ -120,28 +119,5 @@ class MasterCategory
     public function __toString()
     {
         return $this->getName();
-    }
-
-    /**
-     * Set order
-     *
-     * @param \int $order
-     * @return MasterCategory
-     */
-    public function setOrder(\int $order)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return \int 
-     */
-    public function getOrder()
-    {
-        return $this->order;
     }
 }
