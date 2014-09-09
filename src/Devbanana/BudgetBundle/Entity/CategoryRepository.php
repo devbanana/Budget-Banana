@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\BudgetBundle\Entity\MasterCategory;
 
 /**
  * CategoryRepository
@@ -12,4 +13,26 @@ use Doctrine\ORM\EntityRepository;
  */
 class CategoryRepository extends EntityRepository
 {
+
+    public function getHighestOrderFor(MasterCategory $masterCategory)
+    {
+        $qb = $this->createQueryBuilder('c');
+            $query = $qb
+                ->where($qb->expr()->eq('c.masterCategory', ':master_category'))
+            ->setParameter('master_category', $masterCategory)
+            ->orderBy('c.order', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ;
+
+        $result = $query->getOneOrNullResult();
+
+        if ($result) {
+            return $result->getOrder();
+        }
+        else {
+            return 0;
+        }
+    }
+
 }

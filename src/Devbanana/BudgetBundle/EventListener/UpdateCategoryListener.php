@@ -4,6 +4,7 @@ namespace Devbanana\BudgetBundle\EventListener;
 
 use Devbanana\BudgetBundle\Entity\LineItem;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
+use Devbanana\BudgetBundle\Entity\Category;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 class UpdateCategoryListener
@@ -39,6 +40,23 @@ public function prePersist(LifecycleEventArgs $e)
 
         $category->setOutflow($outflow);
         }
+    }
+    elseif ($entity instanceof Category) {
+        // When a category is created, create BudgetCategories for each
+        // month
+        $budgets = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findAll();
+
+        foreach ($budgets as $budget)
+        {
+            // Create new BudgetCategories
+            $budgetCategories = new BudgetCategories;
+            $budgetCategories->setBudget($budget);
+            $budgetCategories->setCategory($entity);
+            $budgetCategories->setOrder($entity->getOrder());
+            $em->persist($budgetCategories);
+        }
+
     }
 }
 

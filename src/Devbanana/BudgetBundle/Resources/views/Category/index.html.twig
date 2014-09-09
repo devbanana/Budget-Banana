@@ -7,13 +7,13 @@
 <h1>Categories</h1>
 <ul class="tree">
 {% for masterCategory in entities %}
-<li>
-<a href="{{ url('master_categories_show', {'id': masterCategory.id}) }}">
+<li data-id="{{ masterCategory.id }}">
+<a href="{{ path('master_categories_show', {'id': masterCategory.id}) }}">
 {{ masterCategory.name }}
 </a>
 <ul class="children">
 {% for category in masterCategory.categories %}
-<li>
+<li data-id="{{ category.id }}">
 <a href="{{ url("categories_show", {"id": category.id}) }}">
 {{ category.name }}
 </a>
@@ -24,6 +24,11 @@
 {% endfor %}
 </ul>
 </div>
+
+<p><button id="new-category-button">Add</button></p>
+
+<div id="new-category" title="Create a Category" role="dialog"
+style="display: none;"></div>
 {% endblock %}
 
 {% block javascripts %}

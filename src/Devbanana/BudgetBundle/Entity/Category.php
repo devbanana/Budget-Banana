@@ -46,7 +46,7 @@ class Category
     /**
      * How to order categories.
      *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="sortOrder", type="integer")
      */
     private $order;
 

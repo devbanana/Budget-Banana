@@ -39,7 +39,7 @@ class MasterCategory
     /**
      * How to order the master category
      *
-     * @ORM\Column(name="order", type="integer")
+     * @ORM\Column(name="sortOrder", type="integer")
      */
     private $order;
 

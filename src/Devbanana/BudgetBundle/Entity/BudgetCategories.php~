@@ -244,27 +244,4 @@ class BudgetCategories
     {
         return $this->category->__toString();
     }
-
-    /**
-     * Set order
-     *
-     * @param integer $order
-     * @return BudgetCategories
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return integer 
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
 }

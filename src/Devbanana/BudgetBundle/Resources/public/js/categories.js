@@ -58,29 +58,7 @@ if ($('.treeview').length) {
 
             //for each li in the tree
             $('li', $tree).each(function() {
-                    var $node = $(this);
-                    var nodeId;
-                    if ($node.parent().attr('role') == "tree") {
-                    nodeId = $tree.attr('id') + '-node' + $('> li', $node.parent()).index($node);
-                    } else {
-                    nodeId = $node.closest('li[id]').attr('id') + '-' + $('> li', $node.parent()).index($node);
-                    }
-                    var $nodeLink = $('> a', $node);
-                    $node.attr({'id': nodeId, 'role': 'treeitem', 'aria-selected': 'false', 'tabindex': '-1'});
-                    $nodeLink.attr('tabindex', '-1').on('click', function() {
-                        updateSelectedNode($(this).parent().attr('id'));
-                        });
-                    //if children exist
-                    if ($node.has('ul').length) {
-                    $node.addClass('hasChildren');
-                    $childList = $('ul', $node);
-                    $childList.attr({'role': 'group'}).hide();
-                    //add toggle element and set aria-expanded on the link and aria-hidden on the child node list
-                    $('<div aria-hidden="true" class="toggle collapsed">').insertBefore($nodeLink);
-                    $node.attr('aria-expanded', 'false');
-                    } else {//no children
-                        $node.addClass('noChildren');
-                    }
+                    createNode(this);
             }
             );
             $tree.attr('aria-activedescendant', $('> li:first', $tree).attr('id'));
@@ -125,6 +103,11 @@ if ($('.treeview').length) {
                         e.stopPropagation();
                     }
                     break;
+                    case 65:
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showNewCategoryDialog();
+                    break;
                     }
                     }
                     else if (e.shiftKey) {
@@ -144,6 +127,33 @@ if ($('.treeview').length) {
                     }
             }
             );
+function createNode(li)
+{
+                    var $node = $(li);
+                    var nodeId;
+                    if ($node.parent().attr('role') == "tree") {
+                    nodeId = $tree.attr('id') + '-node' + $('> li', $node.parent()).index($node);
+                    } else {
+                    nodeId = $node.closest('li[id]').attr('id') + '-' + $('> li', $node.parent()).index($node);
+                    }
+                    var $nodeLink = $('> a', $node);
+                    $node.attr({'id': nodeId, 'role': 'treeitem', 'aria-selected': 'false', 'tabindex': '-1'});
+                    $nodeLink.attr('tabindex', '-1').on('click', function() {
+                        updateSelectedNode($(this).parent().attr('id'));
+                        });
+                    //if children exist
+                    if ($node.has('ul').length) {
+                    $node.addClass('hasChildren');
+                    $childList = $('ul', $node);
+                    $childList.attr({'role': 'group'}).hide();
+                    //add toggle element and set aria-expanded on the link and aria-hidden on the child node list
+                    $('<div aria-hidden="true" class="toggle collapsed">').insertBefore($nodeLink);
+                    $node.attr('aria-expanded', 'false');
+                    } else {//no children
+                        $node.addClass('noChildren');
+                    }
+}
+
             //toggle div click and hover
             $('.toggle').on('click', function() {
                     toggleGroup($(this).parent());
@@ -153,6 +163,69 @@ if ($('.treeview').length) {
                         $(this).toggleClass('hover');
                         }
                         );
+
+                    $('#new-category-button').on('click', function()
+                            {
+                            showNewCategoryDialog();
+                            });
+function showNewCategoryDialog()
+{
+                            // Get selected node
+                            var $selectedNode = $('#' +
+                                $tree.attr('aria-activedescendant'));
+
+                            if ($selectedNode.parent().attr('role') != 'tree') {
+                            // We have a child node
+                            $selectedNode = $selectedNode.parent().parent();
+                            }
+
+                            // Fetch new category form
+                            $.ajax({
+url: Routing.generate('categories_new_ajax',
+         {'id': $selectedNode.data('id')}),
+async: false,
+method: "POST",
+success: function (result)
+{
+$('#new-category').empty();
+$('#new-category').html($(result));
+}
+                                });
+
+                            // Open the dialog
+                            $('#new-category').dialog({
+modal: true,
+buttons: {
+Add: function ()
+{
+var data = $('>form', $('#new-category')).serialize();
+$.post(
+    Routing.generate('categories_create_ajax'),
+    data,
+    function (result)
+    {
+    result = JSON.parse(result);
+        var $node = $('<li data-id="' + result.id + '"></li>');
+            $node.append($('<a href="' + result.url + '">' +
+            result.name + '</a>'));
+        $selectedNode.find('ul').append($node);
+        createNode($node);
+
+        $('#new-category').dialog('close');
+
+        // Update and put focus here
+        toggleGroup($selectedNode);
+        if ($selectedNode.attr('aria-expanded') == 'false') {
+        toggleGroup($selectedNode);
+        }
+        updateSelectedNode($node.attr('id'));
+        $tree.focus();
+    }
+    );
+}
+}
+                                });
+}
     }
     );
 }

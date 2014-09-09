@@ -32,6 +32,7 @@ class Budget
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="BudgetCategories", mappedBy="budget")
+     * @ORM\OrderBy({"order" = "ASC"})
      */
     private $categories;
 
