@@ -51,6 +51,7 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 <th>Account</th>
 <th>Payer/Payee</th>
 <th>Category</th>
+<th>Check Number</th>
 <th>Memo</th>
 <th>Inflow</th>
 <th>Outflow</th>
@@ -69,6 +70,9 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 {{ '</td>'|e }}
 {{ '<td class="category">'|e }}
 {{ form_widget(form.lineitems.vars.prototype.category)|e }}
+{{ '</td>'|e }}
+{{ '<td class="check-number">'|e }}
+{{ form_widget(form.lineitems.vars.prototype.checkNumber)|e }}
 {{ '</td>'|e }}
 {{ '<td class="memo">'|e }}
 {{ form_widget(form.lineitems.vars.prototype.memo)|e }}
@@ -93,6 +97,9 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 </td>
 <td class="category">
 {{ form_widget(lineitem.category) }}
+</td>
+<td class="check-number">
+{{ form_widget(lineitem.checkNumber) }}
 </td>
 <td class="memo">
 {{ form_widget(lineitem.memo) }}

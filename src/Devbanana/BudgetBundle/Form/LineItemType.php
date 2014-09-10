@@ -75,6 +75,10 @@ return $qb;
                         'currency' => 'USD',
                         'error_bubbling' => true,
                         ))
+            ->add('checkNumber', 'text', array(
+                        'error_bubbling' => true,
+                        'required' => false,
+                        ))
             ->add('memo', 'text', array(
                         'error_bubbling' => true,
                         'required' => false,

@@ -99,6 +99,13 @@ class LineItem
      */
     private $transferAccount;
 
+    /**
+     * The check number of this line item
+     *
+     * @ORM\Column(name="checkNumber", type="integer", nullable=true)
+     */
+    private $checkNumber;
+
 
     /**
      * Get id
@@ -366,5 +373,28 @@ class LineItem
     public function getTransferAccount()
     {
         return $this->transferAccount;
+    }
+
+    /**
+     * Set checkNumber
+     *
+     * @param integer $checkNumber
+     * @return LineItem
+     */
+    public function setCheckNumber($checkNumber)
+    {
+        $this->checkNumber = $checkNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get checkNumber
+     *
+     * @return integer 
+     */
+    public function getCheckNumber()
+    {
+        return $this->checkNumber;
     }
 }

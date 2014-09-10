@@ -664,6 +664,7 @@ $('#submit').on('click', function(e)
                     $(this).val(account);
                     });
                 refreshRow(this);
+                $(this).find('td.check-number>input').val('');
                 $(this).find('td.memo>input').val('');
                 $(this).find('td.inflow>input').val('');
                 $(this).find('td.outflow>input').val('');
@@ -673,16 +674,31 @@ $('#submit').on('click', function(e)
             // Set alert message
 $('#alert').show();
 $('#alert').attr('role', 'alert');
-$('#alert').attr('aria-live', 'assertive');
+$('#alert').attr('tabindex', 0);
 $('#alert').text('Transaction added for ' +
 (parseFloat(result.inflow)-parseFloat(result.outflow)).formatMoney() + '.');
-setTimeout(function ()
+$('#alert').focus();
+$('#alert').on('keydown', function (e)
+        {
+        switch (e.which)
+        {
+        case 27:
+        // esc
+        dismissAlert();
+        break;
+        }
+        });
+setTimeout(dismissAlert, 5000);
+            });
+        });
+
+function dismissAlert()
         {
 $('#alert').hide();
 $('#alert').removeAttr('role');
-        }, 5000);
-            });
-        });
+$('#alert').removeAttr('tabindex');
+            $('#devbanana_budgetbundle_transaction_date_year').focus();
+        }
 
 // Update categories on load
 updateCategories();

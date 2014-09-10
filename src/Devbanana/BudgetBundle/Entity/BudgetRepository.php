@@ -129,8 +129,8 @@ class BudgetRepository extends EntityRepository
 
             foreach ($previousBudget->getCategories() as $category)
             {
-                if ($category->getBalance() < 0) {
-                    $overspent = bcadd($overspent, $category->getBalance(), 2);
+                if (bccomp($category->getBalance(), '0.00', 2) < 0) {
+                    $overspent = bcsub($overspent, $category->getBalance(), 2);
                 }
             }
 
