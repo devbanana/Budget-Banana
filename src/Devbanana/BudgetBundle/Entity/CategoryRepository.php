@@ -35,4 +35,15 @@ class CategoryRepository extends EntityRepository
         }
     }
 
+    public function findAllOrderedByOrder()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $query = $qb
+            ->orderBy('c.order', 'ASC')
+            ->getQuery()
+            ;
+
+        return $query->getResult();
+    }
+
 }

@@ -22,13 +22,14 @@ class PopulateBudgetCategoriesListener
             }
 
 $mainCategories = $em->getRepository('DevbananaBudgetBundle:Category')
-    ->findAll();
+    ->findAllOrderedByOrder();
 
 foreach ($mainCategories as $category)
 {
 $budgetCategories = $this->getNewBudgetCategories();
-$budgetCategories->setBudget($entity);
+$entity->addCategory($budgetCategories);
 $budgetCategories->setCategory($category);
+$budgetCategories->setOrder($category->getOrder());
 $em->persist($budgetCategories);
 
 $md = $em->getClassMetadata('Devbanana\BudgetBundle\Entity\BudgetCategories');

@@ -196,81 +196,25 @@ class Account
     }
 
     /**
-     * Set budgeted
+     * Set subtype
      *
-     * @param boolean $budgeted
+     * @param string $subtype
      * @return Account
      */
-    public function setBudgeted($budgeted)
+    public function setSubtype($subtype)
     {
-        $this->budgeted = $budgeted;
+        $this->subtype = $subtype;
 
         return $this;
     }
 
     /**
-     * Get budgeted
+     * Get subtype
      *
-     * @return boolean 
+     * @return string 
      */
-    public function getBudgeted()
+    public function getSubtype()
     {
-        return $this->budgeted;
-    }
-
-    /**
-     * Set accountCategory
-     *
-     * @param \Devbanana\BudgetBundle\Entity\AccountCategory $accountCategory
-     * @return Account
-     */
-    public function setAccountCategory(\Devbanana\BudgetBundle\Entity\AccountCategory $accountCategory = null)
-    {
-        $this->accountCategory = $accountCategory;
-
-        return $this;
-    }
-
-    /**
-     * Get accountCategory
-     *
-     * @return \Devbanana\BudgetBundle\Entity\AccountCategory 
-     */
-    public function getAccountCategory()
-    {
-        return $this->accountCategory;
-    }
-
-    /**
-     * Add accounts
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Account $accounts
-     * @return Account
-     */
-    public function addAccount(\Devbanana\BudgetBundle\Entity\Account $accounts)
-    {
-        $this->accounts[] = $accounts;
-
-        return $this;
-    }
-
-    /**
-     * Remove accounts
-     *
-     * @param \Devbanana\BudgetBundle\Entity\Account $accounts
-     */
-    public function removeAccount(\Devbanana\BudgetBundle\Entity\Account $accounts)
-    {
-        $this->accounts->removeElement($accounts);
-    }
-
-    /**
-     * Get accounts
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getAccounts()
-    {
-        return $this->accounts;
+        return $this->subtype;
     }
 }

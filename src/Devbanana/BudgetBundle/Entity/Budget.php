@@ -109,6 +109,7 @@ class Budget
     public function addCategory(\Devbanana\BudgetBundle\Entity\BudgetCategories $categories)
     {
         $this->categories[] = $categories;
+        $categories->setBudget($this);
 
         return $this;
     }

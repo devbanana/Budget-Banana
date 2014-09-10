@@ -22,6 +22,10 @@ class AccountType extends AbstractType
                         'grouping' => true,
                         'mapped' => false,
                         ))
+            ->add('accountCategory', 'entity', array(
+                        'label' => 'Type',
+                        'class' => 'DevbananaBudgetBundle:AccountCategory',
+                        ))
         ;
     }
     
