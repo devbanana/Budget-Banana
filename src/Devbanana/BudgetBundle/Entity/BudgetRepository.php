@@ -81,21 +81,25 @@ $bufferedIncome = bcadd($bufferedIncome, $lineItem->getInflow());
                 $bufferedIncome,
                 2);
 
-
         // We need to subtract all transactions on or after the date one
         // month from this budget
 
         $month = clone $budget->getMonth();
         $month->modify('+1 month');
 
-            $transactions = $this->getEntityManager()->getRepository(
-                    'DevbananaBudgetBundle:Transaction')
-                ->findOnOrAfter($month);
+            $qb = $this->getEntityManager()->getRepository(
+                    'DevbananaBudgetBundle:LineItem')
+                ->queryOnOrAfter($month);
+            $qb = $this->getEntityManager()->getRepository(
+                    'DevbananaBudgetBundle:LineItem')
+                ->filterByBudgeted($qb);
 
-            foreach ($transactions as $transaction)
+            $lineItems = $qb->getQuery()->getResult();
+
+            foreach ($lineItems as $lineItem)
             {
-$availableToBudget = bcsub($availableToBudget, $transaction->getInflow(), 2);
-$availableToBudget = bcadd($availableToBudget, $transaction->getOutflow(), 2);
+$availableToBudget = bcsub($availableToBudget, $lineItem->getInflow(), 2);
+$availableToBudget = bcadd($availableToBudget, $lineItem->getOutflow(), 2);
             }
 
       return $availableToBudget;

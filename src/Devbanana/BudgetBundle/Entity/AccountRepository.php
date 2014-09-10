@@ -15,10 +15,9 @@ class AccountRepository extends EntityRepository
 
     public function sumBudgetedAccounts()
     {
-        // TODO: Accounts are not yet categorized as budgeted or not budgeted
-
         $qb = $this->createQueryBuilder('a');
         $query = $qb
+            ->where($qb->expr()->eq('a.budgeted', true))
             ->select('a.balance')
             ->getQuery()
             ;

@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 use Devbanana\BudgetBundle\Entity\Budget;
 
@@ -14,6 +15,35 @@ use Devbanana\BudgetBundle\Entity\Budget;
  */
 class LineItemRepository extends EntityRepository
 {
+
+    public function queryOnOrAfter(\DateTime $date)
+    {
+        $qb = $this->createQueryBuilder('l');
+        $qb
+            ->innerJoin('l.transaction', 't')
+            ->where($qb->expr()->gte('t.date', ':date'))
+            ->setParameter('date', $date)
+            ;
+
+        return $qb;
+    }
+
+    public function findOnOrAfter(\DateTime $date)
+    {
+        $qb = $this->queryOnOrAfter($date);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function filterByBudgeted(QueryBuilder $qb)
+    {
+        $qb
+            ->innerJoin('l.account', 'a')
+            ->andWhere($qb->expr()->eq('a.budgeted', true))
+            ;
+
+        return $qb;
+    }
 
     public function getBufferedIncome(Budget $budget)
     {

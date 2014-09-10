@@ -13,18 +13,6 @@ use Doctrine\ORM\EntityRepository;
 class TransactionRepository extends EntityRepository
 {
 
-    public function findOnOrAfter(\DateTime $date)
-    {
-        $qb = $this->createQueryBuilder('t');
-        $query = $qb
-            ->where($qb->expr()->gte('t.date', ':date'))
-            ->setParameter('date', $date)
-            ->getQuery()
-            ;
-
-        return $query->getResult();
-    }
-
     public function findBetween(\DateTime $month1, \DateTime $month2)
     {
         $qb = $this->createQueryBuilder('t');
