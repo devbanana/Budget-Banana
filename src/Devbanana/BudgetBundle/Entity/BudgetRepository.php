@@ -39,84 +39,83 @@ class BudgetRepository extends EntityRepository
         return $this->findOneOrCreateByDate($date);
     }
 
+    /**
+     * Calculates Available to Budget for a given budget entity
+     *
+     * Available to Budget is the total amount that the user can put towards
+     * their budget categories.
+     *
+     * The formula is:
+     * Available to Budget
+     *     = Not Budgeted Last Month
+     *     - Overspent last month
+     *     + Income assigned to this month
+     *     - Amount budgeted this month
+     * 
+     * So as an example, if this month you receive $1,000 income that you
+     * assign to this month, you budget $700 of that income, and last month
+     * there was $200 you did not budget, but overspent in a few categories
+     * totalling $100, the Available to Budget would be:
+     *
+     *     $200.00 (Not Budgeted Last Month)
+     *     - $100.00 (Overspent last month)
+     *     + $1,000.00 (Income assigned this month)
+     *     - $700.00 (Amount budgeted this month)
+     *     = $400.00 (Available to Budget)
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Budget The budget this month
+     *     @return string The amount available to budget
+     */
     public function getAvailableToBudget(Budget $budget)
     {
-// Get sum of all budgeted accounts
-        // TODO: Accounts are not yet categorized as budgeted or not
-        // budgeted yet
-        $sumOfBudgetedAccounts = $this->getEntityManager()->getRepository(
-                'DevbananaBudgetBundle:Account')
-            ->sumBudgetedAccounts();
 
-        // Get sum of all category balances
-        $sumOfCategoryBalances = '0.00';
-        foreach ($budget->getCategories() as $category)
-        {
-            $balance = $this->getEntityManager()->getRepository(
-                    'DevbananaBudgetBundle:BudgetCategories')
-                ->getBalanceForCategory($category);
+        // 1. Not budgeted last month
+        $notBudgetedLastMonth = $this->getNotBudgetedLastMonth($budget);
 
-            $sumOfCategoryBalances = bcadd(
-                    $sumOfCategoryBalances,
-                    $balance,
-                    2);
-        }
+        // 2. - Overspent last month
+        $overspentLastMonth = $this->getOverSpentLastMonth($budget);
 
-// Get all income received this month, applied to a later month
-        $bufferedIncomeLineItems = $this->getEntityManager()->getRepository(
-                'DevbananaBudgetBundle:LineItem')
-            ->getBufferedIncome($budget);
+        // 3. + Income assigned this month
+        $incomeThisMonth = $this->getEntityManager()
+            ->getRepository('DevbananaBudgetBundle:LineItem')
+            ->getIncomeThisMonth($budget);
 
-$bufferedIncome = '0.00';
+        // 4. - Budgeted this month
+        $budgetedThisMonth = $this->getEntityManager()
+            ->getRepository('DevbananaBudgetBundle:BudgetCategories')
+            ->getBudgetedThisMonth($budget);
 
-        foreach ($bufferedIncomeLineItems as $lineItem)
-        {
-$bufferedIncome = bcadd($bufferedIncome, $lineItem->getInflow());
-        }
-
-        $availableToBudget = bcsub(bcsub(
-                $sumOfBudgetedAccounts,
-                $sumOfCategoryBalances,
-                2),
-                $bufferedIncome,
+        // Now calculate using bcmath for accuracy
+        $availableToBudget = bcsub($notBudgetedLastMonth,
+                $overspentLastMonth,
                 2);
-
-        // We need to subtract all transactions on or after the date one
-        // month from this budget
-
-        $month = clone $budget->getMonth();
-        $month->modify('+1 month');
-
-            $qb = $this->getEntityManager()->getRepository(
-                    'DevbananaBudgetBundle:LineItem')
-                ->queryOnOrAfter($month);
-            $qb = $this->getEntityManager()->getRepository(
-                    'DevbananaBudgetBundle:LineItem')
-                ->filterByBudgeted($qb);
-
-            $lineItems = $qb->getQuery()->getResult();
-
-            foreach ($lineItems as $lineItem)
-            {
-$availableToBudget = bcsub($availableToBudget, $lineItem->getInflow(), 2);
-$availableToBudget = bcadd($availableToBudget, $lineItem->getOutflow(), 2);
-            }
+        $availableToBudget = bcadd($availableToBudget, $incomeThisMonth, 2);
+        $availableToBudget = bcsub($availableToBudget, $budgetedThisMonth, 2);
 
       return $availableToBudget;
     }
 
+    /**
+     * Get the amount not budgeted last month
+     *
+     * This can really be calculated as all income before this month minus
+     * total amount budgeted before this month.
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Budget The budget this month
+     * @return string The amount not budgeted last month
+     */
     public function getNotBudgetedLastMonth(Budget $budget)
     {
-        $month = clone $budget->getMonth();
-        $month->modify('-1 month');
-        $previousBudget = $this->findOneByMonth($month);
+        // Get all income assigned to months before this month
+        $totalIncome = $this->getEntityManager()
+            ->getRepository('DevbananaBudgetBundle:LineItem')
+            ->getTotalIncomeBefore($budget);
 
-        if ($previousBudget) {
-            $availableToBudget = $this->getAvailableToBudget($previousBudget);
+        $totalBudgeted = $this->getEntityManager()
+            ->getRepository('DevbananaBudgetBundle:BudgetCategories')
+          ->getTotalBudgetedBefore($budget);
 
-            return $availableToBudget;
-        }
-        return '0.00';
+            return bcsub($totalIncome, $totalBudgeted, 2);
     }
 
     public function getOverSpentLastMonth(Budget $budget)

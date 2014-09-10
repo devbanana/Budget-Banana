@@ -127,4 +127,34 @@ public function getBudgetedThisMonth(Budget $budget)
     return $budgeted;
 }
 
+/**
+ * Get the total budgeted before this month.
+ *
+ * This month is the                 month of the given budget.
+ *
+ * @param \Devbanana\BudgetBundle\Entity\Budget The current month's budget
+ * @return string The total budgeted before the current month
+ */
+public function getTotalBudgetedBefore(Budget $budget)
+{
+    $qb = $this->createQueryBuilder('bc');
+    $query = $qb
+        ->innerJoin('bc.budget', 'b')
+        ->where($qb->expr()->lt('b.month', ':month'))
+        ->setParameter('month', $budget->getMonth())
+        ->getQuery()
+        ;
+
+    $result = $query->getResult();
+
+    $budgeted = '0.00';
+
+    foreach ($result as $budgetCategories)
+    {
+        $budgeted = bcadd($budgeted, $budgetCategories->getBudgeted(), 2);
+    }
+
+    return $budgeted;
+}
+
 }

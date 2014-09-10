@@ -87,4 +87,37 @@ class LineItemRepository extends EntityRepository
         return $income;
     }
 
+    /**
+     * Get the total income assigned to months before this month.
+     *
+     * This month is taken as the month of the given budget.
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Budget The budget of the
+     * current month
+     * @return string The total income before the month of the given budget
+     */
+    public function getTotalIncomeBefore(Budget $budget)
+    {
+        $qb = $this->createQueryBuilder('l');
+        $query = $qb
+            ->innerJoin('l.assignedMonth', 'am')
+            ->where($qb->expr()->lt('am.month', ':month'))
+            ->setParameter(':month', $budget->getMonth())
+            ->getQuery()
+            ;
+
+        $result = $query->getResult();
+
+        $income = '0.00';
+
+        foreach ($result as $lineItem)
+        {
+            $income = bcadd($income, $lineItem->getInflow(), 2);
+            // Just in case we have an outflow
+            $income = bcsub($income, $lineItem->getOutflow(), 2);
+        }
+
+        return $income;
+    }
+
 }
