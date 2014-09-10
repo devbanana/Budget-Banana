@@ -41,10 +41,8 @@ if ($category instanceof BudgetCategories) {
 $previousCategory = $this->getPreviousMonthCategory($category);
 $previousBalance = $this->getBalanceForCategory($previousCategory);
 
-// TODO: If category has carry over into category, then use balance even if
-// negative.
 // If carry over is default of budget, then only use balance if positive.
-if ($previousBalance < 0) {
+if ($previousBalance < 0 && $previousCategory->getCarryOver() == 'budget') {
 $previousBalance = 0;
 }
 
