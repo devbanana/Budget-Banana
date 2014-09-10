@@ -55,6 +55,7 @@ public function prePersist(LifecycleEventArgs $e)
             $budgetCategories->setBudget($budget);
             $budgetCategories->setCategory($entity);
             $budgetCategories->setOrder($entity->getOrder());
+            $budgetCategories->setCarryOver($entity->getCarryOver());
             $em->persist($budgetCategories);
         }
 

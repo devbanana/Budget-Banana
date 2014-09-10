@@ -23,8 +23,16 @@ class AccountType extends AbstractType
                         'mapped' => false,
                         ))
             ->add('accountCategory', 'entity', array(
-                        'label' => 'Type',
+                        'label' => 'Account Type',
                         'class' => 'DevbananaBudgetBundle:AccountCategory',
+                        'empty_value' => '',
+                        ))
+            ->add('budgeted', 'choice', array(
+                        'label' => 'On or Off Budget?',
+                        'choices' => array(
+                            1 => 'On Budget',
+                            0 => 'Off Budget',
+                            ),
                         ))
         ;
     }

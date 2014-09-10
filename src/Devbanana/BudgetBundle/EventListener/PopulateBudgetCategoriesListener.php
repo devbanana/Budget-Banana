@@ -30,6 +30,7 @@ $budgetCategories = $this->getNewBudgetCategories();
 $entity->addCategory($budgetCategories);
 $budgetCategories->setCategory($category);
 $budgetCategories->setOrder($category->getOrder());
+$budgetCategories->setCarryOver($category->getCarryOver());
 $em->persist($budgetCategories);
 
 $md = $em->getClassMetadata('Devbanana\BudgetBundle\Entity\BudgetCategories');

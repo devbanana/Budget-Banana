@@ -12,6 +12,7 @@ use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Form\AccountType;
 use Devbanana\BudgetBundle\Entity\Transaction;
 use Devbanana\BudgetBundle\Entity\LineItem;
+use Devbanana\BudgetBundle\Entity\Category;
 
 /**
  * Account controller.
@@ -89,23 +90,55 @@ class AccountController extends Controller
 
         $lineItem = new LineItem;
         $lineItem->setAccount($entity);
-        $lineItem->setType('income');
-        // TODO: Support expenses, such as for liability accounts
 
         // Find budget for current month
         $budget = $this->em->getRepository('DevbananaBudgetBundle:Budget')
             ->findOneOrCreateByDate($transaction->getDate());
 
-        $lineItem->setAssignedMonth($budget);
-
-        $lineItem->setMemo('Starting Balance');
-
-        if ($startingBalance >= 0) {
+        // Asset or liability?
+        if (bccomp($startingBalance, '0.00', 2) >= 0) {
+        $lineItem->setType('income');
             $lineItem->setInflow($startingBalance);
+
+            if ($entity->getBudgeted()) {
+        $lineItem->setAssignedMonth($budget);
+            }
         }
         else {
-            $lineItem->setOutflow(abs($startingBalance));
+            $lineItem->setType('expense');
+            $lineItem->setOutflow(bcmul($startingBalance, '-1.00', 2));
+
+            if ($entity->getBudgeted()) {
+            // Create debt category
+            $category = new Category;
+            $category->setName($entity->getName());
+            $category->setCarryOver('category');
+
+            // Search for Debt category
+            $masterCategory = $this->em->getRepository('DevbananaBudgetBundle:MasterCategory')
+                ->findOneByName('Debt');
+
+            $category->setMasterCategory($masterCategory);
+
+            // Set order
+                $order = $this->em->getRepository('DevbananaBudgetBundle:Category')
+                    ->getHighestOrderFor($category->getMasterCategory());
+                $category->setOrder($order + 1);
+                $this->em->persist($category);
+                $this->em->flush();
+
+                // Get the budget category
+                $budgetCategories = $this->em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+                    ->findOneBy(array(
+                                'budget' => $budget,
+                                'category' => $category,
+                                ));
+
+                $lineItem->setCategory($budgetCategories);
+            }
         }
+
+        $lineItem->setMemo('Starting Balance');
 
         $transaction->addLineItem($lineItem);
 

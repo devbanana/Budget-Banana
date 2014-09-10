@@ -228,6 +228,9 @@ class Account
     {
         $this->accountCategory = $accountCategory;
 
+        // Set default type
+        $this->setType($accountCategory->getType());
+
         return $this;
     }
 

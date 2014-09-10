@@ -22,10 +22,35 @@ class TransactionController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
+        $session = $request->getSession();
+
+        $year = date('Y');
+        $month = date('n');
+        $day = date('j');
+
+        if ($session->has('new-transaction-day')) {
+            $day = $session->get('new-transaction-day');
+
+            if ($session->has('new-transaction-month')) {
+                $month = $session->get('new-transaction-month');
+
+                if ($session->has('new-transaction-year')) {
+                    $year = $session->get('new-transaction-year');
+                }
+            }
+        }
+
+        $date = new \DateTime(
+                sprintf('%04d-%02d-%02d',
+                    $year,
+                    $month,
+                    $day
+                    ));
+        
         $transaction = new Transaction;
-        $transaction->setDate(new \DateTime(date('Y-m-d', time())));
+        $transaction->setDate($date);
         $li1 = new LineItem;
         $transaction->getLineItems()->add($li1);
 
@@ -109,6 +134,7 @@ class TransactionController extends Controller
          */
         public function createAction(Request $request)
         {
+            $session = $request->getSession();
             $em = $this->getDoctrine()->getManager();
 
             $transactions = $request->request->get('devbanana_budgetbundle_transaction');
@@ -140,6 +166,13 @@ $form = $this->createForm(new TransactionType(), $transaction)
 $form->handleRequest($request);
 
 if ($form->isValid()) {
+
+    // Save our date to session
+    $date = $transaction->getDate();
+    $session->set('new-transaction-year', $date->format('Y'));
+            $session->set('new-transaction-month', $date->format('n'));
+            $session->set('new-transaction-day', $date->format('j'));
+
     // For transfers, create an equivalent transaction on the opposite end
 $lineItems = $transaction->getLineItems();
 foreach ($lineItems as $lineItem)
@@ -162,7 +195,7 @@ $transaction->addLineItem($newLineItem);
 
     $em->persist($transaction);
     $em->flush();
-            return $this->redirect($this->generateUrl('transactions_index'));
+            return $this->redirect($this->generateUrl('transactions_new'));
 }
 
 return array(
