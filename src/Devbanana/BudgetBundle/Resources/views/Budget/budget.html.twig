@@ -53,6 +53,7 @@
 <th>Budgeted</th>
 <th>Outflow</th>
 <th>Balance</th>
+<th>Carry-Over</th>
 </tr>
 </thead>
 
@@ -63,6 +64,9 @@
 <td class="budgeted">{{ form_widget(category.budgeted) }}</td>
 <td class="outflow">$0.00</td>
 <td class="balance">$0.00</td>
+<td class="carryover">
+<span class="carryover-value">{{ category.vars.data.carryOver|title }}</span> (<a href="#" class="carryover-toggle">Toggle</a>)
+</td>
 </tr>
 {% endfor %}
 </tbody>

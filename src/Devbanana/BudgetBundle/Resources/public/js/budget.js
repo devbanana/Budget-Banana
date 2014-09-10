@@ -121,6 +121,27 @@ $.each(result.categories, function (index, category)
             });
 }
 
+function toggleCarryOver(row)
+{
+// Toggle carryover value
+$(row).find('td.carryover>a.carryover-toggle').on('click', function(e)
+        {
+        e.preventDefault();
+
+$.ajax({
+url: Routing.generate('budgetcategories_toggle_carryover_ajax', {
+id: $(row).data('id')
+         }),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+$(row).find('td.carryover>span.carryover-value').html(result.carryOver);
+}
+    });
+        });
+}
+
 updateAvailableToBudget();
 updateNotBudgetedLastMonth();
 updateOverspentLastMonth();
@@ -132,5 +153,6 @@ $('tr.category').each(function ()
         {
         $(this).find('td.budgeted>input').on('input propertychange paste',
             budgetedListener);
+        toggleCarryOver(this);
         });
 

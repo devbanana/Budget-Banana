@@ -71,6 +71,13 @@ class BudgetCategories
      */
     private $order;
 
+    /**
+     * How to carry over a negative balance.
+     *
+     * @ORM\Column(name="carryOver", type="string", length=255)
+     */
+    private $carryOver = 'budget';
+
 
     /**
      * Get id
@@ -267,5 +274,28 @@ class BudgetCategories
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Set carryOver
+     *
+     * @param string $carryOver
+     * @return BudgetCategories
+     */
+    public function setCarryOver($carryOver)
+    {
+        $this->carryOver = $carryOver;
+
+        return $this;
+    }
+
+    /**
+     * Get carryOver
+     *
+     * @return string 
+     */
+    public function getCarryOver()
+    {
+        return $this->carryOver;
     }
 }

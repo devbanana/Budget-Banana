@@ -80,4 +80,44 @@ class BudgetCategoriesController extends Controller
         return $response;
     }
 
+    /**
+     * @Route("/toggle-carryover/ajax/{id}",
+     *     name="budgetcategories_toggle_carryover_ajax",
+     *     options={"expose":true})
+     */
+    public function toggleCarryoverAjaxAction(BudgetCategories $budgetCategories)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $carryOver = $budgetCategories->getCarryOver();
+
+        if ($carryOver == 'budget') {
+            $carryOver = 'category';
+        }
+        else {
+            $carryOver = 'budget';
+        }
+
+        $budgetCategories->setCarryOver($carryOver);
+        $budgetCategories->getCategory()->setCarryOver($carryOver);
+
+        while ($budgetCategories = $em->getRepository(
+                    'DevbananaBudgetBundle:BudgetCategories')
+                ->getNextMonthCategory($budgetCategories))
+        {
+            $budgetCategories->setCarryOver($carryOver);
+        }
+
+        $em->flush();
+
+$content = array();
+$content['carryOver'] = ucwords($carryOver);
+
+$response = new Response;
+$response->headers->set('Content-Type', 'Application/JSON');
+$response->setContent(json_encode($content));
+
+return $response;
+    }
+
 }

@@ -57,7 +57,7 @@ return bcadd(bcadd($previousBalance, $budgeted, 2),
 return '0.00';
     }
 
-protected function getPreviousMonthCategory(BudgetCategories $category)
+public function getPreviousMonthCategory(BudgetCategories $category)
 {
     $date = clone $category->getBudget()->getMonth();
     $date->modify('-1 month');
@@ -78,6 +78,31 @@ $previousMonth = $query->getResult();
 
 if ($previousMonth) {
     return $previousMonth[0];
+}
+return null;
+}
+
+public function getNextMonthCategory(BudgetCategories $category)
+{
+    $date = clone $category->getBudget()->getMonth();
+    $date->modify('+1 month');
+
+    $qb = $this->createQueryBuilder('bc');
+$query = $qb
+    ->innerJoin('bc.budget', 'b')
+    ->where($qb->expr()->andX(
+                $qb->expr()->eq('bc.category', ':category'),
+                $qb->expr()->eq('b.month', ':month')
+                ))
+    ->setParameter('category', $category->getCategory())
+    ->setParameter('month', $date)
+    ->getQuery()
+    ;
+
+$nextMonth = $query->getResult();
+
+if ($nextMonth) {
+    return $nextMonth[0];
 }
 return null;
 }

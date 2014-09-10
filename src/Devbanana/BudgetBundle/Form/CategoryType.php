@@ -17,6 +17,13 @@ class CategoryType extends AbstractType
         $builder
             ->add('masterCategory')
             ->add('name')
+            ->add('carryOver', 'choice', array(
+                        'label' => 'Carry over to',
+                        'choices' => array(
+                            'budget' => 'Budget',
+                            'category' => 'Category',
+                            ),
+                        ))
         ;
     }
     

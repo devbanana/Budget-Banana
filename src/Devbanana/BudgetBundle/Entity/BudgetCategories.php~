@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * BudgetCategories
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="sortOrder_idx",
+ * columns={"sortOrder"})})
  * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\BudgetCategoriesRepository")
  */
 class BudgetCategories
@@ -69,6 +70,13 @@ class BudgetCategories
      * @ORM\Column(name="sortOrder", type="integer")
      */
     private $order;
+
+    /**
+     * How to carry over a negative balance.
+     *
+     * @ORM\Column(name="carryOver", type="string", length=255)
+     */
+    private $carryOver;
 
 
     /**
@@ -243,5 +251,28 @@ class BudgetCategories
     public function __toString()
     {
         return $this->category->__toString();
+    }
+
+    /**
+     * Set order
+     *
+     * @param integer $order
+     * @return BudgetCategories
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Get order
+     *
+     * @return integer 
+     */
+    public function getOrder()
+    {
+        return $this->order;
     }
 }

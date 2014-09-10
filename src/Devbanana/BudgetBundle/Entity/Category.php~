@@ -61,7 +61,7 @@ class Category
      *
      * @ORM\Column(name="carryOver", type="string", length=255)
      */
-    private $carryOver = 'budget';
+    private $carryOver;
 
 
     /**
@@ -199,28 +199,5 @@ class Category
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * Set carryOver
-     *
-     * @param string $carryOver
-     * @return Category
-     */
-    public function setCarryOver($carryOver)
-    {
-        $this->carryOver = $carryOver;
-
-        return $this;
-    }
-
-    /**
-     * Get carryOver
-     *
-     * @return string 
-     */
-    public function getCarryOver()
-    {
-        return $this->carryOver;
     }
 }
