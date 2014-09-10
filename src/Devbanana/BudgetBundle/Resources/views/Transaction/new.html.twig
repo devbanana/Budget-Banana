@@ -10,6 +10,9 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 {% block body %}
 <h1>Add Transaction</h1>
 
+<div id="alert" style="display:none;"></div>
+
+<div id="transaction-form">
 {{ form_start(form) }}
 
 <table border="0" cellpadding="3" cellspacing="3">
@@ -108,11 +111,14 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 </tbody>
 </table>
 
+<p><button id="submit">Add</button></p>
 {{ form_end(form) }}
+</div>
 
 {# Dialogs #}
 <div id="account_dialog" title="Add Account" style="display:none;" role="dialog"></div>
 <div id="payee_dialog" title="Add a Payee" style="display:none;" role="dialog"></div>
+<div id="new-category" role="dialog" title="Add a Category" style="display:none;"></div>
 {% endblock %}
 
 {% block javascripts %}

@@ -30,22 +30,28 @@ class LineItemType extends AbstractType
                             'income' => 'Income',
                             'transfer' => 'Transfer',
                             ),
+                        'error_bubbling' => true,
                         'required' => true,
                         ))
             ->add('account', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Account',
+                        'error_bubbling' => true,
                         ))
             ->add('payee', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payee',
+                        'error_bubbling' => true,
                         ))
             ->add('payer', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payer',
+                        'error_bubbling' => true,
                         ))
             ->add('transferAccount', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Account',
+                        'error_bubbling' => true,
                         ))
             ->add('category', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
+                        'error_bubbling' => true,
                         'query_builder' => function (EntityRepository $er)
                         {
 $qb = $er->createQueryBuilder('bc');
@@ -59,14 +65,20 @@ return $qb;
                         ))
             ->add('assignedMonth', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Budget',
+                        'error_bubbling' => true,
                         ))
             ->add('inflow', 'money', array(
                         'currency' => 'USD',
+                        'error_bubbling' => true,
                         ))
             ->add('outflow', 'money', array(
                         'currency' => 'USD',
+                        'error_bubbling' => true,
                         ))
-            ->add('memo')
+            ->add('memo', 'text', array(
+                        'error_bubbling' => true,
+                        'required' => false,
+                        ))
         ;
     }
     

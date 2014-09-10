@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Devbanana\BudgetBundle\Entity\Budget;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
+use Devbanana\BudgetBundle\Entity\Category;
 
 /**
  * @Route("/budget-categories")
@@ -118,6 +119,33 @@ $response->headers->set('Content-Type', 'Application/JSON');
 $response->setContent(json_encode($content));
 
 return $response;
+    }
+
+    /**
+     * @Route("/get-by-category/{year}/{month}/{id}",
+     *     name="budgetcategories_get_by_category_ajax",
+     *     options={"expose":true})
+     */
+    public function getByCategoryAjaxAction($year, $month, Category $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByMonthAndYear($month, $year);
+
+        $budgetCategories = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+            ->findOneBy(array(
+                        'budget' => $budget,
+                        'category' => $category,
+                        ));
+
+        $content = array();
+        $content['id'] = $budgetCategories->getId();
+
+        $response = new Response;
+        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->setContent(json_encode($content));
+
+        return $response;
     }
 
 }

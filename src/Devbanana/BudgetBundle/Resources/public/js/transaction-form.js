@@ -198,6 +198,7 @@ $.post(
     refreshAllAccounts(result.id);
     $caller.val(result.id);
     $this.dialog("close");
+    $(this).empty();
     });
 }
 }
@@ -252,12 +253,72 @@ refreshAllPayers();
 }
 $caller.val(result.id);
 $this.dialog('close');
+$this.empty();
 }
     );
 }
 }
         });
     }
+}
+
+function categoryListener()
+{
+    if ($(this).val() == 'add') {
+        var $caller = $(this);
+
+                            // Fetch new category form
+                            $.ajax({
+url: Routing.generate('categories_new_ajax'),
+async: false,
+method: "POST",
+success: function (result)
+{
+$('#new-category').empty();
+$('#new-category').html($(result));
+}
+                                });
+
+                            // Open the dialog
+                            $('#new-category').dialog({
+modal: true,
+buttons: {
+Add: function ()
+{
+var $this = $(this);
+var data = $('>form', $('#new-category')).serialize();
+$.post(
+    Routing.generate('categories_create_ajax'),
+    data,
+    function (result)
+    {
+    result = JSON.parse(result);
+    refreshAllCategories();
+
+    // We have to get the BudgetCategories id to set the dropdown
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val();
+    var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+
+    $.ajax({
+url: Routing.generate('budgetcategories_get_by_category_ajax',
+         {month: month,
+year: year,
+id: result.id}),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+$caller.val(result.id);
+        $this.dialog('close');
+        $this.empty();
+}
+        });
+    }
+    );
+}
+}
+                                });
+}
 }
 
 function refreshAllPayees()
@@ -316,6 +377,26 @@ $('tr.lineitem').each(function()
 });
 }
 
+function refreshAllCategories()
+{
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val();
+    var year = $('#devbanana_budgetbundle_transaction_date_year').val();
+
+    $.ajax({
+url: Routing.generate('budgetcategories_list_ajax',
+         { month: month, year: year }),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+$('tr.lineitem').each(function()
+    {
+populateCategories(this, result);
+});
+}
+            });
+}
+
 function refreshAccounts(row)
 {
     $.ajax({
@@ -347,6 +428,8 @@ function populateAccounts(row, result)
     });
 
     $accounts.append(getAddOption('Add Account'));
+
+    $accounts.trigger('refresh');
 }
 
 function refreshPayees(row)
@@ -526,6 +609,12 @@ function subscribePayee(row)
 $payee.on('change', payeeListener);
 }
 
+function subscribeCategory(row)
+{
+    var $category = $(row).find('td.category>select');
+$category.on('change', categoryListener);
+}
+
 function subscribeInflow(row)
 {
     var inflow = $(row).find('td.inflow>input');
@@ -547,9 +636,53 @@ function subscribeEvents(row)
     subscribeType(row);
     subscribeAccount(row);
     subscribePayee(row);
+    subscribeCategory(row);
     subscribeInflow(row);
     subscribeOutflow(row);
 }
+
+$('#devbanana_budgetbundle_transaction_date_year').focus();
+
+$('#submit').on('click', function(e)
+        {
+        e.preventDefault();
+        var data = $('#transaction-form>form').serialize();
+        $.post(
+            Routing.generate('transactions_create_ajax'),
+            data,
+            function (result)
+            {
+            result = JSON.parse(result);
+
+            // Set new CSRF token
+            $('#devbanana_budgetbundle__token').val(result.csrf);
+            $('tr.lineitem').each(function()
+                {
+                var account = $(this).find('td.account>select').val();
+                $(this).find('td.account>select').on('refresh', function ()
+                    {
+                    $(this).val(account);
+                    });
+                refreshRow(this);
+                $(this).find('td.memo>input').val('');
+                $(this).find('td.inflow>input').val('');
+                $(this).find('td.outflow>input').val('');
+                });
+            $('#devbanana_budgetbundle_transaction_date_year').focus();
+
+            // Set alert message
+$('#alert').show();
+$('#alert').attr('role', 'alert');
+$('#alert').attr('aria-live', 'assertive');
+$('#alert').text('Transaction added for ' +
+(parseFloat(result.inflow)-parseFloat(result.outflow)).formatMoney() + '.');
+setTimeout(function ()
+        {
+$('#alert').hide();
+$('#alert').removeAttr('role');
+        }, 5000);
+            });
+        });
 
 // Update categories on load
 updateCategories();

@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -59,11 +60,7 @@ class TransactionController extends Controller
             ->findOneOrCreateByDate($transaction->getDate());
 
         $form = $this->createForm(new TransactionType(), $transaction, array(
-                    'action' => $this->generateUrl('transactions_create'),
                     'budget' => $budget,
-                    ));
-        $form->add('submit', 'submit', array(
-                    'label' => 'Add',
                     ));
 
         return array(
@@ -128,11 +125,11 @@ class TransactionController extends Controller
             );    }
 
         /**
-         * @Route("/", name="transactions_create")
+         * @Route("/", name="transactions_create_ajax",
+         *     options={"expose":true})
          * @Method("POST")
-         * @Template("DevbananaBudgetBundle:Transaction:new.html.twig")
          */
-        public function createAction(Request $request)
+        public function createAjaxAction(Request $request)
         {
             $session = $request->getSession();
             $em = $this->getDoctrine()->getManager();
@@ -161,9 +158,20 @@ foreach ($transactions['lineitems'] as $i => $lineitem)
 $request->request->set('devbanana_budgetbundle_transaction', $transactions);
 
 $transaction = new Transaction;
-$form = $this->createForm(new TransactionType(), $transaction)
-    ->add('submit', 'submit');
+$year = $transactions['date']['year'];
+$month = $transactions['date']['month'];
+
+$budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+->findOneOrCreateByMonthAndYear($month, $year);
+
+$form = $this->createForm(new TransactionType(), $transaction, array(
+            'budget' => $budget,
+            ));
 $form->handleRequest($request);
+
+$response = new Response;
+$response->headers->set('Content-Type', 'Application/JSON');
+$content = array();
 
 if ($form->isValid()) {
 
@@ -195,13 +203,23 @@ $transaction->addLineItem($newLineItem);
 
     $em->persist($transaction);
     $em->flush();
-            return $this->redirect($this->generateUrl('transactions_new'));
+
+    $content['success'] = true;
+    $content['inflow'] = $transaction->getInflow();
+    $content['outflow'] = $transaction->getOutflow();
+
+    // generate CSRF token
+$csrf = $this->get('security.csrf.token_manager');
+$token = $csrf->refreshToken('');
+$content['csrf'] = "$token";
+}
+else {
+    $content['success'] = false;
 }
 
-return array(
-        'entity' => $transaction,
-        'form' => $form->createView(),
-        );
+$response->setContent(json_encode($content));
+
+return $response;
         }
 
     /**
