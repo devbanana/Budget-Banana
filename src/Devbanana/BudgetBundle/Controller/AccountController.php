@@ -178,6 +178,12 @@ $content['success'] = true;
         }
         else {
             $content['success'] = false;
+            // Get the errors
+            $content['errors'] = array();
+            foreach ($form->getErrors() as $error)
+            {
+                $content['errors'][] = $error->getMessage();
+            }
         }
 
 $response->setContent(json_encode($content));

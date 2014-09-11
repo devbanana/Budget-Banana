@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Account
@@ -25,6 +26,9 @@ class Account
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a name for the account.")
+     * @Assert\Length(max=255,
+     *     maxMessage="The name cannot be greater than 255 characters.")
      */
     private $name;
 
@@ -32,6 +36,8 @@ class Account
      * @var string
      *
      * @ORM\Column(name="balance", type="decimal", precision=14, scale=2)
+     * @Assert\Regex(pattern="/\d+(\.\d+)?/",
+     *     message="Balance must be a number.")
      */
     private $balance = 0.00;
 
@@ -39,6 +45,7 @@ class Account
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="LineItem", mappedBy="account")
+     * @Assert\Valid
      */
     private $lineItems;
 
@@ -46,6 +53,8 @@ class Account
      * Asset or liability
      *
      * @ORM\Column(name="type", type="string", length=255)
+     * @Assert\Choice(choices={"asset","liability"},
+     *     message="Type must be asset or liability.")
      */
     private $type;
 
@@ -53,6 +62,8 @@ class Account
      * Category of account.
      *
      * @ORM\ManyToOne(targetEntity="AccountCategory", inversedBy="accounts")
+     * @Assert\Valid
+     * @Assert\NotNull(message="Please select a category")
      */
     private $accountCategory;
 
@@ -62,12 +73,6 @@ class Account
      * @ORM\Column(name="budgeted", type="boolean")
      */
     private $budgeted;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Account", mappedBy="accountCategory")
-     * @ORM\OrderBy({"sortOrder" = "ASC"})
-     */
-    private $accounts;
 
 
     public function __toString()

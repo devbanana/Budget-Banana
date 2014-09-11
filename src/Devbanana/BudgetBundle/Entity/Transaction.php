@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Transaction
@@ -47,6 +48,7 @@ class Transaction
      *
      * @ORM\OneToMany(targetEntity="LineItem", mappedBy="transaction",
      * cascade={"persist"})
+     * @Assert\Valid
      */
     private $lineItems;
 

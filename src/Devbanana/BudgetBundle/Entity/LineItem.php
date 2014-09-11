@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * LineItem
@@ -29,9 +30,19 @@ class LineItem
     private $type;
 
     /**
+     * @var Account
+     *
+     * @ORM\ManyToOne(targetEntity="Account", inversedBy="lineItems")
+     * @Assert\NotNull(message="Please select an account.")
+     */
+    private $account;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="inflow", type="decimal", precision=14, scale=2)
+     * @Assert\GreaterThanOrEqual(value="0.00",
+     *     message="Inflow must not be negative.")
      */
     private $inflow = 0.00;
 
@@ -39,6 +50,8 @@ class LineItem
      * @var string
      *
      * @ORM\Column(name="outflow", type="decimal", precision=14, scale=2)
+     * @Assert\GreaterThanOrEqual(value="0.00",
+     *     message="Outflow must not be negative.")
      */
     private $outflow = 0.00;
 
@@ -56,13 +69,6 @@ class LineItem
      * inversedBy="lineItems")
      */
     private $transaction;
-
-    /**
-     * @var Account
-     *
-     * @ORM\ManyToOne(targetEntity="Account", inversedBy="lineItems")
-     */
-    private $account;
 
     /**
      * @var Payee

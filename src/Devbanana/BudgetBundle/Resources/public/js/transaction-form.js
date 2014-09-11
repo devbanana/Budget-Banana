@@ -195,10 +195,44 @@ $.post(
     function (result)
     {
     result = JSON.parse(result);
+    if (result.success == true) {
     refreshAllAccounts(result.id);
     $caller.val(result.id);
     $this.dialog("close");
-    $(this).empty();
+    $this.empty();
+    }
+    else {
+    $this.find('.errors').remove();
+var $errorDiv = $('<div class="errors"></div>');
+$errorDiv.append($('<p tabindex="0">There were some errors.</p>'));
+
+var $errorList = $('<ul></ul>');
+$.each(result.errors, function (index, error)
+    {
+    $errorList.append($('<li tabindex="0">' + error + '</li>'));
+    });
+
+$errorDiv.append($errorList);
+
+$errorDiv.attr('role', 'dialog');
+$errorDiv.attr('title', 'Errors');
+
+$this.find('form').before($errorDiv);
+$errorDiv.dialog({
+buttons: {
+OK: function ()
+{
+$errorDiv.dialog('close');
+$('#devbanana_budgetbundle_account_name').focus();
+},
+close: function ()
+{
+$('#devbanana_budgetbundle_account_name').focus();
+}
+}
+        });
+
+    }
     });
 }
 }
@@ -654,6 +688,7 @@ $('#submit').on('click', function(e)
             {
             result = JSON.parse(result);
 
+            if (result.success == true) {
             // Set new CSRF token
             $('#devbanana_budgetbundle__token').val(result.csrf);
             $('tr.lineitem').each(function()
@@ -670,6 +705,11 @@ $('#submit').on('click', function(e)
                 $(this).find('td.outflow>input').val('');
                 });
             $('#devbanana_budgetbundle_transaction_date_year').focus();
+
+            // Hide error box
+            $('#errors').empty();
+            $('#errors').removeAttr('tabindex');
+            $('#errors').hide();
 
             // Set alert message
 $('#alert').show();
@@ -689,6 +729,23 @@ $('#alert').on('keydown', function (e)
         }
         });
 setTimeout(dismissAlert, 5000);
+            }
+            else {
+                var $errors = $('<ul></ul>');
+                $.each(result.errors, function (index, error)
+                        {
+                        var $errorItem = $('<li>' + error + '</li>');
+                        $errorList.append($errorItem);
+                        });
+
+                $('#errors').empty();
+                $('#errors').append($('<p>There were some errors. ' +
+                            'Please check your input and try again.</p>'));
+                $('#errors').append($errors);
+                $('#errors').show();
+                $('#errors').attr('tabindex', 0);
+$('#errors').focus();
+            }
             });
         });
 

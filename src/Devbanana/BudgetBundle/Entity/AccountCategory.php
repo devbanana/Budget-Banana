@@ -49,6 +49,13 @@ class AccountCategory
      */
     private $order;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Account", mappedBy="accountCategory")
+     * @ORM\OrderBy({"sortOrder" = "ASC"})
+     */
+    private $accounts;
+
+
 
     /**
      * Get id
@@ -155,5 +162,45 @@ class AccountCategory
     public function __toString()
     {
         return $this->getName();
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->accounts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add accounts
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Account $accounts
+     * @return AccountCategory
+     */
+    public function addAccount(\Devbanana\BudgetBundle\Entity\Account $accounts)
+    {
+        $this->accounts[] = $accounts;
+
+        return $this;
+    }
+
+    /**
+     * Remove accounts
+     *
+     * @param \Devbanana\BudgetBundle\Entity\Account $accounts
+     */
+    public function removeAccount(\Devbanana\BudgetBundle\Entity\Account $accounts)
+    {
+        $this->accounts->removeElement($accounts);
+    }
+
+    /**
+     * Get accounts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAccounts()
+    {
+        return $this->accounts;
     }
 }

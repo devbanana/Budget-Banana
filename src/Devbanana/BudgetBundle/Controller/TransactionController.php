@@ -215,6 +215,11 @@ $content['csrf'] = "$token";
 }
 else {
     $content['success'] = false;
+    $content['errors'] = array();
+    foreach ($form->getErrors() as $error)
+    {
+        $content['errors'][] = $error->getMessage();
+    }
 }
 
 $response->setContent(json_encode($content));
