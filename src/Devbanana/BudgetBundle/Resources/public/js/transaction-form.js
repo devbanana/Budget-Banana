@@ -691,8 +691,9 @@ $('#submit').on('click', function(e)
             if (result.success == true) {
             // Set new CSRF token
             $('#devbanana_budgetbundle__token').val(result.csrf);
-            $('tr.lineitem').each(function()
+            $('tr.lineitem').each(function(index)
                 {
+                if (index == 0) {
                 var account = $(this).find('td.account>select').val();
                 $(this).find('td.account>select').on('refresh', function ()
                     {
@@ -703,39 +704,47 @@ $('#submit').on('click', function(e)
                 $(this).find('td.memo>input').val('');
                 $(this).find('td.inflow>input').val('');
                 $(this).find('td.outflow>input').val('');
+                }
+                else {
+                $(this).remove();
+                $collectionHolder.data('index', 1);
+                }
                 });
             $('#devbanana_budgetbundle_transaction_date_year').focus();
 
-            // Hide error box
-            $('#errors').empty();
-            $('#errors').removeAttr('tabindex');
-            $('#errors').hide();
+            var timeout;
 
             // Set alert message
-$('#alert').show();
-$('#alert').attr('role', 'alert');
-$('#alert').attr('tabindex', 0);
-$('#alert').text('Transaction added for ' +
-(parseFloat(result.inflow)-parseFloat(result.outflow)).formatMoney() + '.');
-$('#alert').focus();
-$('#alert').on('keydown', function (e)
-        {
-        switch (e.which)
-        {
-        case 27:
-        // esc
-        dismissAlert();
-        break;
-        }
+$('#alert').append($('<p role="alert" tabindex="0">' +
+            'A transaction has been created for ' +
+(parseFloat(result.inflow)-parseFloat(result.outflow)).formatMoney() + '.</p>'));
+$('#alert').attr('title', 'Transaction Created');
+$('#alert').dialog({
+open: function ()
+{
+timeout = setTimeout(dismissAlert, 5000);
+},
+close: function ()
+{
+clearTimeout(timeout);
+dismissAlert();
+},
+buttons: {
+OK: function ()
+{
+clearTimeout(timeout);
+dismissAlert();
+}
+}
         });
-setTimeout(dismissAlert, 5000);
+
             }
             else {
                 var $errors = $('<ul></ul>');
                 $.each(result.errors, function (index, error)
                         {
                         var $errorItem = $('<li>' + error + '</li>');
-                        $errorList.append($errorItem);
+                        $errors.append($errorItem);
                         });
 
                 $('#errors').empty();
@@ -751,9 +760,8 @@ $('#errors').focus();
 
 function dismissAlert()
         {
-$('#alert').hide();
-$('#alert').removeAttr('role');
-$('#alert').removeAttr('tabindex');
+            $('#alert').empty();
+$('#alert').dialog('close');
             $('#devbanana_budgetbundle_transaction_date_year').focus();
         }
 
