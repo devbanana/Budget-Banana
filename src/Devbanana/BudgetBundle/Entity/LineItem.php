@@ -109,6 +109,8 @@ class LineItem
      * The check number of this line item
      *
      * @ORM\Column(name="checkNumber", type="integer", nullable=true)
+     * @Assert\Regex(pattern="/\d+(\.\d+)?/",
+     *     message="Check number must be a numeric value")
      */
     private $checkNumber;
 
