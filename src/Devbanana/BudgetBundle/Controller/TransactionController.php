@@ -281,12 +281,11 @@ return $response;
         private function createBudgets(\Doctrine\ORM\EntityManager $em, $startMonth)
 {
     $month = clone $startMonth;
-for ($i = 0; $i < 60; $i++)
+for ($i = 0; $i < 59; $i++)
 {
+    $month->modify('+1 month');
     $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
         ->findOneOrCreateByDate($month, false);
-
-    $month->modify('+1 month');
 }
 
 $em->flush();

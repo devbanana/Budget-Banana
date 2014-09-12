@@ -23,6 +23,7 @@ class TransactionRepository extends EntityRepository
                         ))
             ->setParameter('month1', $month1)
             ->setParameter('month2', $month2)
+            ->orderBy('t.date', 'DESC')
             ->getQuery()
             ;
 

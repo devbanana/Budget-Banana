@@ -72,11 +72,14 @@ class LineItemType extends AbstractType
                         'query_builder' => function (EntityRepository $er)
                         {
 $qb = $er->createQueryBuilder('bc');
+$qb->innerJoin('bc.category', 'c')
+->innerJoin('c.masterCategory', 'mc');
 if ($this->budget) {
 $qb->where($qb->expr()->eq('bc.budget', ':budget'))
 ->setParameter('budget', $this->budget);
 }
-$qb->orderBy('bc.order', 'ASC');
+$qb->addOrderBy('mc.order', 'ASC')
+->addOrderBy('c.order', 'ASC');
 return $qb;
                         },
                         ))

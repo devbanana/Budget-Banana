@@ -309,6 +309,6 @@ else {
     $balance = "$$balance";
 }
 
-return $this->getCategory()->getName() . ' ' . $balance;
+return $this->getCategory()->__toString() . ' ' . $balance;
     }
 }
