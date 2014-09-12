@@ -65,63 +65,7 @@ class TransactionController extends Controller
 
         return array(
                 'form' => $form->createView(),
-            );    }
-
-    /**
-     * @Route("/{year}/{month}", name="transactions_index",
-     *     defaults={"year" = null, "month" = null})
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction(Request $request, $year, $month)
-    {
-        $session = $request->getSession();
-        if ($month) {
-            $session->set('transaction-month', $month);
-        }
-        else {
-            if ($session->has('transaction-month')) {
-                $month = $session->get('transaction-month');
-            }
-            else {
-                $month = date('n');
-            }
-        }
-
-        if ($year) {
-            $session->set('transaction-year', $year);
-        }
-        else {
-            if ($session->has('transaction-year')) {
-                $year = $session->get('transaction-year');
-            }
-            else {
-                $year = date('Y');
-            }
-        }
-
-        $em = $this->getDoctrine()->getManager();
-
-        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByMonthAndYear($month, $year);
-
-        $thisMonth = $budget->getMonth();
-
-        $startMonth = clone $budget->getMonth();
-        $endMonth = clone $startMonth;
-        $endMonth->modify('+1 month');
-
-        $entities = $em->getRepository('DevbananaBudgetBundle:Transaction')
-            ->findBetween($startMonth, $endMonth);
-
-        $lastMonth = clone $startMonth;
-        $lastMonth->modify('-1 month');
-
-        return array(
-                'entities' => $entities,
-                'lastMonth' => $lastMonth,
-                'thisMonth' => $thisMonth,
-                'nextMonth' => $endMonth,
+                'entity' => $transaction,
             );    }
 
         /**
@@ -228,6 +172,60 @@ return $response;
         }
 
     /**
+     * @Route("/{id}/edit", name="transactions_edit")
+     * @Template("DevbananaBudgetBundle:Transaction:new.html.twig")
+     */
+    public function editAction(Transaction $transaction)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByDate($transaction->getDate());
+
+        $form = $this->createForm(new TransactionType(), $transaction, array(
+                    'budget' => $budget,
+                    'action' => $this->generateUrl('transactions_update_ajax', array('id' => $transaction->getId())),
+                    ));
+
+        return array(
+                'form' => $form->createView(),
+                'entity' => $transaction,
+            );    }
+
+        /**
+         * @Route("/{id}/update",
+         *     name="transactions_update_ajax",
+         *     options={"expose":true})
+         */
+        public function updateAction(Request $request, Transaction $transaction)
+{
+        $em = $this->getDoctrine()->getManager();
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByDate($transaction->getDate());
+
+        $form = $this->createForm(new TransactionType(), $transaction, array(
+                    'budget' => $budget,
+                    ));
+        $form->handleRequest($request);
+
+        $content = array();
+
+        if ($form->isValid()) {
+            $em->flush();
+            $content['success'] = true;
+            $content['redirect'] = $this->generateUrl('transactions_index');
+        }
+        else {
+            $content['success'] = false;
+        }
+
+        $response = new Response;
+        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->setContent(json_encode($content));
+
+        return $response;
+}
+
+    /**
      * @Route("/{id}", name="transactions_show")
      * @Method("GET")
      * @Template()
@@ -239,13 +237,60 @@ return $response;
             );    }
 
     /**
-     * @Route("/transactions/{id}/edit")
+     * @Route("/{year}/{month}", name="transactions_index",
+     *     defaults={"year" = null, "month" = null})
+     * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function indexAction(Request $request, $year, $month)
     {
+        $session = $request->getSession();
+        if ($month) {
+            $session->set('transaction-month', $month);
+        }
+        else {
+            if ($session->has('transaction-month')) {
+                $month = $session->get('transaction-month');
+            }
+            else {
+                $month = date('n');
+            }
+        }
+
+        if ($year) {
+            $session->set('transaction-year', $year);
+        }
+        else {
+            if ($session->has('transaction-year')) {
+                $year = $session->get('transaction-year');
+            }
+            else {
+                $year = date('Y');
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByMonthAndYear($month, $year);
+
+        $thisMonth = $budget->getMonth();
+
+        $startMonth = clone $budget->getMonth();
+        $endMonth = clone $startMonth;
+        $endMonth->modify('+1 month');
+
+        $entities = $em->getRepository('DevbananaBudgetBundle:Transaction')
+            ->findBetween($startMonth, $endMonth);
+
+        $lastMonth = clone $startMonth;
+        $lastMonth->modify('-1 month');
+
         return array(
-                // ...
+                'entities' => $entities,
+                'lastMonth' => $lastMonth,
+                'thisMonth' => $thisMonth,
+                'nextMonth' => $endMonth,
             );    }
 
 }

@@ -21,7 +21,7 @@ class TransactionType extends AbstractType
                         'error_bubbling' => true,
                         ))
             ->add('lineitems', 'collection', array(
-                        'type' => new LineItemType(array($options['budget'])),
+                        'type' => new LineItemType($options['budget']),
                         'allow_add' => true,
                         'by_reference' => false,
                         'error_bubbling' => true,

@@ -84,6 +84,9 @@ Income for {{ lineItem.assignedMonth.month|date('F Y') }}
 <td>${{ lineItem.inflow }}</td>
 <td>${{ lineItem.outflow }}</td>
 <td>
+<a href="{{ path('transactions_edit', {'id': lineItem.transaction.id}) }}">
+Edit
+</a> |
 <a href="{{ url("lineitems_delete", {"id": lineItem.id}) }}">
 Delete
 </a>

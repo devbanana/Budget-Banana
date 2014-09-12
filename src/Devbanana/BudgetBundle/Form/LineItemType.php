@@ -36,22 +36,37 @@ class LineItemType extends AbstractType
             ->add('account', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Account',
                         'error_bubbling' => true,
+                        'empty_value' => '',
                         ))
             ->add('payee', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payee',
+                        'query_builder' => function (EntityRepository $er)
+                        {
+                        return $er->createQueryBuilder('p')
+                        ->orderBy('p.name', 'ASC');
+                        },
                         'error_bubbling' => true,
+                        'empty_value' => '',
                         ))
             ->add('payer', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payer',
                         'error_bubbling' => true,
+                        'empty_value' => '',
+                        'query_builder' => function (EntityRepository $er)
+                        {
+                        return $er->createQueryBuilder('p')
+                        ->orderBy('p.name', 'ASC');
+                        },
                         ))
             ->add('transferAccount', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Account',
                         'error_bubbling' => true,
+                        'empty_value' => '',
                         ))
             ->add('category', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
                         'error_bubbling' => true,
+                        'empty_value' => '',
                         'query_builder' => function (EntityRepository $er)
                         {
 $qb = $er->createQueryBuilder('bc');
@@ -66,14 +81,25 @@ return $qb;
             ->add('assignedMonth', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Budget',
                         'error_bubbling' => true,
+                        'empty_value' => true,
+                        'query_builder' => function (EntityRepository $er)
+                        {
+                        $qb = $er->createQueryBuilder('am');
+                        return $qb
+                        ->where($qb->expr()->gte('am.month', ':month'))
+                            ->setParameter('month', $this->budget->getMonth())
+                        ->orderBy('am.month', 'ASC');
+                        }
                         ))
             ->add('inflow', 'money', array(
                         'currency' => 'USD',
                         'error_bubbling' => true,
+                        'required' => false,
                         ))
             ->add('outflow', 'money', array(
                         'currency' => 'USD',
                         'error_bubbling' => true,
+                        'required' => false,
                         ))
             ->add('checkNumber', 'text', array(
                         'error_bubbling' => true,

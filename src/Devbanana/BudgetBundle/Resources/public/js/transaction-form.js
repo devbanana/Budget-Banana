@@ -29,15 +29,41 @@ $('#devbanana_budgetbundle_transaction_date_year').on('change',
         updateCategories);
 $('#devbanana_budgetbundle_transaction_date_month').on('change',
         updateCategories);
+$('#devbanana_budgetbundle_transaction_date_year').attr(
+        'aria-labelledby', 'date-label');
+$('#devbanana_budgetbundle_transaction_date_month').attr(
+        'aria-labelledby', 'date-label');
+$('#devbanana_budgetbundle_transaction_date_day').attr(
+        'aria-labelledby', 'date-label');
 
 $('tr.lineitem').each(function()
         {
-        refreshRow(this);
+        //refreshRow(this);
         subscribeEvents(this);
 
+        $(this).find('td.type>select').attr(
+            'aria-labelledby', 'type-label');
+        $(this).find('td.account>select').attr(
+            'aria-labelledby', 'account-label');
+        $(this).find('td.payee>select').attr(
+            'aria-labelledby', 'payee-label');
+        $(this).find('td.category>select').attr(
+            'aria-labelledby', 'category-label');
+        $(this).find('td.check-number>input').attr(
+            'aria-labelledby', 'check-number-label');
+        $(this).find('td.memo>input').attr('aria-labelledby', 'memo-label');
+$(this).find('td.inflow>input').attr('aria-labelledby', 'inflow-label');
+$(this).find('td.outflow>input').attr('aria-labelledby', 'outflow-label');
+
+if ($('td.inflow>input').val() == '0.00') {
 $(this).find('td.inflow>input').val('');
+}
+if ($('td.outflow>input').val() == '0.00') {
 $(this).find('td.outflow>input').val('');
+}
         });
+
+updateBalance();
 
 function updateCategories()
 {
@@ -681,14 +707,24 @@ $('#submit').on('click', function(e)
         {
         e.preventDefault();
         var data = $('#transaction-form>form').serialize();
+        var url = Routing.generate('transactions_create_ajax');
+        if ($('tbody.lineitems').data('id')) {
+        var url = Routing.generate('transactions_update_ajax',
+            {id: $('tbody.lineitems').data('id')});
+        }
         $.post(
-            Routing.generate('transactions_create_ajax'),
+            url,
             data,
             function (result)
             {
+            alert(result);
             result = JSON.parse(result);
 
             if (result.success == true) {
+            if ($('tbody.lineitems').data('id')) {
+            location.href = result.redirect;
+            }
+            else {
             // Set new CSRF token
             $('#devbanana_budgetbundle__token').val(result.csrf);
             $('tr.lineitem').each(function(index)
@@ -738,6 +774,7 @@ dismissAlert();
 }
         });
 
+}
             }
             else {
                 var $errors = $('<ul></ul>');
@@ -766,4 +803,4 @@ $('#alert').dialog('close');
         }
 
 // Update categories on load
-updateCategories();
+//updateCategories();

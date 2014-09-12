@@ -70,12 +70,18 @@ services:
             tags:
                                - { name: doctrine.event_listener, event: prePersist }
                                - { name: doctrine.event_listener, event: preRemove }
+                               - { name: doctrine.event_listener, event: onFlush }
+    kernel.listen.update_transaction:
+            class: Devbanana\BudgetBundle\EventListener\UpdateTransactionListener
+            tags:
+                               - { name: doctrine.event_listener, event: onFlush }
     kernel.listen.update_category:
             class: Devbanana\BudgetBundle\EventListener\UpdateCategoryListener
             tags:
                 - { name: doctrine.event_listener, event: preUpdate }
                 - { name: doctrine.event_listener, event: prePersist }
                 - { name: doctrine.event_listener, event: preRemove }
+                - { name: doctrine.event_listener, event: onFlush }
 
 # Swiftmailer Configuration
 swiftmailer:

@@ -2,15 +2,18 @@
 
 namespace Devbanana\BudgetBundle\EventListener;
 
+use Devbanana\BudgetBundle\Entity\Transaction;
 use Devbanana\BudgetBundle\Entity\LineItem;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 use Devbanana\BudgetBundle\Entity\Category;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class UpdateCategoryListener
 {
-    public function preUpdate(LifecycleEventArgs $e)
+    public function preUpdate(PreUpdateEventArgs $e)
     {
         $em = $e->getEntityManager();
 $entity = $e->getEntity();
@@ -24,6 +27,38 @@ if ($entity instanceof BudgetCategories) {
     $entity->setBalance($balance);
 }
     }
+
+public function onFlush(OnFlushEventArgs $e)
+{
+    $em = $e->getEntityManager();
+    $uow = $em->getUnitOfWork();
+
+    $entities = $uow->getScheduledEntityUpdates();
+
+    foreach ($entities as $entity)
+    {
+if ($entity instanceof LineItem) {
+    $changeSet = $uow->getEntityChangeSet($entity);
+    $category = $entity->getCategory();
+    if ($category) {
+        $outflow = $category->getOutflow();
+if (isset($changeSet['inflow'])) {
+    // Subtract the old value and add the new
+    $outflow = bcsub($outflow, $changeSet['inflow'][0], 2);
+    $outflow = bcadd($outflow, $changeSet['inflow'][1], 2);
+}
+if (isset($changeSet['outflow'])) {
+    // Add the old value and subtract the new
+    $outflow = bcadd($outflow, $changeSet['outflow'][0], 2);
+    $outflow = bcsub($outflow, $changeSet['outflow'][1], 2);
+}
+$category->setOutflow($outflow);
+$md = $em->getClassMetadata(get_class($category));
+$uow->computeChangeSet($md, $category);
+}
+}
+    }
+}
 
 public function prePersist(LifecycleEventArgs $e)
 {
@@ -78,7 +113,7 @@ private function updateTransactionBalanceWhenLineItemIsDeleted(
         EntityManager $em)
 {
 $entity->getTransaction()->setOutflow(
-        bcadd(
+        bcsub(
             $entity->getTransaction()->getOutflow(),
             $entity->getOutflow(),
             2

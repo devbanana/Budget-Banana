@@ -1,6 +1,12 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}Add Transaction{% endblock %}
+{% block title %}
+{%- if entity.id is not empty -%}
+Modify Transaction
+{%- else -%}
+Add Transaction
+{%- endif -%}
+{% endblock %}
 
 {% block stylesheets %}
 <link style="text/css" rel="stylesheet"
@@ -15,6 +21,7 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 
 <div id="transaction-form">
 {{ form_start(form) }}
+<h2 tabindex="0">Transaction</h2>
 
 <table border="0" cellpadding="3" cellspacing="3">
 <thead>
@@ -28,38 +35,41 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 
 <tbody>
 <tr>
-<td aria-labelledby="date-label">
+<td>
 {{ form_widget(form.date) }}
 </td>
-<td aria-labelledby="inflow-label">
+<td aria-labelledby="inflow-label" tabindex="0">
 <span id="inflow">$0.00</span>
 </td>
-<td aria-labelledby="outflow-label">
+<td aria-labelledby="outflow-label" tabindex="0">
 <span id="outflow">$0.00</span>
 </td>
-<td aria-labelledby="balance-label">
+<td aria-labelledby="balance-label" tabindex="0">
 <span id="balance" aria-live="polite">$0.00</span>
 </td>
 </tr>
 </table>
 
-<h2>Line Items</h2>
+<h2 tabindex="0">Line Items</h2>
 
 <table border="1" rules="rows" cellpadding="3" cellspacing="3">
 <thead>
 <tr>
-<th>Type</th>
-<th>Account</th>
-<th>Payer/Payee</th>
-<th>Category</th>
-<th>Check Number</th>
-<th>Memo</th>
-<th>Inflow</th>
-<th>Outflow</th>
+<th id="type-label">Type</th>
+<th id="account-label">Account</th>
+<th id="payee-label">Payer/Payee</th>
+<th id="category-label">Category</th>
+<th id="check-number-label">Check Number</th>
+<th id="memo-label">Memo</th>
+<th id="inflow-label">Inflow</th>
+<th id="outflow-label">Outflow</th>
 </tr>
 </thead>
 
-<tbody class="lineitems" data-prototype="
+<tbody class="lineitems"
+{%- if entity.id is not empty -%}
+ data-id="{{ entity.id }}"
+{%- endif %} data-prototype="
 {{ '<td class="type">'|e }}
 {{ form_widget(form.lineitems.vars.prototype.type)|e }}
 {{ '</td>'|e }}
@@ -94,10 +104,28 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 {{ form_widget(lineitem.account) }}
 </td>
 <td class="payee">
+{% if lineitem.vars.data.type is not empty %}
+{% if lineitem.vars.data.type == 'expense' %}
 {{ form_widget(lineitem.payee) }}
+{% elseif lineitem.vars.data.type == 'income' %}
+{{ form_widget(lineitem.payer) }}
+{% elseif lineitem.vars.data.type == 'transfer' %}
+{{ form_widget(lineitem.transferAccount) }}
+{% endif %}
+{% else %}
+{{ form_widget(lineitem.payee) }}
+{% endif %}
 </td>
 <td class="category">
+{% if lineitem.vars.data.type is not empty %}
+{% if lineitem.vars.data.type == 'income' %}
+{{ form_widget(lineitem.assignedMonth) }}
+{% else %}
 {{ form_widget(lineitem.category) }}
+{% endif %}
+{% else %}
+{{ form_widget(lineitem.category) }}
+{% endif %}
 </td>
 <td class="check-number">
 {{ form_widget(lineitem.checkNumber) }}
@@ -112,9 +140,25 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 {{ form_widget(lineitem.outflow) }}
 </td>
 </tr>
+{% if lineitem.vars.data.type is not empty %}
+{% if lineitem.vars.data.type == 'expense' %}
+{% do lineitem.payer.setRendered %}
+{% do lineitem.transferAccount.setRendered %}
+{% do lineitem.assignedMonth.setRendered %}
+{% elseif lineitem.vars.data.type == 'income' %}
+{% do lineitem.payee.setRendered %}
+{% do lineitem.transferAccount.setRendered %}
+{% do lineitem.category.setRendered %}
+{% elseif lineitem.vars.data.type == 'transfer' %}
+{% do lineitem.payee.setRendered %}
 {% do lineitem.payer.setRendered %}
 {% do lineitem.assignedMonth.setRendered %}
+{% endif %}
+{% else %}
+{% do lineitem.payer.setRendered %}
 {% do lineitem.transferAccount.setRendered %}
+{% do lineitem.assignedMonth.setRendered %}
+{% endif %}
 {% endfor %}
 </tbody>
 </table>
