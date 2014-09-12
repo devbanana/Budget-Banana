@@ -68,6 +68,7 @@ class LineItemType extends AbstractType
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
                         'error_bubbling' => true,
                         'empty_value' => '',
+                        'property' => 'choiceString',
                         'query_builder' => function (EntityRepository $er)
                         {
 $qb = $er->createQueryBuilder('bc');

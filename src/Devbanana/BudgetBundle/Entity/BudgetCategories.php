@@ -298,4 +298,17 @@ class BudgetCategories
     {
         return $this->carryOver;
     }
+
+    public function getChoiceString()
+    {
+        $balance = $this->getBalance();
+if (bccomp($balance, '0.00', 2) < 0) {
+    $balance = "-$$balance";
+}
+else {
+    $balance = "$$balance";
+}
+
+return $this->getCategory()->getName() . ' ' . $balance;
+    }
 }
