@@ -719,7 +719,6 @@ $('#submit').on('click', function(e)
             data,
             function (result)
             {
-            alert(result);
             result = JSON.parse(result);
 
             if (result.success == true) {

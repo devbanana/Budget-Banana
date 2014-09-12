@@ -37,6 +37,7 @@ class LineItemType extends AbstractType
                         'class' => 'DevbananaBudgetBundle:Account',
                         'error_bubbling' => true,
                         'empty_value' => '',
+                        'property' => 'choiceString',
                         ))
             ->add('payee', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payee',

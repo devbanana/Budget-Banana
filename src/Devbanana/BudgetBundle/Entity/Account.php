@@ -281,4 +281,18 @@ class Account
     {
         return $this->accounts;
     }
+
+    public function getChoiceString()
+    {
+        $balance = $this->getBalance();
+        if (bccomp($balance, '0.00', 2) < 0) {
+            $balance = bcmul($balance, '-1.00', 2);
+            $balance = "-$$balance";
+        }
+        else {
+            $balance = "$$balance";
+        }
+
+        return $this->getName() . ' ' . $balance;
+    }
 }

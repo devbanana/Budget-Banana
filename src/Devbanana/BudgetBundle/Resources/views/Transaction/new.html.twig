@@ -14,7 +14,11 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 {% endblock %}
 
 {% block body %}
-<h1>Add Transaction</h1>
+<h1>{% if entity.id is not empty -%}
+Modify Transaction
+{%- else -%}
+Add Transaction
+{%- endif %}</h1>
 
 <div id="alert" style="display:none;"></div>
 <div id="errors" role="alert" style="display:none;"></div>
@@ -163,7 +167,11 @@ href="{{ asset('bundles/devbananabudget/js/jquery-ui/jquery-ui.min.css') }}">
 </tbody>
 </table>
 
-<p><button id="submit">Add</button></p>
+<p><button id="submit">{% if entity.id is not empty -%}
+Save
+{%- else -%}
+Add
+{%- endif %}</button></p>
 {{ form_end(form) }}
 </div>
 
