@@ -13,6 +13,7 @@ success: function (result)
 result = JSON.parse(result);
 $(row).find('td.balance').html(parseFloat(result.balance).formatMoney());
     updateAvailableToBudget();
+    updateBudgetedThisMonth();
 }
             });
 }
