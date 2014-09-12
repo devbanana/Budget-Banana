@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityRepository;
 class BudgetRepository extends EntityRepository
 {
 
-    public function findOneOrCreateByDate(\DateTime $date)
+    public function findOneOrCreateByDate(\DateTime $date, $flush = true)
     {
         $month = new \DateTime(sprintf('%04d-%02d-%02d',
                     $date->format('Y'),
@@ -26,17 +26,17 @@ class BudgetRepository extends EntityRepository
             $budget = new Budget;
             $budget->setMonth($month);
             $this->getEntityManager()->persist($budget);
-            $this->getEntityManager()->flush();
+            if ($flush) $this->getEntityManager()->flush();
         }
 
         return $budget;
     }
 
-    public function findOneOrCreateByMonthAndYear($month, $year)
+    public function findOneOrCreateByMonthAndYear($month, $year, $flush = true)
     {
         $date = new \DateTime(sprintf('%04d-%02d-%02d',
                     $year, $month, 1));
-        return $this->findOneOrCreateByDate($date);
+        return $this->findOneOrCreateByDate($date, $flush);
     }
 
     /**

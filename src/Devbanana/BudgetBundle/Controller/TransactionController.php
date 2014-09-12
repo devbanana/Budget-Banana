@@ -57,7 +57,10 @@ class TransactionController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate());
+            ->findOneOrCreateByDate($transaction->getDate(), false);
+
+        // Make sure there are 60 months of budgets to be selected for income
+        $this->createBudgets($em, $budget->getMonth());
 
         $form = $this->createForm(new TransactionType(), $transaction, array(
                     'budget' => $budget,
@@ -78,32 +81,11 @@ class TransactionController extends Controller
             $session = $request->getSession();
             $em = $this->getDoctrine()->getManager();
 
-            $transactions = $request->request->get('devbanana_budgetbundle_transaction');
-foreach ($transactions['lineitems'] as $i => $lineitem)
-{
-    if (isset($lineitem['assignedMonth'])) {
-        list($year, $month) = explode('-', $lineitem['assignedMonth']);
-        $date = new \DateTime(sprintf('%04d-%02d-%02d', $year, $month, 1));
-
-        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneByMonth($date);
-
-        if (!$budget) {
-            $budget = new Budget;
-            $budget->setMonth($date);
-            $em->persist($budget);
-            $em->flush();
-        }
-
-        $transactions['lineitems'][$i]['assignedMonth'] = $budget->getId();
-    }
-}
-
-$request->request->set('devbanana_budgetbundle_transaction', $transactions);
+            $transactionArray = $request->request->get('devbanana_budgetbundle_transaction');
 
 $transaction = new Transaction;
-$year = $transactions['date']['year'];
-$month = $transactions['date']['month'];
+$year = $transactionArray['date']['year'];
+$month = $transactionArray['date']['month'];
 
 $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
 ->findOneOrCreateByMonthAndYear($month, $year);
@@ -179,7 +161,10 @@ return $response;
     {
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate());
+            ->findOneOrCreateByDate($transaction->getDate(), false);
+
+        // Make sure there are 60 months of budgets to be selected for income
+        $this->createBudgets($em, $budget->getMonth());
 
         $form = $this->createForm(new TransactionType(), $transaction, array(
                     'budget' => $budget,
@@ -196,7 +181,7 @@ return $response;
          *     name="transactions_update_ajax",
          *     options={"expose":true})
          */
-        public function updateAction(Request $request, Transaction $transaction)
+        public function updateActionAjax(Request $request, Transaction $transaction)
 {
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
@@ -292,5 +277,19 @@ return $response;
                 'thisMonth' => $thisMonth,
                 'nextMonth' => $endMonth,
             );    }
+
+        private function createBudgets(\Doctrine\ORM\EntityManager $em, $startMonth)
+{
+    $month = clone $startMonth;
+for ($i = 0; $i < 60; $i++)
+{
+    $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+        ->findOneOrCreateByDate($month, false);
+
+    $month->modify('+1 month');
+}
+
+$em->flush();
+}
 
 }

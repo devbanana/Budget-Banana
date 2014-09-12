@@ -148,4 +148,46 @@ return $response;
         return $response;
     }
 
+    /**
+     * @Route("/get/assigned-months/{year}/{month}",
+     *     name="budgetcategories_get_assigned_months_ajax",
+     *     options={"expose":true})
+     */
+    public function getAssignedMonthsAjaxAction($year, $month)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+            ->findOneOrCreateByMonthAndYear($month, $year);
+
+        $months = array();
+        $months[] = $budget;
+            $month = clone $budget->getMonth();
+
+        for ($i = 0; $i < 59; $i++)
+        {
+$month->modify('+1 month');
+$budget = $em->getRepository('DevbananaBudgetBundle:Budget')
+    ->findOneOrCreateByDate($month);
+$months[] = $budget;
+        }
+
+        $content = array();
+        $content['assignedMonths'] = array();
+
+        foreach ($months as $month)
+        {
+            $content['assignedMonths'][] = array(
+                    'id' => $month->getId(),
+                    'month' => 'Income for ' . $month->getMonth()->format('F Y'),
+                    );
+        }
+
+        $response = new Response;
+        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->setContent(json_encode($content));
+
+        return $response;
+    }
+
 }

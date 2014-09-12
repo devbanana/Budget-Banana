@@ -84,10 +84,15 @@ return $qb;
                         'empty_value' => true,
                         'query_builder' => function (EntityRepository $er)
                         {
+                        $startMonth = $this->budget->getMonth();
+                        $endMonth = clone $startMonth;
+                        $endMonth->modify('+59 months');
                         $qb = $er->createQueryBuilder('am');
                         return $qb
-                        ->where($qb->expr()->gte('am.month', ':month'))
-                            ->setParameter('month', $this->budget->getMonth())
+                        ->where($qb->expr()->gte('am.month', ':startMonth'))
+                        ->andWhere($qb->expr()->lte('am.month', ':endMonth'))
+                            ->setParameter('startMonth', $startMonth)
+                            ->setParameter('endMonth', $endMonth)
                         ->orderBy('am.month', 'ASC');
                         }
                         ))

@@ -51,7 +51,6 @@ class AccountCategory
 
     /**
      * @ORM\OneToMany(targetEntity="Account", mappedBy="accountCategory")
-     * @ORM\OrderBy({"sortOrder" = "ASC"})
      */
     private $accounts;
 

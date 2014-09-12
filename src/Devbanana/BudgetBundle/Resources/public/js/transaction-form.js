@@ -38,22 +38,8 @@ $('#devbanana_budgetbundle_transaction_date_day').attr(
 
 $('tr.lineitem').each(function()
         {
-        //refreshRow(this);
         subscribeEvents(this);
-
-        $(this).find('td.type>select').attr(
-            'aria-labelledby', 'type-label');
-        $(this).find('td.account>select').attr(
-            'aria-labelledby', 'account-label');
-        $(this).find('td.payee>select').attr(
-            'aria-labelledby', 'payee-label');
-        $(this).find('td.category>select').attr(
-            'aria-labelledby', 'category-label');
-        $(this).find('td.check-number>input').attr(
-            'aria-labelledby', 'check-number-label');
-        $(this).find('td.memo>input').attr('aria-labelledby', 'memo-label');
-$(this).find('td.inflow>input').attr('aria-labelledby', 'inflow-label');
-$(this).find('td.outflow>input').attr('aria-labelledby', 'outflow-label');
+        createLabelAssociations(this);
 
 if ($('td.inflow>input').val() == '0.00') {
 $(this).find('td.inflow>input').val('');
@@ -64,6 +50,23 @@ $(this).find('td.outflow>input').val('');
         });
 
 updateBalance();
+
+function createLabelAssociations(row)
+{
+        $(row).find('td.type>select').attr(
+            'aria-labelledby', 'type-label');
+        $(row).find('td.account>select').attr(
+            'aria-labelledby', 'account-label');
+        $(row).find('td.payee>select').attr(
+            'aria-labelledby', 'payee-label');
+        $(row).find('td.category>select').attr(
+            'aria-labelledby', 'category-label');
+        $(row).find('td.check-number>input').attr(
+            'aria-labelledby', 'check-number-label');
+        $(row).find('td.memo>input').attr('aria-labelledby', 'memo-label');
+$(row).find('td.inflow>input').attr('aria-labelledby', 'inflow-label');
+$(row).find('td.outflow>input').attr('aria-labelledby', 'outflow-label');
+}
 
 function updateCategories()
 {
@@ -79,7 +82,10 @@ result = JSON.parse(result);
 
 $('tr.lineitem').each(function()
     {
-if ($(this).find('td.type>select').val() != 'income') {
+if ($(this).find('td.type>select').val() == 'income') {
+refreshAssignedMonths(this);
+}
+else {
 populateCategories(this, result);
 }
 });
@@ -94,7 +100,7 @@ function typeListener()
 
     if ($(this).val() == 'income') {
         // Replace categories with months
-        updateIncomeMonths($(this).parents('tr'));
+        refreshAssignedMonths($(this).parents('tr'));
     }
     else if ($(this).val() != 'income') {
         // Populate with categories
@@ -143,49 +149,45 @@ function addLineItemForm($collectionHolder, $newLinkRow)
 
     refreshRow($newFormRow);
     subscribeEvents($newFormRow);
+    createLabelAssociations($newFormRow);
 }
 
 // Update categories dropdown with list of months that income can be applied to
 //
 // This is only populated when the income type is selected
-function updateIncomeMonths(row)
+function refreshAssignedMonths(row)
 {
     var year = $('#devbanana_budgetbundle_transaction_date_year').val();
-    var month = $('#devbanana_budgetbundle_transaction_date_month').val() - 1;
+    var month = $('#devbanana_budgetbundle_transaction_date_month').val();
 
-    var d = new Date(year, month, 1);
+    $.ajax({
+url: Routing.generate('budgetcategories_get_assigned_months_ajax',
+         {month: month, year: year}),
+method: "POST",
+success: function (result)
+{
+result = JSON.parse(result);
+populateAssignedMonths(row, result);
+}
+            });
+}
 
-    var months = new Array();
-    months[0] = 'January';
-    months[1] = 'February';
-    months[2] = 'March';
-    months[3] = 'April';
-    months[4] = 'May';
-    months[5] = 'June';
-    months[6] = 'July';
-    months[7] = 'August';
-    months[8] = 'September';
-    months[9] = 'October';
-    months[10] = 'November';
-    months[11] = 'December';
+function populateAssignedMonths(row, result)
+{
+    var $category = $(row).find('td.category>select');
+    $category.attr('id',
+            $category.attr('id').replace('category', 'assigned_month'));
+    $category.attr('name',
+            $category.attr('name').replace('category', 'assignedMonth'));
 
-    var $categorySelect = $(row).find('td.category>select');
-    $categorySelect.attr('id',
-            $categorySelect.attr('id').replace('category', 'assigned_month'));
-    $categorySelect.attr('name',
-            $categorySelect.attr('name').replace('category', 'assignedMonth'));
-    $categorySelect.html('');
-    $categorySelect.append(getEmptyOption());
+    $category.empty();
+    $category.append(getEmptyOption());
 
-    // Loop for 60 months
-    for (var i = 0; i < 60; i++)
-    {
-    $categorySelect.append(
-            getOption(d.getFullYear() + '-' + (d.getMonth()+1),
-                'Income for ' + months[d.getMonth()] + ' ' + d.getFullYear()));
-
-    d.setMonth(d.getMonth()+1);
-    }
+    $.each(result.assignedMonths, function (index, assignedMonth)
+            {
+            $category.append(
+                getOption(assignedMonth.id, assignedMonth.month));
+            });
 }
 
 function accountListener()
@@ -589,7 +591,7 @@ function refreshCategories(row)
     var year = $('#devbanana_budgetbundle_transaction_date_year').val();
 
     if ($(row).find('td.type>select').val() == 'income') {
-        updateIncomeMonths(row);
+        refreshAssignedMonths(row);
     }
     else {
     $.ajax({
@@ -801,6 +803,3 @@ function dismissAlert()
 $('#alert').dialog('close');
             $('#devbanana_budgetbundle_transaction_date_year').focus();
         }
-
-// Update categories on load
-//updateCategories();
