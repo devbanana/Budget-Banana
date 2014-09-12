@@ -61,18 +61,23 @@ class BudgetCategoriesController extends Controller
     /**
      * @Route("/save/ajax/{id}/{budgeted}",
      *     name="budgetcategories_save_ajax",
+     *     defaults={"budgeted"="0.00"},
      *     options={"expose":true})
      */
     public function saveAjaxAction(BudgetCategories $category, $budgeted)
     {
         $em = $this->getDoctrine()->getManager();
 
+        if (!$budgeted) {
+            $budgeted = '0.00';
+        }
         $category->setBudgeted($budgeted);
         $em->flush();
 
         $content = array();
         $content['outflow'] = $category->getOutflow();
         $content['balance'] = $category->getBalance();
+        $content['budgeted'] = $budgeted;
 
         $response = new Response;
         $response->headers->set('Content-Type', 'Application/JSON');

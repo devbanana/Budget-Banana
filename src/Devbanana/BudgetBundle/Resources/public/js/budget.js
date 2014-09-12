@@ -6,7 +6,7 @@ function budgetedListener()
     $.ajax({
 url: Routing.generate('budgetcategories_save_ajax',
          {id: $(row).data('id'),
-budgeted: parseFloat($(row).find('td.budgeted>input').val())}),
+budgeted: ($(row).find('td.budgeted>input').val())}),
 method: "POST",
 success: function (result)
 {

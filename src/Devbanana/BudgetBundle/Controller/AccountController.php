@@ -65,7 +65,7 @@ class AccountController extends Controller
             $em->persist($entity);
 
         $startingBalance = $form->get('startingBalance')->getData();
-        if (bccomp($startingBalance, '0.00', 2)) {
+        if (bccomp(floatval($startingBalance), '0.00', 2)) {
             $this->createTransaction($startingBalance, $entity);
         }
 

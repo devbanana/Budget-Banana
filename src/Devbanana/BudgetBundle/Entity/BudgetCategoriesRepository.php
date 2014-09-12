@@ -43,7 +43,7 @@ $previousBalance = $this->getBalanceForCategory($previousCategory);
 
 // If carry over is default of budget, then only use balance if positive.
 if ($previousBalance < 0 && $previousCategory->getCarryOver() == 'budget') {
-$previousBalance = 0;
+$previousBalance = '0.00';
 }
 
 // NOTE: We must use bcadd here because outflow is always negative
