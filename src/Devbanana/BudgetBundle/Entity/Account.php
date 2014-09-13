@@ -74,6 +74,13 @@ class Account
      */
     private $budgeted;
 
+    /**
+     * The user that created this master category
+     *
+     * @ORM\ManyToOne(targetEntity="Devbanana\UserBundle\Entity\User")
+     */
+    private $user;
+
 
     public function __toString()
     {
@@ -294,5 +301,28 @@ class Account
         }
 
         return $this->getName() . ' ' . $balance;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Devbanana\UserBundle\Entity\User $user
+     * @return Account
+     */
+    public function setUser(\Devbanana\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Devbanana\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

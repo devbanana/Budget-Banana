@@ -6,14 +6,18 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Devbanana\UserBundle\Entity\User;
+use Devbanana\BudgetBundle\Entity\Budget;
 
 class LineItemType extends AbstractType
 {
 
+    private $user;
     private $budget;
 
-    public function __construct($budget = null)
+    public function __construct(User $user, Budget $budget)
     {
+        $this->user = $user;
         $this->budget = $budget;
     }
 
@@ -38,12 +42,22 @@ class LineItemType extends AbstractType
                         'error_bubbling' => true,
                         'empty_value' => '',
                         'property' => 'choiceString',
+                        'query_builder' => function (EntityRepository $er)
+                        {
+                        $qb = $er->createQueryBuilder('a');
+                        return $qb
+                        ->where($qb->expr()->eq('a.user', ':user'))
+                        ->setParameter('user', $this->user)
+                        ;
+                        }
                         ))
             ->add('payee', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:Payee',
                         'query_builder' => function (EntityRepository $er)
                         {
                         return $er->createQueryBuilder('p')
+                        ->where('p.user = :user')
+                        ->setParameter('user', $this->user)
                         ->orderBy('p.name', 'ASC');
                         },
                         'error_bubbling' => true,
@@ -56,6 +70,8 @@ class LineItemType extends AbstractType
                         'query_builder' => function (EntityRepository $er)
                         {
                         return $er->createQueryBuilder('p')
+                        ->where('p.user = :user')
+                        ->setParameter('user', $this->user)
                         ->orderBy('p.name', 'ASC');
                         },
                         ))
@@ -63,6 +79,13 @@ class LineItemType extends AbstractType
                         'class' => 'DevbananaBudgetBundle:Account',
                         'error_bubbling' => true,
                         'empty_value' => '',
+                        'query_builder' => function (EntityRepository $er)
+                        {
+                        return $er->createQueryBuilder('a')
+                        ->where('a.user = :user')
+                        ->setParameter('user', $this->user)
+                        ->orderBy('a.name');
+                        }
                         ))
             ->add('category', 'entity', array(
                         'class' => 'DevbananaBudgetBundle:BudgetCategories',
@@ -71,16 +94,16 @@ class LineItemType extends AbstractType
                         'property' => 'choiceString',
                         'query_builder' => function (EntityRepository $er)
                         {
-$qb = $er->createQueryBuilder('bc');
-$qb->innerJoin('bc.category', 'c')
-->innerJoin('c.masterCategory', 'mc');
-if ($this->budget) {
-$qb->where($qb->expr()->eq('bc.budget', ':budget'))
-->setParameter('budget', $this->budget);
-}
-$qb->addOrderBy('mc.order', 'ASC')
+return $er->createQueryBuilder('bc')
+->innerJoin('bc.budget', 'b')
+->innerJoin('bc.category', 'c')
+->innerJoin('c.masterCategory', 'mc')
+->where('bc.budget = :budget')
+->setParameter('budget', $this->budget)
+->andWhere('b.user = :user')
+->setParameter('user', $this->user)
+->addOrderBy('mc.order', 'ASC')
 ->addOrderBy('c.order', 'ASC');
-return $qb;
                         },
                         ))
             ->add('assignedMonth', 'entity', array(
@@ -92,10 +115,11 @@ return $qb;
                         $startMonth = $this->budget->getMonth();
                         $endMonth = clone $startMonth;
                         $endMonth->modify('+59 months');
-                        $qb = $er->createQueryBuilder('am');
-                        return $qb
-                        ->where($qb->expr()->gte('am.month', ':startMonth'))
-                        ->andWhere($qb->expr()->lte('am.month', ':endMonth'))
+                        return $er->createQueryBuilder('am')
+                        ->where('am.user = :user')
+                        ->andWhere('am.month >= :startMonth')
+                        ->andWhere('am.month < :endMonth')
+                        ->setParameter('user', $this->user)
                             ->setParameter('startMonth', $startMonth)
                             ->setParameter('endMonth', $endMonth)
                         ->orderBy('am.month', 'ASC');

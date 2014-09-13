@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\UserBundle\Entity\User;
 
 /**
  * MasterCategoryRepository
@@ -13,10 +14,14 @@ use Doctrine\ORM\EntityRepository;
 class MasterCategoryRepository extends EntityRepository
 {
 
-    public function findOrderedMasterCategories()
+    public function findOrderedMasterCategories(User $user)
     {
         $qb = $this->createQueryBuilder('mc');
         $query = $qb
+            ->leftJoin('mc.categories', 'c')
+            ->select('mc', 'c')
+            ->where('mc.user = :user')
+            ->setParameter('user', $user)
             ->orderBy('mc.order', 'ASC')
             ->getQuery()
             ;

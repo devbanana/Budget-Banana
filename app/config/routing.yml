@@ -1,3 +1,8 @@
+devbanana_user:
+    resource: "@DevbananaUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 devbanana_budget:
     resource: "@DevbananaBudgetBundle/Controller"
     prefix:   /
@@ -6,3 +11,6 @@ devbanana_budget:
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+    prefix: /user

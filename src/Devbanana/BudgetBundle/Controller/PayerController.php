@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/payers")
@@ -19,13 +20,14 @@ class PayerController extends Controller
     /**
      * @Route("/list/ajax", name="payers_list_ajax", options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function listAjaxAction()
     {
         $em = $this->getDoctrine()->getManager();
 
 $payers = $em->getRepository('DevbananaBudgetBundle:Payer')
-    ->findAllOrderedByName();
+    ->findAllOrderedByName($this->getUser());
 
 $content = array();
 $content['payers'] = array();
@@ -49,6 +51,7 @@ return $response;
      * @Route("/new/ajax", name="payers_new_ajax", options={"expose":true})
      * @Method("POST")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newAjaxAction()
     {
@@ -64,10 +67,12 @@ return $response;
      * @Route("/create/ajax", name="payers_create_ajax",
      * options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    function createAjaxAction(Request $request)
+    public function createAjaxAction(Request $request)
     {
         $payer = new Payer;
+        $payer->setUser($this->getUser());
         $form = $this->createForm(new PayerType(), $payer);
         $form->handleRequest($request);
         $content = array();

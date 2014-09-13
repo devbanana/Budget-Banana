@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Devbanana\BudgetBundle\Form\BudgetType;
 use Devbanana\BudgetBundle\Form\BudgetCategoriesType;
 use Devbanana\BudgetBundle\Entity\Budget;
@@ -21,9 +22,12 @@ class BudgetController extends Controller
      * @Route("/calculate/ajax/{id}",
      *     name="budget_calculate_ajax",
      *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function calculateAjaxAction(Budget $budget)
     {
+        $this->authorizeAccess($budget);
+
 $em = $this->getDoctrine()->getManager();
 
 $content = array();
@@ -53,9 +57,12 @@ return $response;
          * @Route("/available-to-budget/{id}",
          *     name="budget_available_to_budget",
          *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function getAvailableToBudgetAction(Budget $budget)
         {
+            $this->authorizeAccess($budget);
+
             $em = $this->getDoctrine()->getManager();
 
             $availableToBudget = $em->getRepository('DevbananaBudgetBundle:Budget')
@@ -75,9 +82,12 @@ return $response;
  * @Route("/overspent-last-month/ajax/{id}",
  *     name="budget_overspent_last_month_ajax",
  *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
 public function getOverspentLastMonth(Budget $budget)
         {
+            $this->authorizeAccess($budget);
+
             $em = $this->getDoctrine()->getManager();
 
             $overspentLastMonth = $em->getRepository('DevbananaBudgetBundle:Budget')
@@ -101,9 +111,12 @@ return $response;
  * @Route("/not-budgeted-last-month/ajax/{id}",
  *     name="budget_not_budgeted_last_month_ajax",
  *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
 public function getNotBudgetedLastMonthAjaxAction(Budget $budget)
 {
+    $this->authorizeAccess($budget);
+
     $em = $this->getDoctrine()->getManager();
 
     $notBudgetedLastMonth = $em->getRepository('DevbananaBudgetBundle:Budget')
@@ -127,9 +140,12 @@ public function getNotBudgetedLastMonthAjaxAction(Budget $budget)
  * @Route("/income-this-month/ajax/{id}",
  *     name="budget_income_this_month_ajax",
  *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
 public function getIncomeThisMonthAjaxAction(Budget $budget)
         {
+            $this->authorizeAccess($budget);
+
             $em = $this->getDoctrine()->getManager();
 
             $incomeThisMonth = $em->getRepository('DevbananaBudgetBundle:LineItem')
@@ -152,9 +168,12 @@ return $response;
  * @Route("/budgeted-this-month/ajax/{id}",
  *     name="budget_budgeted_this_month_ajax",
  *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
 public function getBudgetedThisMonthAjaxAction(Budget $budget)
         {
+            $this->authorizeAccess($budget);
+
             $em = $this->getDoctrine()->getManager();
 
             $budgetedThisMonth = $em->getRepository(
@@ -179,6 +198,7 @@ return $response;
      * @Route("/{year}/{month}", name="budget",
      *     defaults={"year" = null, "month" = null})
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function budgetAction(Request $request, $year, $month)
     {
@@ -209,17 +229,17 @@ return $response;
         $em = $this->getDoctrine()->getManager();
 
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByMonthAndYear($month, $year);
+            ->findOneOrCreateByMonthAndYear($month, $year, $this->getUser());
 
         $lastMonth = clone $budget->getMonth();
         $lastMonth->modify('-1 month');
         $previousBudget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($lastMonth);
+            ->findOneOrCreateByDate($lastMonth, $this->getUser());
 
         $nextMonth = clone $budget->getMonth();
         $nextMonth->modify('+1 month');
         $nextBudget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($nextMonth);
+            ->findOneOrCreateByDate($nextMonth, $this->getUser());
 
         $form = $this->createForm(new BudgetType(), $budget);
 
@@ -229,5 +249,13 @@ return $response;
                 'previousBudget' => $previousBudget,
                 'nextBudget' => $nextBudget,
             );    }
+
+        private function authorizeAccess(Budget $budget)
+{
+    if ($budget->getUser() != $this->getUser()
+            && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        $this->createAccessDeniedException();
+    }
+}
 
 }

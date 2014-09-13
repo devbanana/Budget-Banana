@@ -5,9 +5,22 @@ namespace Devbanana\BudgetBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Devbanana\UserBundle\Entity\User;
+use Devbanana\BudgetBundle\Entity\Budget;
 
 class TransactionType extends AbstractType
 {
+
+    private $user;
+
+    private $budget;
+
+    public function __construct(User $user, Budget $budget)
+{
+    $this->user = $user;
+    $this->budget = $budget;
+}
+
         /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -21,7 +34,7 @@ class TransactionType extends AbstractType
                         'error_bubbling' => true,
                         ))
             ->add('lineitems', 'collection', array(
-                        'type' => new LineItemType($options['budget']),
+                        'type' => new LineItemType($this->user, $this->budget),
                         'allow_add' => true,
                         'by_reference' => false,
                         'error_bubbling' => true,
@@ -36,7 +49,6 @@ class TransactionType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Devbanana\BudgetBundle\Entity\Transaction',
-            'budget' => null,
         ));
     }
 

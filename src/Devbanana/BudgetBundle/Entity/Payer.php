@@ -35,6 +35,13 @@ class Payer
      */
     private $lineItems;
 
+    /**
+     * The user that created this master category
+     *
+     * @ORM\ManyToOne(targetEntity="Devbanana\UserBundle\Entity\User")
+     */
+    private $user;
+
 
     /**
      * Get id
@@ -112,5 +119,28 @@ class Payer
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Devbanana\UserBundle\Entity\User $user
+     * @return Payer
+     */
+    public function setUser(\Devbanana\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Devbanana\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

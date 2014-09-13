@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Form\AccountType;
 use Devbanana\BudgetBundle\Entity\Transaction;
@@ -30,12 +31,14 @@ class AccountController extends Controller
      * @Route("/", name="accounts")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('DevbananaBudgetBundle:Account')->findAll();
+        $entities = $em->getRepository('DevbananaBudgetBundle:Account')
+            ->findByUser($this->getUser());
 
         return array(
             'entities' => $entities,
@@ -52,10 +55,12 @@ class AccountController extends Controller
      * @Route("/", name="accounts_create")
      * @Method("POST")
      * @Template("DevbananaBudgetBundle:Account:new.html.twig")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function createAction(Request $request)
     {
         $entity = new Account();
+        $entity->setUser($this->getUser());
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -86,6 +91,7 @@ class AccountController extends Controller
     {
         // Create a starting balance transaction
         $transaction = new Transaction;
+        $transaction->setUser($this->getUser());
         $transaction->setDate(new \DateTime());
 
         $lineItem = new LineItem;
@@ -93,7 +99,7 @@ class AccountController extends Controller
 
         // Find budget for current month
         $budget = $this->em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate());
+            ->findOneOrCreateByDate($transaction->getDate(), $this->getUser());
 
         // Asset or liability?
         if (bccomp($startingBalance, '0.00', 2) >= 0) {
@@ -116,7 +122,10 @@ class AccountController extends Controller
 
             // Search for Debt category
             $masterCategory = $this->em->getRepository('DevbananaBudgetBundle:MasterCategory')
-                ->findOneByName('Debt');
+                ->findOneBy(array(
+                            'user' => $this->getUser(),
+                            'name' => 'Debt',
+                            ));
 
             $category->setMasterCategory($masterCategory);
 
@@ -152,6 +161,7 @@ class AccountController extends Controller
      * @Route("/create/ajax", name="accounts_create_ajax",
      * options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
 public function createAjaxAction(Request $request)
 {
@@ -159,6 +169,8 @@ public function createAjaxAction(Request $request)
     $response->headers->set('Content-Type', 'Application/JSON');
     $content = array();
         $entity = new Account();
+        $entity->setUser($this->getUser());
+
         $form = $this->createCreateForm($entity, false);
         $form->handleRequest($request);
 
@@ -168,7 +180,9 @@ public function createAjaxAction(Request $request)
             $em->persist($entity);
 
             $startingBalance = $form->get('startingBalance')->getData();
+            if (bccomp(floatval($startingBalance), '0.00', 2)) {
             $this->createTransaction($startingBalance, $entity);
+            }
 
             $em->flush();
 
@@ -198,12 +212,13 @@ return $response;
 /**
  * @Route("/list/ajax", name="accounts_list_ajax", options={"expose":true})
  * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
  */
 public function listAjaxAction()
 {
     $em = $this->getDoctrine()->getManager();
     $accounts = $em->getRepository('DevbananaBudgetBundle:Account')
-        ->findAll();
+        ->findByUser($this->getUser());
 
         $accountsArray = array();
     foreach ($accounts as $account)
@@ -260,6 +275,7 @@ public function listAjaxAction()
      * @Route("/new", name="accounts_new")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newAction()
     {
@@ -282,6 +298,7 @@ public function listAjaxAction()
      * @Route("/new/ajax", name="accounts_new_ajax", options={"expose":true})
      * @Method("POST")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newAjaxAction()
     {
@@ -304,19 +321,16 @@ public function listAjaxAction()
      * @Route("/{id}", name="accounts_show")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function showAction($id)
+    public function showAction(Account $account)
     {
+        $this->authorizeAccess($account);
+
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Account entity.');
-        }
-
         return array(
-            'entity'      => $entity,
+            'entity'      => $account,
         );
     }
 
@@ -330,21 +344,18 @@ public function listAjaxAction()
      * @Route("/{id}/edit", name="accounts_edit")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function editAction($id)
+    public function editAction(Account $account)
     {
+        $this->authorizeAccess($account);
+
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Account entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($account);
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $account,
             'edit_form'   => $editForm->createView(),
         );
     }
@@ -382,24 +393,21 @@ public function listAjaxAction()
      * @Route("/{id}", name="accounts_update")
      * @Method("PUT")
      * @Template("DevbananaBudgetBundle:Account:edit.html.twig")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Account $account)
     {
+        $this->authorizeAccess($account);
+
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Account entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($account);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('accounts_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('accounts_edit', array('id' => $account->getId())));
         }
 
         return array(
@@ -418,20 +426,18 @@ public function listAjaxAction()
      * @Route("/{id}/delete", name="accounts_delete")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function deleteAction($id)
+    public function deleteAction(Account $account)
     {
+        $this->authorizeAccess($account);
+
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Account.');
-            }
-
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($account->getId());
 
         return array(
-                'entity' => $entity,
+                'entity' => $account,
                 'form' => $form->createView()
                 );
     }
@@ -445,28 +451,24 @@ public function listAjaxAction()
       /**
        * @Route("/{id}", name="accounts_delete_confirm")
        * @Method("DELETE")
-       * */
-    public function confirmDeleteAction(Request $request, $id)
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+     */
+    public function confirmDeleteAction(Request $request, Account $account)
     {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('DevbananaBudgetBundle:Account')->find($id);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Account.');
-            }
-
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($account->getId());
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em->remove($entity);
+            $em->remove($account);
             $em->flush();
 
         return $this->redirect($this->generateUrl('accounts'));
         }
 
         return array(
-                'entity' => $entity,
+                'entity' => $account,
                 'form' => $form->createView()
                 );
     }
@@ -493,5 +495,17 @@ public function listAjaxAction()
     }
 
     // }}}
+
+// {{{ private function authorizeAccess(Account)
+
+private function authorizeAccess(Account $account)
+{
+    if ($account->getUser() != $this->getUser()
+            && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        $this->createAccessDeniedException();
+    }
+}
+
+// }}}
 
 }

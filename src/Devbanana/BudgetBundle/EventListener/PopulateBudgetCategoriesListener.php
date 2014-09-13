@@ -22,7 +22,7 @@ class PopulateBudgetCategoriesListener
             }
 
 $mainCategories = $em->getRepository('DevbananaBudgetBundle:Category')
-    ->findAllOrderedByOrder();
+    ->findAllOrderedByOrder($entity->getUser());
 
 foreach ($mainCategories as $category)
 {

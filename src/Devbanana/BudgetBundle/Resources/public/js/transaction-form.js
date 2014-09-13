@@ -41,6 +41,20 @@ $('tr.lineitem').each(function()
         subscribeEvents(this);
         createLabelAssociations(this);
 
+        // Append add option to dropdowns
+        $('td.account>select', $(this)).append(getAddOption('Add Account'));
+
+        if ($(this).find('td.type>select').val() == 'expense') {
+        $('td.payee>select').append(getAddOption('Add Payee'));
+        }
+        else if ($(this).find('td.type>select').val() == 'income') {
+        $('td.payee>select').append(getAddOption('Add Payer'));
+        }
+
+        if ($(this).find('td.type>select').val() != 'income') {
+        $(this).find('td.category>select').append(getAddOption('Add Category'));
+        }
+
 if ($('td.inflow>input').val() == '0.00') {
 $(this).find('td.inflow>input').val('');
 }

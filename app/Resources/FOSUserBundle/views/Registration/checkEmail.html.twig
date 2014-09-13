@@ -1,0 +1,10 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block title %}Confirm Your Email Address{% endblock %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+<h1>Confirm Your Email</h1>
+    <p>{{ 'registration.check_email'|trans({'%email%': user.email}) }}</p>
+{% endblock fos_user_content %}

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Devbanana\BudgetBundle\Entity\MasterCategory;
 use Devbanana\BudgetBundle\Entity\Category;
 use Devbanana\BudgetBundle\Form\CategoryType;
@@ -19,6 +20,7 @@ class CategoryController extends Controller
     /**
      * @Route("/", name="categories_index")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function indexAction()
     {
@@ -26,7 +28,7 @@ class CategoryController extends Controller
 
         $masterCategories = $em->getRepository(
                 'DevbananaBudgetBundle:MasterCategory')
-            ->findOrderedMasterCategories();
+            ->findOrderedMasterCategories($this->getUser());
 
         return array(
                 'entities' => $masterCategories,
@@ -35,6 +37,7 @@ class CategoryController extends Controller
         /**
          * @Route("/{id}",
          *     name="categories_show")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function showAction(Category $category)
         {
@@ -46,6 +49,7 @@ class CategoryController extends Controller
          *     defaults={"id" = null},
          *     options={"expose":true})
          * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function newAjaxAction(MasterCategory $masterCategory = null)
         {
@@ -62,10 +66,12 @@ class CategoryController extends Controller
          * @Route("/create/ajax",
          *     name="categories_create_ajax",
          *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function createAjaxAction(Request $request)
         {
             $category = new Category;
+            $category->setUser($this->getUser());
             $form = $this->createForm(new CategoryType(), $category);
             $form->handleRequest($request);
 

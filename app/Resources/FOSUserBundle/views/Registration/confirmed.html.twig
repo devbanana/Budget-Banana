@@ -1,0 +1,18 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block title %}Account Created{% endblock %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+<h1>Account Created</h1>
+    <p>{{ 'registration.confirmed'|trans({'%username%': user.username}) }}</p>
+    <p>Now get started by
+    <a href="{{ path('accounts_new') }}">
+    entering in your accounts
+    </a>.</p>
+    {% if app.session is not empty %}
+        {% set targetUrl = app.session.get('_security.' ~ app.security.token.providerKey ~ '.target_path') %}
+        {% if targetUrl is not empty %}<p><a href="{{ targetUrl }}">{{ 'registration.back'|trans }}</a></p>{% endif %}
+    {% endif %}
+{% endblock fos_user_content %}

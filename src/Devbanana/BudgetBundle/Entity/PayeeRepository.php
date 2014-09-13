@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\UserBundle\Entity\User;
 
 /**
  * PayeeRepository
@@ -12,9 +13,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class PayeeRepository extends EntityRepository
 {
-    public function findAllOrderedByName()
+    public function findAllOrderedByName(User $user)
     {
         $q = $this->createQueryBuilder('p')
+            ->where('p.user = :user')
+            ->setParameter('user', $user)
             ->orderBy('p.name', 'ASC')
             ->getQuery();
 

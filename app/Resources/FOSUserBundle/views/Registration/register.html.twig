@@ -1,0 +1,11 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block title %}Register an Account{% endblock %}
+
+{% block fos_user_content %}
+<h1>Register an Account</h1>
+
+<p>Registering is simple. Simply fill in the form below to create a new account. We will not share your personal information.</p>
+
+{% include "FOSUserBundle:Registration:register_content.html.twig" %}
+{% endblock fos_user_content %}

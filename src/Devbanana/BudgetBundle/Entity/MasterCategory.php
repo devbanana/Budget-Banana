@@ -43,6 +43,13 @@ class MasterCategory
      */
     private $order;
 
+    /**
+     * The user that created this master category
+     *
+     * @ORM\ManyToOne(targetEntity="Devbanana\UserBundle\Entity\User")
+     */
+    private $user;
+
 
     /**
      * Get id
@@ -143,5 +150,28 @@ class MasterCategory
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Devbanana\UserBundle\Entity\User $user
+     * @return MasterCategory
+     */
+    public function setUser(\Devbanana\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Devbanana\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

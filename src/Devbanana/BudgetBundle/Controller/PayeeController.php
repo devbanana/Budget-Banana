@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Devbanana\BudgetBundle\Entity\Payee;
 use Devbanana\BudgetBundle\Form\PayeeType;
 
@@ -20,13 +21,14 @@ class PayeeController extends Controller
      * @Route("/list/ajax", name="payees_list_ajax",
      * options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function listAjaxAction()
     {
         $em = $this->getDoctrine()->getManager();
 
         $payees = $em->getRepository('DevbananaBudgetBundle:Payee')
-            ->findAllOrderedByName();
+            ->findAllOrderedByName($this->getUser());
 
         $content = array();
         $content['payees'] = array();
@@ -50,6 +52,7 @@ class PayeeController extends Controller
      * @Route("/new/ajax", name="payees_new_ajax", options={"expose":true})
      * @Method("POST")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newAjaxAction()
     {
@@ -65,10 +68,12 @@ class PayeeController extends Controller
      * @Route("/create/ajax", name="payees_create_ajax",
      * options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    function createAjaxAction(Request $request)
+    public function createAjaxAction(Request $request)
     {
         $payee = new Payee();
+        $payee->setUser($this->getUser());
         $form = $this->createForm(new PayeeType(), $payee);
         $form->handleRequest($request);
         $content = array();

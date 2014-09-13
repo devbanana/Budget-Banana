@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Devbanana\BudgetBundle\Entity\Budget;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 use Devbanana\BudgetBundle\Entity\Category;
@@ -20,22 +21,17 @@ class BudgetCategoriesController extends Controller
      * @Route("/list/ajax/{year}/{month}",
      * name="budgetcategories_list_ajax", options={"expose":true})
      * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function listAjaxAction($year, $month)
     {
+        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
 
         $date = new \DateTime(sprintf("%04d-%02d-%02d", $year, $month, 1));
 
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneByMonth($date);
-
-        if (!$budget) {
-            $budget = new Budget;
-            $budget->setMonth($date);
-            $em->persist($budget);
-            $em->flush();
-        }
+            ->findOneOrCreateByDate($date, $user);
 
             $categories = $budget->getCategories();
 
@@ -63,9 +59,12 @@ class BudgetCategoriesController extends Controller
      *     name="budgetcategories_save_ajax",
      *     defaults={"budgeted"="0.00"},
      *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function saveAjaxAction(BudgetCategories $category, $budgeted)
     {
+        $this->authorizeAccess($category->getBudget());
+
         $em = $this->getDoctrine()->getManager();
 
         if (!$budgeted) {
@@ -90,9 +89,12 @@ class BudgetCategoriesController extends Controller
      * @Route("/toggle-carryover/ajax/{id}",
      *     name="budgetcategories_toggle_carryover_ajax",
      *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function toggleCarryoverAjaxAction(BudgetCategories $budgetCategories)
     {
+        $this->authorizeAccess($budgetCategories->getBudget());
+
         $em = $this->getDoctrine()->getManager();
 
         $carryOver = $budgetCategories->getCarryOver();
@@ -130,12 +132,15 @@ return $response;
      * @Route("/get-by-category/{year}/{month}/{id}",
      *     name="budgetcategories_get_by_category_ajax",
      *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function getByCategoryAjaxAction($year, $month, Category $category)
     {
+        $this->authorizeAccess($category->getMasterCategory());
+
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByMonthAndYear($month, $year);
+            ->findOneOrCreateByMonthAndYear($month, $year, $this->getUser());
 
         $budgetCategories = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
             ->findOneBy(array(
@@ -157,13 +162,15 @@ return $response;
      * @Route("/get/assigned-months/{year}/{month}",
      *     name="budgetcategories_get_assigned_months_ajax",
      *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function getAssignedMonthsAjaxAction($year, $month)
     {
+        $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
 
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByMonthAndYear($month, $year);
+            ->findOneOrCreateByMonthAndYear($month, $year, $user);
 
         $months = array();
         $months[] = $budget;
@@ -173,7 +180,7 @@ return $response;
         {
 $month->modify('+1 month');
 $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-    ->findOneOrCreateByDate($month);
+    ->findOneOrCreateByDate($month, $user);
 $months[] = $budget;
         }
 
@@ -193,6 +200,14 @@ $months[] = $budget;
         $response->setContent(json_encode($content));
 
         return $response;
+    }
+
+    private function authorizeAccess($entity)
+    {
+        if ($entity->getUser() != $this->getUser()
+                && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $this->createAccessDeniedException();
+        }
     }
 
 }

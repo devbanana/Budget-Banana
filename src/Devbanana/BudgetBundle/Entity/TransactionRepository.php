@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\UserBundle\Entity\User;
 
 /**
  * TransactionRepository
@@ -13,16 +14,20 @@ use Doctrine\ORM\EntityRepository;
 class TransactionRepository extends EntityRepository
 {
 
-    public function findBetween(\DateTime $month1, \DateTime $month2)
+    public function findBetween(\DateTime $month1, \DateTime $month2, User $user)
     {
         $qb = $this->createQueryBuilder('t');
         $query = $qb
+            ->leftJoin('t.lineItems', 'l')
+            ->select('t', 'l')
             ->where($qb->expr()->andX(
                         $qb->expr()->gte('t.date', ':month1'),
-                        $qb->expr()->lt('t.date', ':month2')
+                        $qb->expr()->lt('t.date', ':month2'),
+                        $qb->expr()->eq('t.user', ':user')
                         ))
             ->setParameter('month1', $month1)
             ->setParameter('month2', $month2)
+            ->setParameter('user', $user)
             ->orderBy('t.date', 'DESC')
             ->getQuery()
             ;

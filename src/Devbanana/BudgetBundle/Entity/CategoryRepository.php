@@ -2,8 +2,9 @@
 
 namespace Devbanana\BudgetBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
 use Devbanana\BudgetBundle\Entity\MasterCategory;
+use Devbanana\UserBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * CategoryRepository
@@ -35,11 +36,14 @@ class CategoryRepository extends EntityRepository
         }
     }
 
-    public function findAllOrderedByOrder()
+    public function findAllOrderedByOrder(User $user)
     {
-        $qb = $this->createQueryBuilder('c');
-        $query = $qb
-            ->orderBy('c.order', 'ASC')
+        $query = $this->createQueryBuilder('c')
+        ->innerJoin('c.masterCategory', 'mc')
+            ->where('mc.user = :user')
+            ->setParameter('user', $user)
+            ->addOrderBy('mc.order', 'ASC')
+            ->addOrderBy('c.order', 'ASC')
             ->getQuery()
             ;
 

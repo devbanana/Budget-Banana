@@ -15,13 +15,16 @@ class BudgetCategoriesRepository extends EntityRepository
 
     public function getOutflowForCategory(BudgetCategories $category)
     {
-        $qb = $this->createQueryBuilder('bc');
-        $query = $qb
+        $query = $this->createQueryBuilder('bc')
             ->innerJoin('bc.lineItems', 'l')
-            ->select(array('l.outflow'))
-            ->where($qb->expr()->eq('l.category', ':category'))
+                ->innerJoin('bc.budget', 'b')
+            ->select('l.outflow')
+            ->where('l.category = :category')
+            ->andWhere('b.user = :user')
             ->setParameter('category', $category)
-            ->getQuery();
+            ->setParameter('user', $category->getBudget()->getUser())
+            ->getQuery()
+            ;
 
         $outflow = '0.00';
 
@@ -60,15 +63,14 @@ public function getPreviousMonthCategory(BudgetCategories $category)
     $date = clone $category->getBudget()->getMonth();
     $date->modify('-1 month');
 
-    $qb = $this->createQueryBuilder('bc');
-$query = $qb
+    $query = $this->createQueryBuilder('bc')
     ->innerJoin('bc.budget', 'b')
-    ->where($qb->expr()->andX(
-                $qb->expr()->eq('bc.category', ':category'),
-                $qb->expr()->eq('b.month', ':month')
-                ))
+    ->where('bc.category = :category')
+                ->andWhere('b.month = :month')
+                ->andWhere('b.user = :user')
     ->setParameter('category', $category->getCategory())
     ->setParameter('month', $date)
+    ->setParameter('user', $category->getBudget()->getUser())
     ->getQuery()
     ;
 
@@ -85,15 +87,14 @@ public function getNextMonthCategory(BudgetCategories $category)
     $date = clone $category->getBudget()->getMonth();
     $date->modify('+1 month');
 
-    $qb = $this->createQueryBuilder('bc');
-$query = $qb
+    $query = $this->createQueryBuilder('bc')
     ->innerJoin('bc.budget', 'b')
-    ->where($qb->expr()->andX(
-                $qb->expr()->eq('bc.category', ':category'),
-                $qb->expr()->eq('b.month', ':month')
-                ))
+        ->where('bc.category = :category')
+        ->andWhere('b.month = :month')
+        ->andWhere('b.user = :user')
     ->setParameter('category', $category->getCategory())
     ->setParameter('month', $date)
+    ->setParameter('user', $category->getBudget()->getUser())
     ->getQuery()
     ;
 
@@ -107,11 +108,10 @@ return null;
 
 public function getBudgetedThisMonth(Budget $budget)
 {
-    $qb = $this->createQueryBuilder('bc');
-    $query = $qb
-        ->where($qb->expr()->eq('bc.budget', ':budget'))
+    $query = $this->createQueryBuilder('bc')
+    ->where('bc.budget = :budget')
         ->setParameter('budget', $budget)
-        ->select(array('bc.budgeted'))
+        ->select('bc.budgeted')
         ->getQuery()
         ;
 
@@ -137,11 +137,12 @@ public function getBudgetedThisMonth(Budget $budget)
  */
 public function getTotalBudgetedBefore(Budget $budget)
 {
-    $qb = $this->createQueryBuilder('bc');
-    $query = $qb
+    $query = $this->createQueryBuilder('bc')
         ->innerJoin('bc.budget', 'b')
-        ->where($qb->expr()->lt('b.month', ':month'))
+        ->where('b.month < :month')
+        ->andWhere('b.user = :user')
         ->setParameter('month', $budget->getMonth())
+        ->setParameter('user', $budget->getUser())
         ->getQuery()
         ;
 

@@ -1,0 +1,8 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block title %}Request Your Password{% endblock %}
+
+{% block fos_user_content %}
+<h1>Request Your Password</h1>
+{% include "FOSUserBundle:Resetting:request_content.html.twig" %}
+{% endblock fos_user_content %}

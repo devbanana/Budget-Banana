@@ -2,16 +2,17 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Devbanana\BudgetBundle\Entity\LineItem;
+use Devbanana\BudgetBundle\Entity\Transaction;
+use Devbanana\BudgetBundle\Form\LineItemType;
+use Devbanana\BudgetBundle\Form\TransactionType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Devbanana\BudgetBundle\Form\TransactionType;
-use Devbanana\BudgetBundle\Form\LineItemType;
-use Devbanana\BudgetBundle\Entity\Transaction;
-use Devbanana\BudgetBundle\Entity\LineItem;
 
 /**
  * @Route("/transactions")
@@ -22,9 +23,12 @@ class TransactionController extends Controller
      * @Route("/new", name="transactions_new")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function newAction(Request $request)
     {
+        $user = $this->getUser();
+
         $session = $request->getSession();
 
         $year = date('Y');
@@ -52,19 +56,19 @@ class TransactionController extends Controller
         
         $transaction = new Transaction;
         $transaction->setDate($date);
+        $transaction->setUser($user);
         $li1 = new LineItem;
         $transaction->getLineItems()->add($li1);
 
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate(), false);
+            ->findOneOrCreateByDate($transaction->getDate(), $user, false);
 
         // Make sure there are 60 months of budgets to be selected for income
         $this->createBudgets($em, $budget->getMonth());
 
-        $form = $this->createForm(new TransactionType(), $transaction, array(
-                    'budget' => $budget,
-                    ));
+        $form = $this->createForm(new TransactionType($user, $budget),
+                $transaction);
 
         return array(
                 'form' => $form->createView(),
@@ -75,6 +79,7 @@ class TransactionController extends Controller
          * @Route("/", name="transactions_create_ajax",
          *     options={"expose":true})
          * @Method("POST")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function createAjaxAction(Request $request)
         {
@@ -84,15 +89,15 @@ class TransactionController extends Controller
             $transactionArray = $request->request->get('devbanana_budgetbundle_transaction');
 
 $transaction = new Transaction;
+$transaction->setUser($this->getUser());
+
 $year = $transactionArray['date']['year'];
 $month = $transactionArray['date']['month'];
 
 $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-->findOneOrCreateByMonthAndYear($month, $year);
+->findOneOrCreateByMonthAndYear($month, $year, $this->getUser());
 
-$form = $this->createForm(new TransactionType(), $transaction, array(
-            'budget' => $budget,
-            ));
+$form = $this->createForm(new TransactionType($this->getUser(), $budget), $transaction);
 $form->handleRequest($request);
 
 $response = new Response;
@@ -116,7 +121,6 @@ foreach ($lineItems as $lineItem)
         $newLineItem->setType('transfer');
         $newLineItem->setAccount($lineItem->getTransferAccount());
         $newLineItem->setTransferAccount($lineItem->getAccount());
-        // TODO: Deal with categories for off-budget accounts
 if (bccomp($lineItem->getInflow(), '0.00', 2)) {
     $newLineItem->setOutflow($lineItem->getInflow());
 }
@@ -156,18 +160,20 @@ return $response;
     /**
      * @Route("/{id}/edit", name="transactions_edit")
      * @Template("DevbananaBudgetBundle:Transaction:new.html.twig")
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function editAction(Transaction $transaction)
     {
+        $this->authorizeAccess($transaction);
+
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate(), false);
+            ->findOneOrCreateByDate($transaction->getDate(), $this->getUser(), false);
 
         // Make sure there are 60 months of budgets to be selected for income
         $this->createBudgets($em, $budget->getMonth());
 
-        $form = $this->createForm(new TransactionType(), $transaction, array(
-                    'budget' => $budget,
+        $form = $this->createForm(new TransactionType($this->getUser(), $budget), $transaction, array(
                     'action' => $this->generateUrl('transactions_update_ajax', array('id' => $transaction->getId())),
                     ));
 
@@ -180,16 +186,17 @@ return $response;
          * @Route("/{id}/update",
          *     name="transactions_update_ajax",
          *     options={"expose":true})
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
         public function updateActionAjax(Request $request, Transaction $transaction)
 {
+    $this->authorizeAccess($transaction);
+
         $em = $this->getDoctrine()->getManager();
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByDate($transaction->getDate());
+            ->findOneOrCreateByDate($transaction->getDate(), $this->getUser());
 
-        $form = $this->createForm(new TransactionType(), $transaction, array(
-                    'budget' => $budget,
-                    ));
+        $form = $this->createForm(new TransactionType($this->getUser(), $budget), $transaction);
         $form->handleRequest($request);
 
         $content = array();
@@ -214,9 +221,11 @@ return $response;
      * @Route("/{id}", name="transactions_show")
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function showAction(Transaction $transaction)
     {
+        $this->authorizeAccess($transaction);
         return array(
                 'entity' => $transaction,
             );    }
@@ -226,6 +235,7 @@ return $response;
      *     defaults={"year" = null, "month" = null})
      * @Method("GET")
      * @Template()
+     * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function indexAction(Request $request, $year, $month)
     {
@@ -254,10 +264,12 @@ return $response;
             }
         }
 
+        $user = $this->getUser();
+
         $em = $this->getDoctrine()->getManager();
 
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-            ->findOneOrCreateByMonthAndYear($month, $year);
+            ->findOneOrCreateByMonthAndYear($month, $year, $user);
 
         $thisMonth = $budget->getMonth();
 
@@ -266,7 +278,7 @@ return $response;
         $endMonth->modify('+1 month');
 
         $entities = $em->getRepository('DevbananaBudgetBundle:Transaction')
-            ->findBetween($startMonth, $endMonth);
+            ->findBetween($startMonth, $endMonth, $user);
 
         $lastMonth = clone $startMonth;
         $lastMonth->modify('-1 month');
@@ -285,10 +297,18 @@ for ($i = 0; $i < 59; $i++)
 {
     $month->modify('+1 month');
     $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
-        ->findOneOrCreateByDate($month, false);
+        ->findOneOrCreateByDate($month, $this->getUser(), false);
 }
 
 $em->flush();
+}
+
+private function authorizeAccess(Transaction $transaction)
+{
+    if ($transaction->getUser() != $this->getUser()
+            && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        $this->createAccessDeniedException();
+    }
 }
 
 }

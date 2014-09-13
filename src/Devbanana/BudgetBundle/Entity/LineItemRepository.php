@@ -2,10 +2,11 @@
 
 namespace Devbanana\BudgetBundle\Entity;
 
+use Devbanana\BudgetBundle\Entity\Budget;
+use Devbanana\BudgetBundle\Entity\BudgetCategories;
+use Devbanana\UserBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Devbanana\BudgetBundle\Entity\BudgetCategories;
-use Devbanana\BudgetBundle\Entity\Budget;
 
 /**
  * LineItemRepository
@@ -16,19 +17,20 @@ use Devbanana\BudgetBundle\Entity\Budget;
 class LineItemRepository extends EntityRepository
 {
 
-    public function queryOnOrAfter(\DateTime $date)
+    public function queryOnOrAfter(\DateTime $date, User $user)
     {
-        $qb = $this->createQueryBuilder('l');
-        $qb
+        $qb = $this->createQueryBuilder('l')
             ->innerJoin('l.transaction', 't')
-            ->where($qb->expr()->gte('t.date', ':date'))
+                ->where('t.date >= :date')
+                ->andWhere('t.user = :user')
             ->setParameter('date', $date)
+            ->setParameter('user', $user)
             ;
 
         return $qb;
     }
 
-    public function findOnOrAfter(\DateTime $date)
+    public function findOnOrAfter(\DateTime $date, User $user)
     {
         $qb = $this->queryOnOrAfter($date);
 
@@ -39,7 +41,7 @@ class LineItemRepository extends EntityRepository
     {
         $qb
             ->innerJoin('l.account', 'a')
-            ->andWhere($qb->expr()->eq('a.budgeted', true))
+            ->andWhere('a.budgeted = true')
             ;
 
         return $qb;
@@ -47,14 +49,13 @@ class LineItemRepository extends EntityRepository
 
     public function getBufferedIncome(Budget $budget)
     {
-        $qb = $this->createQueryBuilder('l');
-        $query = $qb
+        $query = $this->createQueryBuilder('l')
 ->innerJoin('l.category', 'bc')
-->where($qb->expr()->andX(
-            $qb->expr()->eq('bc.budget', ':budget'),
-            $qb->expr()->neq('l.assignedMonth', ':budget')
-            ))
+    ->where('bc.budget = :budget')
+    ->andWhere('l.assignedMonth <> :budget')
+    ->andWhere('l.type = :type')
 ->setParameter('budget', $budget)
+->setParameter('type', 'income')
 ->getQuery()
 ;
 
@@ -63,14 +64,11 @@ class LineItemRepository extends EntityRepository
 
     public function getIncomeThisMonth(Budget $budget)
     {
-        $qb = $this->createQueryBuilder('l');
-        $query = $qb
-            ->where($qb->expr()->andX(
-                        $qb->expr()->eq('l.assignedMonth', ':budget'),
-                        $qb->expr()->eq('l.type', ':type')
-                        ))
+        $query = $this->createQueryBuilder('l')
+        ->where('l.assignedMonth = :budget')
+            ->andWhere('l.type = :type')
             ->setParameter('budget', $budget)
-            ->setParameter(':type', 'income')
+            ->setParameter('type', 'income')
             ->select(array('l.inflow'))
             ->getQuery()
             ;
@@ -98,11 +96,12 @@ class LineItemRepository extends EntityRepository
      */
     public function getTotalIncomeBefore(Budget $budget)
     {
-        $qb = $this->createQueryBuilder('l');
-        $query = $qb
+        $query = $this->createQueryBuilder('l')
             ->innerJoin('l.assignedMonth', 'am')
-            ->where($qb->expr()->lt('am.month', ':month'))
-            ->setParameter(':month', $budget->getMonth())
+            ->where('am.month < :month')
+            ->andWhere('am.user = :user')
+            ->setParameter('month', $budget->getMonth())
+            ->setParameter('user', $budget->getUser())
             ->getQuery()
             ;
 

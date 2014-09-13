@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Devbanana\UserBundle\Entity\User;
 
 /**
  * BudgetRepository
@@ -13,18 +14,27 @@ use Doctrine\ORM\EntityRepository;
 class BudgetRepository extends EntityRepository
 {
 
-    public function findOneOrCreateByDate(\DateTime $date, $flush = true)
+    public function findOneOrCreateByDate(\DateTime $date, User $user, $flush = true)
     {
         $month = new \DateTime(sprintf('%04d-%02d-%02d',
                     $date->format('Y'),
                     $date->format('m'),
                     1));
 
-        $budget = $this->findOneByMonth($month);
+        $budget = $this->createQueryBuilder('b')
+            ->where('b.month = :month')
+            ->andWhere('b.user = :user')
+            ->setParameter('month', $month)
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
 
         if (!$budget) {
             $budget = new Budget;
             $budget->setMonth($month);
+            $budget->setUser($user);
             $this->getEntityManager()->persist($budget);
             if ($flush) $this->getEntityManager()->flush();
         }
@@ -32,11 +42,11 @@ class BudgetRepository extends EntityRepository
         return $budget;
     }
 
-    public function findOneOrCreateByMonthAndYear($month, $year, $flush = true)
+    public function findOneOrCreateByMonthAndYear($month, $year, User $user, $flush = true)
     {
         $date = new \DateTime(sprintf('%04d-%02d-%02d',
                     $year, $month, 1));
-        return $this->findOneOrCreateByDate($date, $flush);
+        return $this->findOneOrCreateByDate($date, $user, $flush);
     }
 
     /**
@@ -120,9 +130,12 @@ class BudgetRepository extends EntityRepository
 
     public function getOverSpentLastMonth(Budget $budget)
     {
-        $month = clone $budget->getMOnth();
+        $month = clone $budget->getMonth();
         $month->modify('-1 month');
-        $previousBudget = $this->findOneByMonth($month);
+        $previousBudget = $this->findOneBy(array(
+                    'month' => $month,
+                    'user' => $budget->getUser(),
+                    ));
 
         if ($previousBudget) {
             $overspent = '0.00';
