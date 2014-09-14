@@ -12,9 +12,30 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
+use JMS\DiExtraBundle\Annotation\DoctrineListener;
 
+/**
+ * @DoctrineListener(
+ *     events={"preUpdate", "onFlush", "prePersist", "preRemove"}
+ *     )
+ */
 class UpdateCategoryListener
 {
+
+    private $logger;
+
+    /**
+     * @InjectParams({
+     *     "logger" = @Inject("logger")
+     *     })
+     */
+    public function __construct(\Symfony\Bridge\Monolog\Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function preUpdate(PreUpdateEventArgs $e)
     {
         $em = $e->getEntityManager();
@@ -27,6 +48,8 @@ if ($entity instanceof BudgetCategories) {
     ->getBalanceForCategory($entity);
 
     $entity->setBalance($balance);
+    $this->logger->debug('Balance set on category ' .
+            $entity->getCategory()->getName() . ' of ' . $balance);
 }
     }
 
@@ -58,7 +81,7 @@ $category->setOutflow($outflow);
 $md = $em->getClassMetadata(get_class($category));
 $uow->computeChangeSet($md, $category);
 }
-elseif ($entity instanceof LineItem) {
+
     // Get the old and new categories
 if (isset($changeSet['category'])) {
     $oldCategory = $changeSet['category'][0];
@@ -68,7 +91,20 @@ if (isset($changeSet['category'])) {
     if ($oldCategory) {
     $outflow = $oldCategory->getOutflow();
     $outflow = bcsub($outflow, $entity->getInflow(), 2);
-    $outflow = bcadd($outflow, $entity->getOutflow());
+    $outflow = bcadd($outflow, $entity->getOutflow(), 2);
+    $this->logger->debug('Changing outflow of ' .
+            $oldCategory->getCategory()->getName() . ' from ' .
+            $oldCategory->getOutflow() . ' to ' . $outflow);
+
+    $balance = $oldCategory->getBalance();
+    $balance = bcsub($balance, $oldCategory->getOutflow(), 2);
+    $balance = bcadd($balance, $outflow, 2);
+
+    $this->logger->debug('Changing balance of ' .
+            $oldCategory->getCategory()->getName() . ' from ' .
+            $oldCategory->getBalance() . ' to ' . $balance);
+
+    $oldCategory->setBalance($balance);
     $oldCategory->setOutflow($outflow);
 
     $md = $em->getClassMetadata(get_class($oldCategory));
@@ -77,16 +113,28 @@ if (isset($changeSet['category'])) {
 
     // Change new category's outflow
     if ($newCategory) {
-
         $outflow = $newCategory->getOutflow();
-        $outflow = bcsub($outflow, $entity->getInflow());
-        $outflow = bcadd($outflow, $entity->getOutflow());
+        $outflow = bcadd($outflow, $entity->getInflow(), 2);
+        $outflow = bcsub($outflow, $entity->getOutflow(), 2);
+
+    $this->logger->debug('Changing outflow of ' .
+            $newCategory->getCategory()->getName() . ' from ' .
+            $newCategory->getOutflow() . ' to ' . $outflow);
+
+    $balance = $newCategory->getBalance();
+    $balance = bcsub($balance, $newCategory->getOutflow(), 2);
+    $balance = bcadd($balance, $outflow, 2);
+
+    $this->logger->debug('Changing balance of ' .
+            $newCategory->getCategory()->getName() . ' from ' .
+            $newCategory->getBalance() . ' to ' . $balance);
+
+    $newCategory->setBalance($balance);
         $newCategory->setOutflow($outflow);
 
-        $md = $em->getClassMetadata(get_class($newCategory));
-        $uow->computeChangeSet($md, $newCategory);
+    $md = $em->getClassMetadata(get_class($newCategory));
+    $uow->computeChangeSet($md, $newCategory);
     }
-}
 }
 }
     }
