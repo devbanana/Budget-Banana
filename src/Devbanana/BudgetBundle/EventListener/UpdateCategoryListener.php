@@ -58,6 +58,36 @@ $category->setOutflow($outflow);
 $md = $em->getClassMetadata(get_class($category));
 $uow->computeChangeSet($md, $category);
 }
+elseif ($entity instanceof LineItem) {
+    // Get the old and new categories
+if (isset($changeSet['category'])) {
+    $oldCategory = $changeSet['category'][0];
+    $newCategory = $changeSet['category'][1];
+
+    // Change old category's outflow
+    if ($oldCategory) {
+    $outflow = $oldCategory->getOutflow();
+    $outflow = bcsub($outflow, $entity->getInflow(), 2);
+    $outflow = bcadd($outflow, $entity->getOutflow());
+    $oldCategory->setOutflow($outflow);
+
+    $md = $em->getClassMetadata(get_class($oldCategory));
+    $uow->computeChangeSet($md, $oldCategory);
+    }
+
+    // Change new category's outflow
+    if ($newCategory) {
+
+        $outflow = $newCategory->getOutflow();
+        $outflow = bcsub($outflow, $entity->getInflow());
+        $outflow = bcadd($outflow, $entity->getOutflow());
+        $newCategory->setOutflow($outflow);
+
+        $md = $em->getClassMetadata(get_class($newCategory));
+        $uow->computeChangeSet($md, $newCategory);
+    }
+}
+}
 }
     }
 }
