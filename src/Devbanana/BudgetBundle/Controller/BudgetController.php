@@ -47,7 +47,7 @@ $content['categories'][] = $item;
 $em->flush();
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -72,7 +72,7 @@ return $response;
             $content['availableToBudget'] = $availableToBudget;
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -101,7 +101,7 @@ public function getOverspentLastMonth(Budget $budget)
             $content['month'] = $month->format('F');
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -130,7 +130,7 @@ public function getNotBudgetedLastMonthAjaxAction(Budget $budget)
     $content['month'] = $month->format('F');
 
     $response = new Response;
-    $response->headers->set('Content-Type', 'Application/JSON');
+    $response->headers->set('Content-Type', 'application/json');
     $response->setContent(json_encode($content));
 
     return $response;
@@ -158,7 +158,7 @@ public function getIncomeThisMonthAjaxAction(Budget $budget)
             $content['month'] = $month->format('F');
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -187,7 +187,7 @@ public function getBudgetedThisMonthAjaxAction(Budget $budget)
             $content['month'] = $month->format('F');
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;

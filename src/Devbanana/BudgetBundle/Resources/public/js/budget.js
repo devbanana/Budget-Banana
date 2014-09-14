@@ -10,7 +10,6 @@ budgeted: ($(row).find('td.budgeted>input').val())}),
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $(row).find('td.balance').html(parseFloat(result.balance).formatMoney());
     updateAvailableToBudget();
     updateBudgetedThisMonth();
@@ -26,7 +25,6 @@ url: Routing.generate('budget_available_to_budget',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('#available-to-budget').html(parseFloat(result.availableToBudget).formatMoney());
 }
             });
@@ -40,7 +38,6 @@ url: Routing.generate('budget_not_budgeted_last_month_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('#not-budgeted-last-month').html(parseFloat(
         result.notBudgetedLastMonth).formatMoney());
 $('#not-budgeted-last-month-month-label').html(result.month);
@@ -56,7 +53,6 @@ url: Routing.generate('budget_overspent_last_month_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('#overspent-last-month').html(parseFloat(
         result.overspentLastMonth).formatMoney());
 $('#overspent-last-month-month-label').html(result.month);
@@ -72,7 +68,6 @@ url: Routing.generate('budget_income_this_month_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('#income-this-month').html(parseFloat(
         result.incomeThisMonth).formatMoney());
 $('#income-this-month-month-label').html(result.month);
@@ -88,7 +83,6 @@ url: Routing.generate('budget_budgeted_this_month_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('#budgeted-this-month').html(parseFloat(
         result.budgetedThisMonth).formatMoney());
 $('#budgeted-this-month-month-label').html(result.month);
@@ -104,7 +98,6 @@ url: Routing.generate('budget_calculate_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('tr.category').each(function()
     {
     var row = this;
@@ -136,7 +129,6 @@ id: $(row).data('id')
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $(row).find('td.carryover>span.carryover-value').html(result.carryOver);
 }
     });

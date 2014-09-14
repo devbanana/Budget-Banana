@@ -101,7 +101,7 @@ $form = $this->createForm(new TransactionType($this->getUser(), $budget), $trans
 $form->handleRequest($request);
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $content = array();
 
 if ($form->isValid()) {
@@ -211,7 +211,7 @@ return $response;
         }
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;

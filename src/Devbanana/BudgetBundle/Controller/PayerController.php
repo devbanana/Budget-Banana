@@ -41,7 +41,7 @@ foreach ($payers as $payer)
 }
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -89,7 +89,7 @@ return $response;
         }
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;

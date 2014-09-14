@@ -27,7 +27,7 @@ class AccountCategoryController extends Controller
         $content['budgeted'] = intval($accountCategory->getBudgeted());
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;

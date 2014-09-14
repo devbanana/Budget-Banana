@@ -166,7 +166,7 @@ class AccountController extends Controller
 public function createAjaxAction(Request $request)
 {
     $response = new Response;
-    $response->headers->set('Content-Type', 'Application/JSON');
+    $response->headers->set('Content-Type', 'application/json');
     $content = array();
         $entity = new Account();
         $entity->setUser($this->getUser());
@@ -234,7 +234,7 @@ public function listAjaxAction()
     $content['accounts'] = $accountsArray;
 
     $response = new Response;
-    $response->headers->set('Content-Type', 'Application/JSON');
+    $response->headers->set('Content-Type', 'application/json');
     $response->setContent(json_encode($content));
 
     return $response;

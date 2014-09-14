@@ -76,7 +76,7 @@ class CategoryController extends Controller
             $form->handleRequest($request);
 
                 $response = new Response;
-                $response->headers->set('Content-Type', 'Application/JSON');
+                $response->headers->set('Content-Type', 'application/json');
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

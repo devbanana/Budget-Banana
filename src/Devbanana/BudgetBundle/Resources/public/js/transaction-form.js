@@ -92,8 +92,6 @@ url: Routing.generate('budgetcategories_list_ajax', { month: month, year: year }
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
-
 $('tr.lineitem').each(function()
     {
 if ($(this).find('td.type>select').val() == 'income') {
@@ -180,7 +178,6 @@ url: Routing.generate('budgetcategories_get_assigned_months_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 populateAssignedMonths(row, result);
 }
             });
@@ -236,7 +233,6 @@ $.post(
     data,
     function (result)
     {
-    result = JSON.parse(result);
     if (result.success == true) {
     refreshAllAccounts(result.id);
     $caller.val(result.id);
@@ -320,7 +316,6 @@ Routing.generate(
 data,
 function (result)
 {
-result = JSON.parse(result);
 if (payType == 'payee') {
 refreshAllPayees();
 }
@@ -368,7 +363,6 @@ $.post(
     data,
     function (result)
     {
-    result = JSON.parse(result);
     refreshAllCategories();
 
     // We have to get the BudgetCategories id to set the dropdown
@@ -383,7 +377,6 @@ id: result.id}),
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $caller.val(result.id);
         $this.dialog('close');
         $this.empty();
@@ -405,7 +398,6 @@ async: false,
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('tr.lineitem').each(function()
     {
     if ($(this).find('td.type>select').val() != 'income') {
@@ -424,7 +416,6 @@ async: false,
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('tr.lineitem').each(function()
     {
     if ($(this).find('td.type>select').val() == 'income') {
@@ -443,7 +434,6 @@ async: false,
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 // Loop through existing accounts
 $('tr.lineitem').each(function()
     {
@@ -464,7 +454,6 @@ url: Routing.generate('budgetcategories_list_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 $('tr.lineitem').each(function()
     {
 populateCategories(this, result);
@@ -480,7 +469,6 @@ url: Routing.generate('accounts_list_ajax'),
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 populateAccounts(row, result);
 }
 });
@@ -532,7 +520,6 @@ url: Routing.generate(route),
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 populateFunction(row, result);
 }
 });
@@ -614,7 +601,6 @@ url: Routing.generate('budgetcategories_list_ajax',
 method: "POST",
 success: function (result)
 {
-result = JSON.parse(result);
 populateCategories(row, result);
 }
             });
@@ -733,8 +719,6 @@ $('#submit').on('click', function(e)
             data,
             function (result)
             {
-            result = JSON.parse(result);
-
             if (result.success == true) {
             if ($('tbody.lineitems').data('id')) {
             location.href = result.redirect;

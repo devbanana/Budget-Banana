@@ -48,7 +48,7 @@ class BudgetCategoriesController extends Controller
             }
 
             $response = new Response;
-            $response->headers->set('Content-Type', 'Application/JSON');
+            $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($content));
 
             return $response;
@@ -79,7 +79,7 @@ class BudgetCategoriesController extends Controller
         $content['budgeted'] = $budgeted;
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;
@@ -122,7 +122,7 @@ $content = array();
 $content['carryOver'] = ucwords($carryOver);
 
 $response = new Response;
-$response->headers->set('Content-Type', 'Application/JSON');
+$response->headers->set('Content-Type', 'application/json');
 $response->setContent(json_encode($content));
 
 return $response;
@@ -152,7 +152,7 @@ return $response;
         $content['id'] = $budgetCategories->getId();
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;
@@ -196,7 +196,7 @@ $months[] = $budget;
         }
 
         $response = new Response;
-        $response->headers->set('Content-Type', 'Application/JSON');
+        $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($content));
 
         return $response;
