@@ -40,8 +40,19 @@ class AccountController extends Controller
         $entities = $em->getRepository('DevbananaBudgetBundle:Account')
             ->findByUser($this->getUser());
 
+        $netWorth = $em->getRepository('DevbananaBudgetBundle:Account')
+            ->getNetWorth($this->getUser());
+        if (bccomp($netWorth, '0.00', 2) < 0) {
+            $netWorth = bcmul($netWorth, '-1.00', 2);
+            $netWorth = "-$$netWorth";
+        }
+        else {
+            $netWorth = "$$netWorth";
+        }
+
         return array(
             'entities' => $entities,
+            'netWorth' => $netWorth,
         );
     }
 
@@ -323,14 +334,25 @@ public function listAjaxAction()
      * @Template()
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function showAction(Account $account)
+    public function showAction(Request $request, Account $account)
     {
         $this->authorizeAccess($account);
 
         $em = $this->getDoctrine()->getManager();
 
+        // Get transactions in this account
+$qb = $em->getRepository('DevbananaBudgetBundle:LineItem')
+    ->findByAccount($account, $this->getUser());
+
+$paginator = $this->get('knp_paginator');
+$pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, array(
+            'defaultSortFieldName' => 't.date',
+            'defaultSortDirection' => 'desc',
+            ));
+
         return array(
             'entity'      => $account,
+            'pagination' => $pagination,
         );
     }
 

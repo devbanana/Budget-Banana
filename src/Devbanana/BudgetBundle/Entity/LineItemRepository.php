@@ -2,6 +2,7 @@
 
 namespace Devbanana\BudgetBundle\Entity;
 
+use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Entity\Budget;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
 use Devbanana\UserBundle\Entity\User;
@@ -117,6 +118,18 @@ class LineItemRepository extends EntityRepository
         }
 
         return $income;
+    }
+
+    public function findByAccount(Account $account, User $user)
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.transaction', 't')
+            ->where('l.account = :account')
+            ->andWhere('t.user = :user')
+            ->setParameter('account', $account)
+            ->setParameter('user', $user)
+            ->addOrderBy('l.id', 'DESC')
+            ;
     }
 
 }
