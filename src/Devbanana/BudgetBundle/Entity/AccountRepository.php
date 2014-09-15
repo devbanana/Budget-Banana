@@ -14,27 +14,6 @@ use Doctrine\ORM\EntityRepository;
 class AccountRepository extends EntityRepository
 {
 
-    public function sumBudgetedAccounts()
-    {
-        $qb = $this->createQueryBuilder('a');
-        $query = $qb
-            ->where($qb->expr()->eq('a.budgeted', true))
-            ->select('a.balance')
-            ->getQuery()
-            ;
-
-        $results = $query->getResult();
-
-        $balance = '0.00';
-
-        foreach ($results as $result)
-        {
-            $balance = bcadd($balance, $result['balance'], 2);
-        }
-
-        return $balance;
-    }
-
     public function getNetWorth(User $user)
     {
         $query = $this->createQueryBuilder('a')
