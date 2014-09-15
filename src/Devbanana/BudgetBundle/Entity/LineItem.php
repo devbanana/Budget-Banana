@@ -12,6 +12,7 @@ use Devbanana\BudgetBundle\Validator\Constraints as DevbananaAssert;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\LineItemRepository")
  * @DevbananaAssert\CheckAssignedMonth
+ * @DevbananaAssert\CheckCategory
  */
 class LineItem
 {
