@@ -1,3 +1,7 @@
+#sidenav ul {
+    list-style-type: none;
+}
+
 #navcontainer ul
 {
 margin: 0;

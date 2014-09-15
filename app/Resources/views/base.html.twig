@@ -21,9 +21,10 @@
         </div>
         <div class="span-24" id="navcontainer">
         <ul>
-        <li><a href="{{ url('accounts') }}" accesskey="a">Accounts</a></li>
-        <li><a href="{{ url('transactions_index') }}" accesskey="t">Transactions</a></li>
-        <li><a href="{{ url('budget') }}" accesskey="b">Budget</a></li>
+        <li><a href="{{ path('homepage') }}" accesskey="h">Home</a></li>
+        <li><a href="{{ path('accounts') }}" accesskey="a">Accounts</a></li>
+        <li><a href="{{ path('transactions_index') }}" accesskey="t">Transactions</a></li>
+        <li><a href="{{ path('budget') }}" accesskey="b">Budget</a></li>
         <li><a href="{{ path('categories_index') }}" accesskey="c">Categories</a></li>
         </ul>
         </div>
@@ -44,6 +45,12 @@ create a new account
             {% endif %}
         </div>
 
+        <div id="sidenav">
+        <ul>
+        <li><a href="{{ path('about') }}">About</a></li>
+        <li><a href="{{ path('tutorials_index') }}">Tutorials</a></li>
+        </ul>
+        </div>
 </div>
 <div class="span-16 last">
         {% for type, messages in app.session.flashbag.all() %}

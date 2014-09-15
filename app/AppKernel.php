@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new JMS\AopBundle\JMSAopBundle(),
             new Devbanana\BudgetBundle\DevbananaBudgetBundle(),
             new Devbanana\UserBundle\DevbananaUserBundle(),
+            new Devbanana\PagesBundle\DevbananaPagesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
