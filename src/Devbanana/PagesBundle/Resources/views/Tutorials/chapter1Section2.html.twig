@@ -1,0 +1,196 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 1: 2. Save for a Rainy Day{% endblock %}
+
+{% block body %}
+<h1>1.2. Save for a Rainy Day</h1>
+
+<p>Imagine this scenario: your car insurance is due every 6 months for $450. The month rolls around, and you find that you're suddenly tight because you weren't anticipating the expense. Now the rest of the month is stressful and you have to cut back in other areas.</p>
+
+<p>With rule 2, it looks completely different. Now, you split that cost over 6 months (the frequency of the payment). $450 divided by 6 is $75, so every month you budget $75 in the Car Insurance category.</p>
+
+<p>That doesn't mean you spend that $75. It simply means that $75 is allocated towards car insurance every month. Recall in {{ path('tutorials_1_1') }}">chapter 1.1</a> how the amount not spent in a category will simply carry over to the next month. So, if you put $75 in Car Insurance in January and do not touch it, when February comes you will see the balance of that category is $75, but the budget is 0, because you did not budget anything to it yet in February. Once you budget your $75, your balance will then be $150.</p>
+
+<p>Let's draw this out as a table over six months:</p>
+
+<h3>January</h3>
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$75.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3>February</h3>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$150.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3>March</h3>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$225.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3>April</h3>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$300.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3>May</h3>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$375.00</td>
+</tr>
+</tbody>
+</table>
+
+<h3>June</h3>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$0.00</td>
+<td>$450.00</td>
+</tr>
+</tbody>
+</table>
+
+<p>Now after we cover our car insurance in June, our table looks like this:</p>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>Category</th>
+<th>Budgeted</th>
+<th>Outflow</th>
+<th>Balance</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<th>Car Insurance</th>
+<td>$75.00</td>
+<td>$450.00</td>
+<td>$0.00</td>
+</tr>
+</tbody>
+</table>
+
+<p>The outflow is $450.00, since that is what we spend on the insurance. Since there was exactly $450.00 lying around in our category, the balance goes down to $0.00 when the insurance is paid for.</p>
+
+<p>With rule 2, the expense is paid without you barely noticing. Because of <a href="{{ path('tutorials_1_1') }}">rule 1</a>, you didn't simply look at your growing checking account balance and conclude you could splurge: you knew exactly what you could spend in each category at every given moment. The Car Insurance category simply sat there growing for 6 months, until you could just pay the bill without thinking twice about it or feeling even a slight bit of discomfort. It was sitting there ready to be used, so the stress of covering that bill has vanished.</p>
+
+<p>But it doesn't only have to be used for predictable periodic expenses. Let's say you have a Home Maintenance category for those unexpected expenses that pop up from time-to-time. You budget $50 in that category every month, and pretty soon you have a healthy category balance of $1,000. Pretty soon you find your roof is leaking and needs repaired. The contractor comes out and quotes $500 for the work. YOu have no problem paying it immediately because you already had more than enough set aside to cover just such an occasion. YOu pay the $500, your roof gets fixed, and your Home Maintenance category is still looking healthy at $500 left over. That was almost too simple!</p>
+
+<p>It will take a while to deduce exactly what you spend in each category on average, but once you figure out a good number for you, such expenses will simply go unnoticed, while before they would have caused massive stress and anxiety.</p>
+
+<p>Other possible rainy day funds might include:</p>
+
+<ul>
+<li>Life insurance</li>
+<li>Vacations</li>
+<li>Medical expenses</li>
+<li>Property taxes</li>
+<li>Christmas, birthdays or other special events</li>
+<li>Vet bills</li>
+<li>College tuition</li>
+</ul>
+
+<p>It's all about planning. Once you give every dollar a job (<a href="{{ path('tutorials_1_1') }}">rule 1</a>), and you save some of those dollars for a rainy day, your budget will almost seem to take care of itself. Avoiding the blow of these unexpected expenses will enable you to gradually increase your savings in other areas, and pretty soon financial anxiety will be a thing of the past.</p>
+
+<p>
+<a href="{{ path('tutorials_1_1') }}" accesskey="p" title="Chapter 1.1. Give Every Dollar a Job" rel="prev">⇐ Previous</a>
+<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up ⇑</a>
+<a href="{{ path('tutorials_1_3') }}" accesskey="n" title="Chapter 1.3. Roll with the Punches" rel="next">Next ⇒</a>
+</p>
+{% endblock %}

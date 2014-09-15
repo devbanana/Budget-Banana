@@ -1,0 +1,69 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter I: 1. Give Every Dollar a Job{% endblock %}
+
+{% block body %}
+<h1>1.1. Give Every Dollar a Job</h1>
+
+<p>Normally, if you want to know whether you can afford something, you simply look at the balance of your bank account. But this method is flawed. It doesn't take into account what else you'll have to spend the rest of the month, or until your next paycheck.</p>
+
+<p>Christine and I used to do this all the time. A paycheck would come in, we'd see we had hundreds of dollars, and feel free to go out to dinner. Then some bills would come out, and we'd struggle through the rest of the month.</p>
+
+<p>Instead, you give every dollar a job. You don't have any dollars just floating around with no purpose. Each dollar is assigned to some category. Then when you want to go out to dinner, you see how your Restaurants category is doing, and if there's enough, then you go for it. If there's not enough, then you have two options:</p>
+
+<ol>
+<li>If there's another category that can spare some cash, you take what you need out of that category and put it in the Restaurants category. Let's say your phone bill wasn't as much as you thought, so you have $50 left over in the Phone category. You simply subtract the 50 from Phone and add it into Restaurants. Then you can go out to dinner guilt-free.</li>
+<li>If every category has what it needs and no more, then you're out of luck. You don't go to dinner and just rummage at home.</li>
+</ol>
+
+<p>These are two very different approaches. The second option isn't pleasant, but at least you're not lying to yourself, thinking you have enough money when you really don't. No matter what you do, you'll know that you have enough money for all of your expenses for the rest of the month. Imagine the anxiety that will avoid: no more worrying about whether you'll have enough to get by. Now, you'll know far in advance.</p>
+
+<h2>An Analogy</h2>
+
+<p>It's like your the general of a (hopefully) large army. Every dollar is a soldier in your army. When you receive income, you receive more soldiers to add to your growing battalion.</p>
+
+<p>In the traditional method, your soldiers do what they want, and you are pulled along with the chaos. You're forced to put your stamp of approval on any of their actions because it's already done. You might vow to yourself to do it differently next time, but as long as you let the soldiers call the shots, you'll always be in the same situation: scraping to get by.</p>
+<p>When we apply rule 1, you actually sit down and draw out a plan for each of your soldiers. You separate them into organized troops, each with their own mission. Sometimes one troop will have more than it needs, and you simply rearrange them where they are needed more. But all the time, you are following a plan. You know exactly what resources you have, so you can never be surprised.</p>
+
+<h2>Rule 1 in Budget Banana</h1>
+
+<p>In Budget Banana, you first enter your income transactions. An income transaction is any transaction with an inflow (money you receive). Occasionally an expense transaction can have an inflow, but we'll discuss more about that later. Each income transaction is assigned to a month, which you'll learn more about in <a href="{{ path('tutorials_1_4') }}">chapter 1.4</a>.</p>
+
+<p>Each income transaction will add to the “Available to Budget” number on the Budget screen. You'll learn more about how that number is calculated later on, but all you need to know is that “Available to Budget” is whatever money you have left to budget this month.</p>
+
+<p>Next, you assign a budget to each category. As you add money to each category, you see at the top of the screen exactly what you have left to budget as “Available to Budget” decreases. For screen readers, it will speak “Available to Budget” plus the dollar amount, every time you edit the budget for a category. It is done dynamically without having to refresh the page, which makes your budget planning quick and efficient. All you need to do is select the budget field in that category's row and enter in the number you want to budget for that category.</p>
+
+<p>Finally, you log each transaction. Each expense transaction <em>must</em> be assigned to a category. Each transaction will increase the outflow of that category, thereby reducing that category's balance. Then, when you return to the budget screen, you'll see exactly what you've spent in each category, and what is left to spend.</p>
+
+<p>So essentially, the process is:</p>
+
+<ol>
+<li>Enter your income</li>
+<li>Budget your dollars</li>
+<li>Log your expenses</li>
+</ol>
+
+<h3>An Example</h3>
+
+<p>As an example, let's say you receive $2,000 in income this month, so you enter that income into BB. On the Budget screen, you see you have $2,000 available to budget, since you've not spent any money yet.</p>
+
+<p>Next, you scroll down to the Groceries category. You estimate that you generally spend $300 on groceries per month, so you select the budget field next to Groceries, and enter 300. Immediately the Available to Budget changes to $1,700, because $300 is now spoken for in your budget. Meanwhile, in the Groceries category, the balance goes up to $300, since you have $300 to spend in that category. Outflows are listed as $0, since you have not spent anything yet.</p>
+
+<p>In real life, you'd proceed to enter budgets in each category until the Available to Budget was $0.00. However for simplicity's sake, we'll focus on this category and keep Available to Budget at $1,700.</p>
+
+<p>The next day, you go to the grocery store and spend $75. So when you come home, you open up BB and create an expense transaction for $75, assigned to the Groceries category.</p>
+
+<p>Next you open up the Budget screen again. Available to Budget is still $1,700. Under Groceries, the outflow is $75 (the amount you spent), and the balance is $225 (the amount you have left to spend).</p>
+
+<p>Throughout the month, you continue to buy groceries and enter them into BB. You end up spending only $250 for the whole month. When you again return to the Budget, you see Available to Budget has not changed. Under Groceries, outflow is $250, and balance is $50.</p>
+
+<p>Now you have two choices. If you need some money in another category, you can subtract some out of Groceries and add it where it is needed, just like the soldiers were rearranged in our analogy above. If not, you just keep it there, and as we will see in <a href="{{ path('tutorials_1_2') }}">chapter 1.2</a>, it will carry over to the next month.</p>
+
+<p>Not once in this process did you question whether you had enough to spend for Groceries. You always knew with just a few clicks what exactly you had to spend, and if you needed more, you could rearrange as necessary. If you didn't use all of it, you could either subtract the remainder and add it to another category, or you could simply let it carry over. In doing all of this, budgeting has become incredibly simple and free of anxiety.</p>
+
+<p>
+<a href="{{ path('tutorials_1') }}" accesskey="p" title="Chapter 1. The Methodology" rel="prev">⇐ Previous</a>
+<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up ⇑</a>
+<a href="{{ path('tutorials_1_2') }}" accesskey="n" title="Chapter 1.2. Save for a Rainy Day" rel="next">Next ⇒</a>
+</p>
+{% endblock %}
