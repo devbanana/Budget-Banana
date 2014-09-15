@@ -3,6 +3,7 @@
 namespace Devbanana\BudgetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Payee
@@ -25,6 +26,9 @@ class Payee
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a name for the payee.")
+     * @Assert\Length(max=255,
+     *     maxMessage="The name cannot be greater than 255 characters.")
      */
     private $name;
 

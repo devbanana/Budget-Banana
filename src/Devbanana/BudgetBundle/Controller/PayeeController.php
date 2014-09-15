@@ -88,6 +88,14 @@ class PayeeController extends Controller
             $content['id'] = $payee->getId();
             $content['name'] = $payee->getName();
         }
+        else {
+            $content['success'] = false;
+            $content['errors'] = array();
+            foreach ($form->getErrors() as $error)
+            {
+                $content['errors'][] = $error->getMessage();
+            }
+        }
 
         $response = new Response;
         $response->headers->set('Content-Type', 'application/json');

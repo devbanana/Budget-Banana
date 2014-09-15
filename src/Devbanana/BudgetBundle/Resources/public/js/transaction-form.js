@@ -241,6 +241,21 @@ $.post(
     }
     else {
     $this.find('.errors').remove();
+
+    createErrorDialog(result, $this, function()
+        {
+$('#devbanana_budgetbundle_account_name').focus();
+        });
+    }
+    });
+}
+}
+});
+}
+}
+
+function createErrorDialog(result, $parent, callback)
+{
 var $errorDiv = $('<div class="errors"></div>');
 $errorDiv.append($('<p tabindex="0">There were some errors.</p>'));
 
@@ -255,27 +270,21 @@ $errorDiv.append($errorList);
 $errorDiv.attr('role', 'dialog');
 $errorDiv.attr('title', 'Errors');
 
-$this.find('form').before($errorDiv);
+$parent.find('form').before($errorDiv);
+
 $errorDiv.dialog({
 buttons: {
 OK: function ()
 {
 $errorDiv.dialog('close');
-$('#devbanana_budgetbundle_account_name').focus();
+callback();
 },
 close: function ()
 {
-$('#devbanana_budgetbundle_account_name').focus();
+callback();
 }
 }
         });
-
-    }
-    });
-}
-}
-});
-}
 }
 
 function payeeListener()
@@ -316,6 +325,7 @@ Routing.generate(
 data,
 function (result)
 {
+if (result.success == true) {
 if (payType == 'payee') {
 refreshAllPayees();
 }
@@ -325,6 +335,20 @@ refreshAllPayers();
 $caller.val(result.id);
 $this.dialog('close');
 $this.empty();
+}
+else {
+    $this.find('.errors').remove();
+
+    createErrorDialog(result, $this, function()
+        {
+        if (payType == 'payee') {
+$('#devbanana_budgetbundle_payee_name').focus();
+}
+else {
+$('#devbanana_budgetbundle_payer_name').focus();
+}
+        });
+}
 }
     );
 }
