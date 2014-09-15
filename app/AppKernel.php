@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\AopBundle\JMSAopBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Devbanana\BudgetBundle\DevbananaBudgetBundle(),
             new Devbanana\UserBundle\DevbananaUserBundle(),
             new Devbanana\PagesBundle\DevbananaPagesBundle(),

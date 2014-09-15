@@ -14,6 +14,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Balance</th>
+                    <th>Budgeted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -22,6 +23,13 @@
                 <tr>
                     <td><a href="{{ path('accounts_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                     <td>${{ entity.balance }}</td>
+                    <td>
+{%- if entity.budgeted == true -%}
+On-Budget
+{%- else -%}
+Off-Budget
+{%- endif -%}
+                    </td>
                     <td>
                     <ul>
                         <li>
