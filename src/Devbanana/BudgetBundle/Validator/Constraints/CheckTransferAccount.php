@@ -7,12 +7,14 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class CheckAssignedMonth extends Constraint
+class CheckTransferAccount extends Constraint
 {
-    public $message = 'You must select a month to assign income to';
+    public $message = 'Please select an account to transfer to';
+    public $reverseMessage = 'You cannot transfer from an off-budget account to an on-budget account';
 
     public function getTargets()
     {
         return self::CLASS_CONSTRAINT;
     }
 }
+

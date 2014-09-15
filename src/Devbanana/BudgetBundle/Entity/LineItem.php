@@ -11,8 +11,10 @@ use Devbanana\BudgetBundle\Validator\Constraints as DevbananaAssert;
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Devbanana\BudgetBundle\Entity\LineItemRepository")
+ * @DevbananaAssert\CheckTransferAccount
  * @DevbananaAssert\CheckAssignedMonth
  * @DevbananaAssert\CheckCategory
+ * @DevbananaAssert\CheckInflowOutflow
  */
 class LineItem
 {
