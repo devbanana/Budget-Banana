@@ -103,12 +103,18 @@ if ($('.treeview').length) {
                         e.stopPropagation();
                     }
                     break;
-                    case 65:
+                    case 46: // delete
+                    case 8: // backspace
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteCategory();
+break;
+                    case 65: // a
                     e.preventDefault();
                     e.stopPropagation();
                     showNewCategoryDialog();
                     break;
-                            case 73:
+                            case 73: // i
                     e.preventDefault();
                     e.stopPropagation();
                     var $selected = $('.activedescendant', $tree);
@@ -131,7 +137,7 @@ updateSelectedNode($selected.attr('id'));
 }
                             });
                                 break;
-                            case 75:
+                            case 75: // k
                     e.preventDefault();
                     e.stopPropagation();
                     var $selected = $('.activedescendant', $tree);
@@ -214,6 +220,10 @@ function createNode(li)
                             {
                             showNewCategoryDialog();
                             });
+$('#delete-category-button').on('click', function()
+        {
+        deleteCategory();
+        });
 function showNewCategoryDialog()
 {
                             // Get selected node
@@ -270,6 +280,60 @@ $.post(
 }
 }
                                 });
+}
+function deleteCategory()
+{
+    $('#category-confirm-dialog').dialog({
+modal: true,
+buttons: {
+Yes: function()
+{
+                    var $selected = $('.activedescendant', $tree);
+                    $.ajax({
+url: Routing.generate('categories_delete', {id: $selected.data('id')}),
+method: "POST",
+success: function (result)
+{
+if (result.success == true) {
+var $newNode = $selected.next();
+if ($newNode.length == 0) {
+$newNode = $selected.prev();
+}
+$selected.detach();
+toggleGroup($newNode.parent().parent());
+toggleGroup($newNode.parent().parent());
+updateSelectedNode($newNode.attr('id'));
+}
+else {
+// Display the error
+$message = $('<p tabindex="0">' + result.error + '</p>');
+$('#category-error-dialog').append($message);
+$('#category-error-dialog').dialog({
+modal: true,
+           buttons: {
+OK: function ()
+    {
+        $(this).dialog('close');
+        $(this).empty();
+    }
+           },
+close: function ()
+       {
+        $(this).dialog('close');
+        $(this).empty();
+       }
+                    });
+}
+}
+                            });
+$(this).dialog('close');
+},
+No: function ()
+{
+    $(this).dialog('close');
+}
+}
+});
 }
     }
     );

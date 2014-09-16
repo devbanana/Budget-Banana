@@ -144,4 +144,33 @@ class CategoryController extends Controller
             return $response;
         }
 
+        /**
+         * @Route("/{id}/delete",
+         *     name="categories_delete",
+         *     options={"expose":true})
+         */
+        public function deleteAjaxAction(Category $category)
+        {
+            $em = $this->getDoctrine()->getManager();
+$content = array();
+
+if (!$em->getRepository('DevbananaBudgetBundle:LineItem')
+        ->hasCategory($category)) {
+    $em->remove($category);
+    $em->flush();
+$content['success'] = true;
+}
+else {
+    $content['success'] = false;
+    $content['error'] = 'You cannot delete a category with transactions. ' .
+        'Please recategorize the transactions first.';
+}
+
+$response = new Response;
+$response->headers->set('Content-Type', 'application/json');
+$response->setContent(json_encode($content));
+
+return $response;
+        }
+
 }

@@ -5,6 +5,7 @@ namespace Devbanana\BudgetBundle\Entity;
 use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Entity\Budget;
 use Devbanana\BudgetBundle\Entity\BudgetCategories;
+use Devbanana\BudgetBundle\Entity\Category;
 use Devbanana\UserBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -130,6 +131,26 @@ class LineItemRepository extends EntityRepository
             ->setParameter('user', $user)
             ->addOrderBy('l.id', 'DESC')
             ;
+    }
+
+    /**
+     * Checks whether any line item has a specified category
+     * 
+     * @param Category $category 
+     * @access public
+     * @return boolean
+     */
+    public function hasCategory(Category $category)
+    {
+        $query = $this->createQueryBuilder('l')
+            ->select('COUNT(l.id)')
+            ->innerJoin('l.category', 'bc')
+            ->where('bc.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ;
+
+        return $query->getSingleScalarResult() > 0;
     }
 
 }

@@ -25,10 +25,16 @@
 </ul>
 </div>
 
+<p><button id="delete-category-button">Delete</button></p>
+
 <p><button id="new-category-button">Add</button></p>
 
 <div id="new-category" title="Create a Category" role="dialog"
 style="display: none;"></div>
+<div id="category-error-dialog" style="display:none;" title="Error"></div>
+<div id="category-confirm-dialog" title="Confirm Deletion" style="display:none;">i
+<p tabindex="0">Are you sure you would like to delete the selected category?</p>
+</div>
 {% endblock %}
 
 {% block javascripts %}

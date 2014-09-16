@@ -189,6 +189,9 @@ public function preRemove(LifecycleEventArgs $e)
         $this->updateTransactionBalanceWhenLineItemIsDeleted($entity, $em);
         $this->updateCategoryBalanceWhenTransactionIsDeleted($entity, $em);
     }
+    elseif ($entity instanceof Category) {
+        $this->deleteBudgetCategoriesWhenCategoryIsDeleted($entity, $em);
+    }
 }
 
 private function updateTransactionBalanceWhenLineItemIsDeleted(
@@ -445,5 +448,17 @@ $personalLoanPayment->setOrder($order++);
 $personalLoanPayment->setMasterCategory($debt);
 $em->persist($personalLoanPayment);
     }
+
+private function deleteBudgetCategoriesWhenCategoryIsDeleted(
+        Category $category, EntityManager $em)
+{
+$categories = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+    ->findByCategory($category);
+
+foreach ($categories as $c)
+{
+    $em->remove($c);
+}
+}
 
 }
