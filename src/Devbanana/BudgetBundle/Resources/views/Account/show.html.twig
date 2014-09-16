@@ -11,6 +11,7 @@
 
                 <p>Current balance: ${{ entity.balance|number_format(2) }}</p>
 
+{% if total > 0 %}
 <div class="pagination">
 <p>Showing items {{ startResult }}-{{ endResult }} of {{ total }}</p>
 {{ knp_pagination_render(pagination) }}
@@ -82,6 +83,11 @@ Delete
 <p>Showing items {{ startResult }}-{{ endResult }} of {{ total }}</p>
 {{ knp_pagination_render(pagination) }}
 </div>
+{% else %}
+<p>There are no transactions under this account.</p>
+{% endif %}
+
+<button onclick="location.href = '{{ path('transactions_new', {account_id: entity.id}) }}';">Add Transaction</button>
 
         <ul class="record_actions">
     <li>

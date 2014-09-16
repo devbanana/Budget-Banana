@@ -2,11 +2,13 @@
 
 namespace Devbanana\BudgetBundle\Controller;
 
+use Devbanana\BudgetBundle\Entity\Account;
 use Devbanana\BudgetBundle\Entity\LineItem;
 use Devbanana\BudgetBundle\Entity\Transaction;
 use Devbanana\BudgetBundle\Form\LineItemType;
 use Devbanana\BudgetBundle\Form\TransactionType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -20,12 +22,15 @@ use Symfony\Component\HttpFoundation\Response;
 class TransactionController extends Controller
 {
     /**
-     * @Route("/new", name="transactions_new")
+     * @Route("/new/{account_id}",
+     *     name="transactions_new",
+     *     defaults={"account_id" = null})
      * @Method("GET")
      * @Template()
+     * @ParamConverter("account", options={"id" = "account_id"})
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, Account $account = null)
     {
         $user = $this->getUser();
 
@@ -58,6 +63,7 @@ class TransactionController extends Controller
         $transaction->setDate($date);
         $transaction->setUser($user);
         $li1 = new LineItem;
+        $li1->setAccount($account);
         $transaction->getLineItems()->add($li1);
 
         $em = $this->getDoctrine()->getManager();
