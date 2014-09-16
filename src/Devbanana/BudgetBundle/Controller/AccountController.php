@@ -264,7 +264,7 @@ public function listAjaxAction()
      */
     private function createCreateForm(Account $entity, $submit = true)
     {
-        $form = $this->createForm(new AccountType(), $entity, array(
+        $form = $this->createForm(new AccountType(true), $entity, array(
             'action' => $this->generateUrl('accounts_create'),
             'method' => 'POST',
         ));
@@ -395,12 +395,12 @@ $pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, arr
     */
     private function createEditForm(Account $entity)
     {
-        $form = $this->createForm(new AccountType(), $entity, array(
+        $form = $this->createForm(new AccountType(false), $entity, array(
             'action' => $this->generateUrl('accounts_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'Save'));
 
         return $form;
     }

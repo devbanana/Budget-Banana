@@ -8,6 +8,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class AccountType extends AbstractType
 {
+
+    private $extraFields;
+
+    public function __construct($extraFields = true)
+    {
+        $this->extraFields = $extraFields;
+    }
+
         /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -19,7 +27,11 @@ class AccountType extends AbstractType
                         'label' => 'Account',
                         'error_bubbling' => true,
                         ))
-            ->add('startingBalance', 'money', array(
+            ;
+
+        if ($this->extraFields) {
+            $builder
+                ->add('startingBalance', 'money', array(
                         'label' => 'Starting Balance',
                         'currency' => 'USD',
                         'grouping' => true,
@@ -41,6 +53,7 @@ class AccountType extends AbstractType
                         'error_bubbling' => true,
                         ))
         ;
+        }
     }
     
     /**
