@@ -5,6 +5,9 @@ namespace Devbanana\BudgetBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -456,7 +459,7 @@ $pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, arr
 
             $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createDeleteForm($account->getId());
+        $form = $this->createDeleteForm($account);
 
         return array(
                 'entity' => $account,
@@ -473,13 +476,16 @@ $pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, arr
       /**
        * @Route("/{id}", name="accounts_delete_confirm")
        * @Method("DELETE")
+       * @Template("DevbananaBudgetBundle:Account:delete.html.twig")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function confirmDeleteAction(Request $request, Account $account)
     {
+        $this->authorizeAccess($account);
+
             $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createDeleteForm($account->getId());
+        $form = $this->createDeleteForm($account);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -506,14 +512,28 @@ $pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, arr
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm(Account $account)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('accounts_delete_confirm', array('id' => $id)))
+        $builder = $this->createFormBuilder($account)
+            ->setAction($this->generateUrl('accounts_delete_confirm', array('id' => $account->getId())))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
         ;
+
+        $listener = function(FormEvent $event)
+        {
+            $form = $event->getForm();
+            $account = $form->getData();
+            $lineItems = $account->getLineItems();
+
+            if (count($lineItems) > 0) {
+                $form->addError(
+                        new FormError('You cannot delete an account with transactions'));
+            }
+        };
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, $listener);
+        return $builder->getForm();
     }
 
     // }}}
