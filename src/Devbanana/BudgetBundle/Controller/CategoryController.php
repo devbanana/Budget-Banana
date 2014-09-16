@@ -53,6 +53,10 @@ class CategoryController extends Controller
          */
         public function newAjaxAction(MasterCategory $masterCategory = null)
         {
+            if ($masterCategory) {
+            $this->authorizeAccess($masterCategory);
+            }
+
             $category = new Category;
             $category->setMasterCategory($masterCategory);
             $form = $this->createForm(new CategoryType(), $category);
@@ -73,6 +77,10 @@ class CategoryController extends Controller
             $category = new Category;
             $form = $this->createForm(new CategoryType(), $category);
             $form->handleRequest($request);
+
+            if ($category->getMasterCategory()) {
+                $this->authorizeAccess($category->getMasterCategory());
+            }
 
                 $response = new Response;
                 $response->headers->set('Content-Type', 'application/json');
@@ -109,6 +117,8 @@ class CategoryController extends Controller
          */
         public function reorderUpAction(Category $category)
         {
+            $this->authorizeAccess($category->getMasterCategory());
+
             $content = array();
             $em = $this->getDoctrine()->getManager();
 
@@ -130,6 +140,8 @@ class CategoryController extends Controller
          */
         public function reorderDownAction(Category $category)
         {
+            $this->authorizeAccess($category->getMasterCategory());
+
             $content = array();
             $em = $this->getDoctrine()->getManager();
 
@@ -151,6 +163,8 @@ class CategoryController extends Controller
          */
         public function deleteAjaxAction(Category $category)
         {
+            $this->authorizeAccess($category->getMasterCategory());
+
             $em = $this->getDoctrine()->getManager();
 $content = array();
 
@@ -172,5 +186,13 @@ $response->setContent(json_encode($content));
 
 return $response;
         }
+
+private function authorizeAccess(MasterCategory $masterCategory)
+{
+    if ($masterCategory->getUser() != $this->getUser()
+            && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        $this->createAccessDeniedException();
+    }
+}
 
 }
