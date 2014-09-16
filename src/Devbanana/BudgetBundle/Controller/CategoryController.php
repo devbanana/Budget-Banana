@@ -71,7 +71,6 @@ class CategoryController extends Controller
         public function createAjaxAction(Request $request)
         {
             $category = new Category;
-            $category->setUser($this->getUser());
             $form = $this->createForm(new CategoryType(), $category);
             $form->handleRequest($request);
 
@@ -99,6 +98,48 @@ class CategoryController extends Controller
             else {
             $response->setContent(json_encode(array('success' => false)));
             }
+
+            return $response;
+        }
+
+        /**
+         * @Route("/reorder/up/{id}",
+         *     name="categories_reorder_up",
+         *     options={"expose":true})
+         */
+        public function reorderUpAction(Category $category)
+        {
+            $content = array();
+            $em = $this->getDoctrine()->getManager();
+
+            $content['success'] = $em->getRepository('DevbananaBudgetBundle:Category')
+                ->reorderUp($category);
+            $em->flush();
+
+            $response = new Response;
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($content));
+
+            return $response;
+        }
+
+        /**
+         * @Route("/reorder/down/{id}",
+         *     name="categories_reorder_down",
+         *     options={"expose":true})
+         */
+        public function reorderDownAction(Category $category)
+        {
+            $content = array();
+            $em = $this->getDoctrine()->getManager();
+
+            $content['success'] = $em->getRepository('DevbananaBudgetBundle:Category')
+                ->reorderDown($category);
+            $em->flush();
+
+            $response = new Response;
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($content));
 
             return $response;
         }

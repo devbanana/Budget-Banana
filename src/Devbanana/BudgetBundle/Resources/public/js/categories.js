@@ -108,6 +108,52 @@ if ($('.treeview').length) {
                     e.stopPropagation();
                     showNewCategoryDialog();
                     break;
+                            case 73:
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var $selected = $('.activedescendant', $tree);
+                    $.ajax({
+url: Routing.generate('categories_reorder_up', {id: $selected.data('id')}),
+method: "POST",
+success: function (result)
+{
+if (result.success == true) {
+var $previous = $selected.prev();
+$selected.detach();
+$previous.before($selected);
+
+// Get parent node
+var $parent = $selected.parent().parent();
+toggleGroup($parent);
+toggleGroup($parent);
+updateSelectedNode($selected.attr('id'));
+}
+}
+                            });
+                                break;
+                            case 75:
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var $selected = $('.activedescendant', $tree);
+                    $.ajax({
+url: Routing.generate('categories_reorder_down', {id: $selected.data('id')}),
+method: "POST",
+success: function (result)
+{
+if (result.success == true) {
+var $next = $selected.next();
+$selected.detach();
+$next.after($selected);
+
+// Get parent node
+var $parent = $selected.parent().parent();
+toggleGroup($parent);
+toggleGroup($parent);
+updateSelectedNode($selected.attr('id'));
+}
+}
+                            });
+                                break;
                     }
                     }
                     else if (e.shiftKey) {
@@ -204,7 +250,6 @@ $.post(
     data,
     function (result)
     {
-    result = JSON.parse(result);
         var $node = $('<li data-id="' + result.id + '"></li>');
             $node.append($('<a href="' + result.url + '">' +
             result.name + '</a>'));
