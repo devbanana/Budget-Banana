@@ -1,29 +1,29 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}Tutorial Chapter 1.4{% endblock %}
+{% block title %}Tutorial Chapter 1: 4. Live on Last Month's Income{% endblock %}
 
 {% block body %}
 <h1>1.4. Live on Last Month's Income</h1>
 
 <p>Rule 4 is the core of Budget Banana. It is what makes it work so well. The other three rules are great, but once you add rule 4 to the mix, everything just falls into place.</p>
 
-<p>Normally, you might live paycheck-to-paycheck, counting every dollar until payday comes again. Even with the other rules, you worry that you might overspend too much and overdraft your account, which just causes its own problems. What's the solution?</p>
+<p>Normally, you might live paycheck-to-paycheck, counting every dollar until payday comes again. Even with the other rules, you worry that you might overspend too much and overdraft your <a href="{{ path('tutorials_glossary') }}#account">account</a>, which just causes its own problems. What's the solution?</p>
 
-<p>Stop living paycheck-to-paycheck. Yes, easier said than done. The goal of rule 4 is to get to the place where you can live on last month's income.</p>
+<p>Stop living paycheck-to-paycheck. Yes, easier said than done. The goal of rule 4 is to get to the point where you can live on last month's income.</p>
 
-<p>So, if you make $2,000 per month, you get to the place where this month, the $2,000 goes untouched, and you live on the $2,000 you made last month. Then the $2,000 from this month will go towards next month, and so on. Then you always have a buffer of $2,000 in your account, so even if you overspend a bit, it can easily be corrected by <a href="{{ path('tutorials_1_3') }}">rule 3</a>, and you don't have to worry about overdrafting.</p>
+<p>So, if you make $2,000 per month, you get to the point where this month, the $2,000 goes untouched, and you live on the $2,000 you made last month. Then the $2,000 from this month will go towards next month, and so on. Then you always have a <a href="{{ path('tutorials_glossary') }}#buffer">buffer</a> of $2,000 in your account, so even if you overspend a bit, it can easily be corrected by <a href="{{ path('tutorials_1_3') }}">rule 3</a>, and you don't have to worry about overdrafting.</p>
 
-<p>Yes, this is the hardest of the rules, but also the most rewarding once you get there. On average, it takes people about 4 months to be able to apply rule 4, but it really doesn't matter how long it takes, as long as you work towards it. What I recommend is creating a category called Buffer, perhaps under Savings Goals, and every month budgeting every spare dollar to this category. Once it reaches a level that you know you can live on for a month, then you zero out the category and live on that, instead of that month's income. It's really a beautiful system. Sure you might have to cut back for a few months, but the freedom of living on last month's income will more than make up for it.</p>
+<p>Yes, this is the hardest of the rules, but also the most rewarding once you get there. On average, it takes people about 4 months to be able to apply rule 4, but it really doesn't matter how long it takes, as long as you work towards it. What I recommend is creating a <a href="{{ path('tutorials_glossary') }}#category">category</a> called Buffer, perhaps under Savings Goals, and every month budgeting every spare dollar to this category. Once it reaches a level that you know you can live on for a month, then you zero out the category and live on that, instead of that month's income. It's really a beautiful system. Sure you might have to cut back for a few months, but the freedom of living on last month's income will more than make up for it.</p>
 
 <h2>Rule 4 in Budget Banana</h2>
 
-<p>Every income transaction is assigned to a month. Before you apply rule 4, you simply assign the income to the current month. But once you start applying rule 4, you assign the income to the following month, so it no longer shows up in the “Available to Budget” for this month, but will be there waiting when next month rolls around.</p>
+<p>Every <a href="{{ path('tutorials_glossary') }}#income-transaction">income transaction</a> is assigned to a month. Before you apply rule 4, you simply assign the income to the current month. But once you start applying rule 4, you assign the income to the following month, so it no longer shows up in the <a href="{{ path('tutorials_glossary') }}#available-to-budget">“Available to Budget”</a> for this month, but will be there waiting when next month rolls around.</p>
 
 <p>In fact, you can technically assign income to any month in the next 5 years. I recommend only assigning it to the next month, but there are some situations where you may want to assign it further in the future. For instance, if you get paid every two weeks, there will be those months where you get paid three times in the same month. You may choose to apply the extra income to a savings category, or you may alternatively choose to assign it to two months in the future to increase your buffer even more. The choice is yours.</p>
 
 <p>
-<a href="{{ path('tutorials_1_3') }}" accesskey="p" title="Chapter 1.3. Roll with the Punches" rel="prev">⇐ Previous</a>
-<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up ⇑</a>
-<a href="{{ path('tutorials_2') }}" accesskey="n" title="Chapter 2. The Application">Next ⇒</a>
+<a href="{{ path('tutorials_1_3') }}" accesskey="p" title="Chapter 1.3. Roll with the Punches" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up &uarr;</a>
+<a href="{{ path('tutorials_2') }}" accesskey="n" title="Chapter 2. The Application">Next &rarr;</a>
 </p>
 {% endblock %}

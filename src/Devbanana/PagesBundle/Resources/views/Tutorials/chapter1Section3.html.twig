@@ -1,11 +1,11 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}Tutorial Chapter 1.3{% endblock %}
+{% block title %}Tutorial Chapter 1: 3. Roll with the Punches{% endblock %}
 
 {% block body %}
 <h1>1.3. Roll with the Punches</h1>
 
-<p>So you have your budget, every dollar has a job, and you are saving for unexpected expenses. You're moving along just fine, when one month you do the unthinkable: you overspend on a category!</p>
+<p>So you have your budget, <a href="{{ path('tutorials_1_1') }}">every dollar has a job</a>, and you are <a href="{{ path('tutorials_1_2') }}">saving for unexpected expenses</a>. You're moving along just fine, when one month you do the unthinkable: you overspend on a <a href="{{ path('tutorials_glossary') }}#category">category</a>!</p>
 
 <p>Not to be worried: this situation is covered by rule 3: Roll with the Punches.</p>
 
@@ -51,8 +51,8 @@
 <p>Don't worry if this all goes over your head. YOu don't need to understand the formula, but simply understand that your overspent last month is subtracted from whatever you did not budget last month before being subtracted from this month's income.</p>
 
 <p>
-<a href="{{ path('tutorials_1_2') }}" accesskey="p" title="Chapter 1.2. Save for a Rainy Day" rel="prev">⇐ Previous</a>
-<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up ⇑</a>
-<a href="{{ path('tutorials_1_4') }}" accesskey="n" title="Chapter 1.4. Live on Last Month's Income" rel="next">Next ⇒</a>
+<a href="{{ path('tutorials_1_2') }}" accesskey="p" title="Chapter 1.2. Save for a Rainy Day" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_1') }}" accesskey="u" title="Chapter 1. The Methodology">Up &uarr;</a>
+<a href="{{ path('tutorials_1_4') }}" accesskey="n" title="Chapter 1.4. Live on Last Month's Income" rel="next">Next &rarr;</a>
 </p>
 {% endblock %}

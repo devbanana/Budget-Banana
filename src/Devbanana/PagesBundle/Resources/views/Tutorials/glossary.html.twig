@@ -1,0 +1,204 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Glossary of Terms{% endblock %}
+
+{% block body %}
+<h1>Glossary</h1>
+
+<h2 id="toc">Table of Contents</h2>
+
+<ul style="list-style-type: none;">
+<li><a href="#a">A</a></li>
+<li><a href="#b">B</a></li>
+<li><a href="#c">C</a></li>
+<li><a href="#e">E</a></li>
+<li><a href="#i">I</a></li>
+<li><a href="#l">L</a></li>
+<li><a href="#o">O</a></li>
+<li><a href="#t">T</a></li>
+</ul>
+
+<h2 id="a">A</h2>
+
+<dl>
+<dt id="account">
+Account
+</dt>
+<dd>
+An account holds value of some kind, whether positive or negative. Accounts are divided into <a href="#assets">assets</a> and <a href="#liabilities">liabilities</a>. Examples are checking accounts, savings accounts, cash, credit cards, lines of credit, loans, mortgage, investment accounts, PayPal, property, land, etc.
+</dd>
+
+<dt id="assets">
+Assets
+</dt>
+<dd>
+An asset account is an account that contains positive value. They are often divided into liquid assets and fixed assets. Liquid assets are accounts that can be easily and quickly converted to cash, such as checking accounts, savings accounts, investment accounts, money owed you by others, etc. A fixed asset is a long-term asset such as property, land, buildings, etc, which cannot be easily converted to cash.
+</dd>
+
+<dt id="available-to-budget">
+Available to Budget
+</dt>
+<dd>
+<p>Available to Budget is the amount you have left to budget this month. It is calculated by:</p>
+
+<p><pre>Available to Budget =
+    Not Budgeted Last Month
+    − Overspent Last Month
+    + Income This Month
+    − Budgeted This Month</pre></p>
+
+<p>See <a href="{{ path('tutorials_1_3') }}">chapter 1.3</a> for more information.</p>
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="b">B</h2>
+
+<dl>
+<dt id="buffer">
+Buffer
+</dt>
+<dd>
+The buffer is the amount you save up to be able to apply <a href="{{ path('tutorials_1_4') }}">rule 4</a>, so that you can live on last month's budget.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="c">C</h2>
+
+<dl>
+<dt id="category">
+Category
+</dt>
+<dd>
+As you spend money, each expense is categorized, per <a href="{{ path('tutorials_1_1') }}">rule 1</a> of the methodology. Every category can have a budgeted amount, which is how much you can spend in that category in the current month.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="e">E</h2>
+
+<dl>
+<dt id="expense-transaction">
+Expense Transaction
+</dt>
+<dd>
+An expense transaction is any <a href="#transaction">transaction</a> that contains a <a href="#line-item">line item</a> that is assigned to a <a href="#category">category</a>, and generally has an <a href="#outflow">outflow</a>. See also <a href="#line-item-type">line item type</a>. Technically this name applies to the line items within the transaction, but for simplicity we refer to it as an expense transaction when that is the only line item type in the transaction.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="i">I</h2>
+
+<dl>
+<dt id="income-transaction">
+Income Transaction
+</dt>
+<dd>
+An income transaction is any <a href="#transaction">transaction</a> that contains a <a href="#line-item">line item</a> that is assigned to a given month as income. Most of the time an income transaction will have an <a href="#inflow">inflow</a>. See also <a href="#line-item-type">line item type</a>. Technically this name applies to the line items within the transaction, but for simplicity we refer to it as an income transaction when that is the only line item type in the transaction.
+</dd>
+
+<dt id="inflow">
+Inflow
+</dt>
+<dd>
+A <a href="#line-item">line item</a> has an inflow when you are receiving money. Examples are paychecks, refunds and reimbursements, interest on a checking account, or transferring from an <a href="#off-budget-account">off-budget account</a> to an <a href="#on-budget-account">on-budget account</a>, since money is flowing into the budget.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="l">L</h2>
+
+<dl>
+<dt id="liabilities">
+Liabilities
+</dt>
+<dd>
+A liability account is any <a href="#account">account</a> with negative value, generally where you owe money to others. Examples are mortgage, loans, credit cards, etc.
+</dd>
+
+<dt id="line-item">
+Line Item
+</dt>
+<dd>
+A line item is an item in a <a href="#transaction">transaction</a>. A transaction is composed of a collection of line items, each of which can have a different <a href="#line-item-type">type</a>, <a href="#account">account</a>, payer/payee, <a href="#category">category</a>, etc.
+</dd>
+
+<dt id="line-item-type">
+Line Item Type
+</dt>
+<dd>
+<p>A <a href="#line-item">line item</a> can have one of three types:</p>
+
+<ul>
+<li>Expense</li>
+<li>Income</li>
+<li>Transfer</li>
+</ul>
+
+<p>An expense line item is one that is assigned to a <a href="#category">category</a>, and generally, though not always, has an <a href="#outflow">outflow</a>. See also <a href="#expense-transaction">expense transaction</a>.</p>
+
+<p>An income line item is one that is assigned to a particular month as income, and generally, though not always, has an <a href="#inflow">inflow</a>. See also <a href="#income-transaction">income transaction</a>.</p>
+
+<p>A transfer line item is one where money is being transferred from one <a href="#account">account</a> to another. It can be assigned to a category if one account is <a href="#on-budget-account">on-budget</a> and one is <a href="#off-budget-account">off-budget</a>. See also <a href="#transfer-transaction">transfer transaction</a>.</p>
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="o">O</h2>
+
+<dl>
+<dt id="off-budget-account">
+Off-Budget Account
+</dt>
+<dd>
+An off-budget account is an <a href="#account">account</a> that does not apply to the budget. Generally it is an account from which you do not generally spend. Examples of off-budget accounts be retirement accounts, debts you owe others, would investment accounts, mortgage, etc.
+</dd>
+
+<dt id="on-budget-account">
+On-Budget Account
+</dt>
+<dd>
+An on-budget account is any <a href="#account">account</a> that affects your budget. <a href="#inflow">Inflows</a> to the account are assigned to a month as income, and <a href="#outflow">outflows</a> are categorized as expenses.
+</dd>
+
+<dt id="outflow">
+Outflow
+</dt>
+<dd>
+A <a href="#line-item">line item</a> has an outflow when money is being spent, lent, or given. Examples are purchases, credit card payments, credit card interest, loans to others, or transferring from an <a href="#on-budget-account">on-budget account</a> to an <a href="#off-budget-account">off-budget account</a>, since money is flowing out of the budget.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<h2 id="t">T</h2>
+
+<dl>
+<dt id="transfer-transaction">
+Transfer Transaction
+</dt>
+<dd>
+A transfer transaction is any <a href="#transaction">transaction</a> that contains a <a href="#line-item">line item</a> that transfers money from one <a href="#account">account</a> to another (see also <a href="#line-item-type">line item type</a>). Technically this name applies to the line items within the transaction, but for simplicity we refer to it as a transfer transaction when it is the only line item type in the transaction.
+</dd>
+
+<dt id="transaction">
+Transaction
+</dt>
+<dd>
+A transaction is a flow of money to or from an <a href="#account">account</a>. It has one or more <a href="#line-item">line items</a>.
+</dd>
+</dl>
+
+<p><a href="#toc">[ Back to Top ]</a></p>
+
+<p>
+<a href="{{ path('tutorials_index') }}" accesskey="u">Up &uarr;</a>
+</p>
+{% endblock %}

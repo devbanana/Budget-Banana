@@ -1,0 +1,65 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 2: 3. Budget{% endblock %}
+
+{% block body %}
+<h1>2.3. Budget</h1>
+
+<p>The <a href="{{ path('budget') }}">Budget</a> screen is where you will spend most of your time on Budget Banana. It allows you to assign budgets to each category.</p>
+
+<p>At the top you will see <a href="{{ path('tutorials_glossary') }}#available-to-budget">Available to Budget</a>. Underneath that is the formula we discussed in <a href="{{ path('tutorials_1_3') }}">chapter 1.3</a>, with the value of each variable next to it.</p>
+
+<p>As an example, let's take the situation discussed in <a href="{{ path('tutorials_1_3') }}">chapter 1.3</a>:</p>
+
+<ul>
+<li>Last month, you did not budget $200.</li>
+<li>Last month, you overspent in your categories by a total of $100.</li>
+<li>This month, you make $2,000.</li>
+<li>This month, you budget $500.</li>
+</ul>
+
+<p>Your header will look like this:</p>
+
+<table cellpadding="3" cellspacing="3">
+<tr>
+<th>Available to Budget</th>
+<td>$1,600.00</td>
+</tr>
+
+<tr>
+<th>Not Budgeted Last Month</th>
+<td>$200.00</td>
+</tr>
+
+<tr>
+<th>(-) Overspent Last Month</th>
+<td>$100.00</td>
+</tr>
+
+<tr>
+<th>(+) Income This Month</th>
+<td>$2,000.00</td>
+</tr>
+
+<tr>
+<th>(-) Budgeted This Month</th>
+<td>$500.00</td>
+</tr>
+</table>
+
+<p>So, if you calculate the formula reflected in the last four rows of the header, you will get the Available to Budget, which is listed in the first row.</p>
+
+<p>Below the header information is a list of categories. The category name is in the first column. In the second column is a text field where you can enter the budget for that category. In the third column is the <a href="{{ path('tutorials_glossary') }}#outflow">outflow</a> for that category. In the fourth column is the balance. The category balance is any positive balance in that category from last month, plus the budget for the category this month, minus the outflows. Finally, the fifth column is called Carry-Over, and will say either Budget or Category. You can click the toggle link to toggle between the two options.</p>
+
+<p>Carry-Over describes how any negative category balance carries over to the next month. If carry-over is Budget, then <a href="{{ path('tutorials_1_3') }}">rule 3</a> will be applied as usual, and a negative balance will be subtracted from next month's Available to Budget. If carry-over is category, then the negative balance will instead be subtracted from the category. This is not recommended, but may be used in some cases, such as in <a href="{{ path('tutorials_3_1') }}">debt</a>. Toggling the carry-over will set the new value as the default for this month and all future months. It will not, however, affect previous months, because doing so would change your budget values.</p>
+
+<p>As you change the budget for each category, it will be updated immediately. The Available to Budget will be changed in the header to reflect the new budget, and the category balance will change accordingly as well. If you are using a screen reader, the new Available to Budget will be spoken as you change the budget values.</p>
+
+<p>Because the budget is updated in the background, you do not need to click anything to save the new values. As soon as you type in your budget, it is saved.</p>
+
+<p>
+<a href="{{ path('tutorials_2_2') }}" title="Chapter 2.2. Transactions" accesskey="p" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_2') }}" title="Chapter 2. The Application" accesskey="u">Up &uarr;</a>
+<a href="{{ path('tutorials_2_4') }}" title="Chapter 2.4. Categories" accesskey="n" rel="next">Next &rarr;</a>
+</p>
+{% endblock %}

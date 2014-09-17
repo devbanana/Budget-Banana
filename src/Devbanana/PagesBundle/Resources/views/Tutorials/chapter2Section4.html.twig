@@ -1,0 +1,33 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 2: 4. Categories{% endblock %}
+
+{% block body %}
+<h1>2.4. Categories</h1>
+
+<p>The last tab across the top navigation is <a href="{{ path('categories_index') }}">Categories</a>. You can also access it by pressing alt+C (or ctrl+C on the Mac).</p>
+
+<p>On this page, there is a tree view of master categories and their subcategories underneath. You can expand or collapse each <a href="{{ path('tutorials_glossary') }}#category">category</a> with the mouse or keyboard. On the keyboard, press up and down arrows to navigate through the categories. Press right arrow to expand a category, or left arrow to collapse.</p>
+
+<h2>Reorder Categories</h2>
+
+<p>To move the selected category up, press <code>“I”</code> while focused on that category. to move a category down, press <code>“k”</code>. Currently there is no way to move categories with the mouse.</p>
+
+<h2>Delete Category</h2>
+
+<p>To delete a category, press the delete or backspace key, or click the “Delete” button underneath the tree view. You will be asked to confirm you wish to delete the category. Click yes, and the category will be deleted. Categories cannot be deleted if they have <a href="{{ path('tutorials_glossary') }}#transaction">transactions</a>. You will need to recategorize the transactions in that category first.</p>
+
+<h2>View Category</h2>
+
+<p>To view a category, double click on it, or press space or enter. The category view will open, and you can see the latest transactions in that category. You will also see the total outflows for that category, as well as the current balance.</p>
+
+<h2>New Category</h2>
+
+<p>To add a category, press <code>“a”</code> or <code>“+”</code>, or click the “Add” button. A dialog will pop up where you can select the master category, and enter the name of the category. You can also select whether the category will be carried over to the budget, or to the same category, when it has a negative balance.</p>
+
+<p>
+<a href="{{ path('tutorials_2_2') }}" title="Chapter 2.2. Transactions" accesskey="p" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_2') }}" title="Chapter 2. The Application" accesskey="u">Up &uarr;</a>
+<a href="{{ path('tutorials_2_4') }}" title="Chapter 2.4. Categories" accesskey="n" rel="next">Next &rarr;</a>
+</p>
+{% endblock %}

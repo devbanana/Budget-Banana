@@ -1,0 +1,83 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 2: 1. Accounts{% endblock %}
+
+{% block body %}
+<h1>2.1. Accounts</h1>
+
+<p>The first tab in the top navigation bar is <a href="{{ path('accounts') }}">Accounts</a>. You can also press alt+A (or ctrl+A on Mac) to navigate to the Accounts page.</p>
+
+<p>On the account page, you'll see a listing of all of your <a href="{{ path('tutorials_glossary') }}#account">accounts</a>, along with their balance.</p>
+
+<p>The third column over is called Budgeted. In Budget Banana, there are two types of accounts: <a href="{{ path('tutorials_glossary') }}#on-budget-account">on-budget</a> and <a href="{{ path('tutorials_glossary') }}#on-budget-account">off-budget</a>.</p>
+
+<p>An on-budget account is counted in the budget. Income to an on-budget account is assigned to a month, and <a href="{{ path('tutorials_glossary') }}#transaction">transactions</a> are assigned to categories. An on-budget account would be your checking, savings, cash, credit cards, etc.</p>
+
+<p>An off-budget account is an account where you simply transfer money in, but rarely get it out. It is an account which does not apply to your budget. <a href="{{ path('tutorials_glossary') }}#inflow">Inflows</a> to the account are not assigned to a month, and <a href="{{ path('tutorials_glossary') }}#outflow">outflows</a> are not assigned to a <a href="{{ path('tutorials_glossary') }}#category">category</a>. These would be accounts like mortgage, investment accounts, and loans that you are paying off.</p>
+
+<p>Underneath the accounts listing, you will see a label that says “Net Worth”. This will show your total net worth as a sum of all of the accounts. For this reason, some people like to add all of their <a href="{{ path('tutorials_glossary') }}#assets">assets</a> and <a href="{{ path('tutorials_glossary') }}#liabilities">liabilities</a>, even ones that don't contribute to their budget, so that they can have an accurate report of their net worth.</p>
+
+<h2>View Account</h2>
+
+<p>When you click on the name of an account, you will be taken to a page where you can view more details about that account.</p>
+
+<p>At the top of that page, you will see the current balance of the account.</p>
+
+<p>Underneath that you will see all the transactions for that account, 50 per page. It is sorted by date by default, but you can also sort it by inflow or outflow.</p>
+
+<p><strong>Note</strong>: Technically this page displays <a href="{{ path('tutorials_glossary') }}#line-item">line items</a>, not transactions. The reason is that transactions can have multiple line items, each from a different account sometimes. So here we simply display the line items associated with this account. The difference is trivial, however.</p>
+
+<h2>New Account</h2>
+
+<p>On the main <a href="{{ path('accounts') }}">accounts</a> page, you will see a link that says <a href="{{ path('accounts_new') }}">New Account</a>. You can also press alt+N (or ctrl+N on the Mac).</p>
+
+<p>On the new account page, you first enter the name of the account. This can be changed at any time.</p>
+
+<p>Next, you enter the starting balance. Leave this blank for no starting balance, or if you'll manually create a transaction as a starting balance, such as if you need to select a different date. If the account is an asset account, enter a positive value. If it is a liability, or a checking or savings that is in overdraft, enter a negative amount. This will automatically create the starting balance transaction for you.</p>
+
+<p>Note that if you enter a negative starting balance on an on-budget account, a category will be created under Debt with the name of this account. The starting balance will be categorized to that category. Learn more about <a href="{{ path('tutorials_3_1') }}">handling debt</a>.</p>
+
+<p>Next is the account type. YOu may select between:</p>
+
+<ul>
+<li>Checking</li>
+<li>Savings</li>
+<li>Cash</li>
+<li>PayPal</li>
+<li>Merchant Account</li>
+<li>Credit Card</li>
+<li>Line of Credit</li>
+<li>Investment Account</li>
+<li>Other Assets</li>
+<li>Mortgage</li>
+<li>Other Loan/Liabilities</li>
+</ul>
+
+<p>Choose this type carefully as it is highly discouraged to change this type later.</p>
+
+<p>Next it will ask you to select on-budget or off-budget. The default will be selected depending on the type you select above. It is highly recommended not to change this value.</p>
+
+<p>Finally, click Create and you will be taken to that accounts detail page.</p>
+
+<h2>Edit Account</h2>
+
+<p>On the <a href="{{ path('accounts') }}">accounts</a> page, click the edit link beside the account you would like to edit.</p>
+
+<p>The page that comes up will allow you to edit the name of that account. At this time, you cannot change the type of an account once it is created.</p>
+
+<h2>Delete Account</h2>
+
+<p>On the <a href="{{ path('accounts') }}">accounts</a> page, click the delete link next to the account you would like to delete. Please note that you cannot delete an account that has transactions.</p>
+
+<p>On the next page, you will be asked to confirm to delete that account. If you click Delete, the account will be deleted and you will be taken back to the accounts page.</p>
+
+<h2>Add Transaction</h2>
+
+<p>On the detail page for an account, there is an “Add Transaction” button below all of the transactions. When you click that button, the <a href="{{ path('tutorials_2_2') }}#new-transaction">new transaction form</a> will come up, and the first <a href="{{ path('tutorials_glossary') }}#line-item">line item</a> of that transaction will have its account field preset to the given account.</p>
+
+<p>
+<a href="{{ path('tutorials_2') }}" title="Chapter 2. The Application" accesskey="p" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_2') }}" title="Chapter 2. The Application" accesskey="u">Up &uarr;</a>
+<a href="{{ path('tutorials_2_2') }}" title="Chapter 2.2. Transactions" accesskey="n">Next &rarr;</a>
+</p>
+{% endblock %}

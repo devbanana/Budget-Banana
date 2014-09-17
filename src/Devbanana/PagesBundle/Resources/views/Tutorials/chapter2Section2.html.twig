@@ -1,0 +1,55 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 2: 2. Transactions{% endblock %}
+
+{% block body %}
+<h1>2.2. Transactions</h2>
+
+<p>The second navigation tab is <a href="{{ path('transactions_index') }}">Transactions</a>. You can also reach it by pressing alt+T (or ctrl+T on the Mac). This will show you all of your <a href="{{ path('tutorials_glossary') }}#transaction">transactions</a> from all <a href="{{ path('tutorials_glossary') }}#account">accounts</a> for the current month, with the newest transactions at the top.</p>
+
+<p>In the leftmost column is the date of each transaction. To the right is each <a href="{{ path('tutorials_glossary') }}#line-item">line item</a> in that transaction. If there are multiple line items in a transaction, the transaction will span multiple rows.</p>
+
+<p>At the top of the page are links to view the previous or next month of transactions. The latest month of transactions you have viewed is saved in memory, so that if you navigate back to the <a href="{{ path('transactions_index') }}">Transactions</a> page, it will select the latest month you viewed.</p>
+
+<p>In the rightmost column, you can edit the transactions, or delete the line item in that row.</p>
+
+<h2 id="new-transaction">New Transaction</h2>
+
+<p>Underneath the list of transactions is a “New Transaction” link. Alternatively you can press alt+N (or ctrl+N on the Mac).</p>
+
+<p>At the top of the Add Transaction page is a row with the transactions date, total <a href="{{ path('tutorials_glossary') }}#inflow">inflow</a>, <a href="{{ path('tutorials_glossary') }}#outflow">outflow</a>, and balance.</p>
+
+<p>The date is comprised of three dropdowns with the year, month, and day. Select the date of your transaction.</p>
+
+<p>The inflow, outflow, and balance is updated as you add line items. Each inflow adds to the inflow, each outflow adds to the outflow, and the balance is simply the difference of the inflow minus the outflow. Therefore you always see exactly what the total of your transaction is. For screen readers, the balance will always be spoken whenever you enter either an inflow or an outflow. These elements will have focus placed on them as you tab through the page, but you cannot edit them.</p>
+
+<p>Below the transaction row is a heading that says “Line Item”. Underneath of that is a row with one line item by default. You can add a new line item by clicking the “Add Another Line Item” link.</p>
+
+<p>In the leftmost column, you select the <a href="{{ path('tutorials_glossary') }}#line-item-type">type</a> of the line item. Expense is selected by default.</p>
+
+<p>Next you select your account. At the bottom of the accounts dropdown is an option to add a new account. If you select this, a dialog will pop up that will allow you to dynamically add a new account without having to navigate away from the page.</p>
+
+<p>Next you select the payer or payee, or can add a new one. If the type is expense, there will be a list of payees, or the people you pay. If income, it will be a list of your payers, or the people who pay you. If transfer, this dropdown will change to a list of your accounts. You select the account to transfer to or from.</p>
+
+<p>In the next dropdown will be the category to assign this transaction to. At the bottom, you can add a new category. If the type is income, this will instead allow you to select a month to assign your line item to.</p>
+
+<p>Next you may enter a check number, if this line item is associated with a check. This field is optional.</p>
+
+<p>Next will be the memo field to enter information about this line item. This field is optional.</p>
+
+<p>Finally there is an inflow field, followed by an outflow field. Do <strong>not</strong> enter a negative amount in the outflow. As you enter the number, the transaction at the top will be updated.</p>
+
+<p>To save your transaction, click “Add”. If it is successful, a dialog will pop up saying the transaction was created. The dialog will close automatically in 5 seconds, or you can press the escape key to exit it manually. You will be taken back up to the date so you can add another transaction if you like.</p>
+
+<h2>Edit Transaction</h2>
+
+<p>If you click the edit link next to a transaction, you will be taken to the edit screen. It looks exactly like the Add Transaction screen, but has the transaction information filled in.</p>
+
+<p>Once you are done editing the transaction, click “Save” and if successful, you will be taken back to the transactions list.</p>
+
+<p>
+<a href="{{ path('tutorials_2_1') }}" title="Chapter 2.1. Accounts" accesskey="p" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_2') }}" title="Chapter 2. The Application" accesskey="u">Up &uarr;</a>
+<a href="{{ path('tutorials_2_3') }}" title="Chapter 2.3. Budget" accesskey="n" rel="next">Next &rarr;</a>
+</p>
+{% endblock %}
