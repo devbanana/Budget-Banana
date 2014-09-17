@@ -121,7 +121,7 @@ class LineItemRepository extends EntityRepository
         return $income;
     }
 
-    public function findByAccount(Account $account, User $user)
+    public function queryByAccount(Account $account, User $user)
     {
         return $this->createQueryBuilder('l')
             ->innerJoin('l.transaction', 't')

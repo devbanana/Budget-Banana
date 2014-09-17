@@ -345,10 +345,11 @@ public function listAjaxAction()
 
         // Get transactions in this account
 $qb = $em->getRepository('DevbananaBudgetBundle:LineItem')
-    ->findByAccount($account, $this->getUser());
+    ->queryByAccount($account, $this->getUser());
 
 $paginator = $this->get('knp_paginator');
-$pagination = $paginator->paginate($qb, $request->query->get('page', 1), 50, array(
+$pagination = $paginator->paginate($qb, $request->query->get('page',1),
+        50, array(
             'defaultSortFieldName' => 't.date',
             'defaultSortDirection' => 'desc',
             ));
