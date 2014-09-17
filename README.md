@@ -1,14 +1,16 @@
 Budget-Banana
 =============
 
-Budget Banana is a comprehensive budgeting system inspired by [You Need A Budget](http://www.youneedabudget.com).
+Budget Banana is a comprehensive budgeting system with the aim of helping you to better manage your financial situation.
+
+It is inspired by [You Need a Budget](http://www.youneedabudget.com), but with additional features not present in YNAB.
 
 **NOTE**: This project is just starting development. Please watch this project for updates. I hope to have something usable soon.
 
 Budgeting Philosophy
 -------------
 
-Our central goal is to help you to get out of debt and/or increase your savings. You should be able to get by month-to-month without being surprised by major expenses. There are four simple rules, which you can read about at the link above:
+Our central goal is to help you to get out of debt and/or increase your savings. You should be able to get by month-to-month without being surprised by major expenses. There are four simple rules:
 
 1. Give every dollar a job
 2. Save for a rainy day
