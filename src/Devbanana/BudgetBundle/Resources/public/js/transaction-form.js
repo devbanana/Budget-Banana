@@ -727,7 +727,7 @@ function subscribeEvents(row)
     subscribeOutflow(row);
 }
 
-$('#devbanana_budgetbundle_transaction_date_year').focus();
+$('#devbanana_budgetbundle_transaction_date_month').focus();
 
 $('#submit').on('click', function(e)
         {
