@@ -18,3 +18,10 @@ Our central goal is to help you to get out of debt and/or increase your savings.
 4. Live on last month's income
 
 Budget Banana is a web-based interface to help you to live out these four rules and get better control over your finances.
+
+Change Log
+-------------
+
+### 0.1.0 - 2014-09-17 ###
+
+* Initial release. Contains most major features.
