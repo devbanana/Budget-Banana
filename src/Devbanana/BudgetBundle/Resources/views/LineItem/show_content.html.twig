@@ -1,0 +1,73 @@
+<div class="pagination">
+<p>Showing items {{ startResult }}-{{ endResult }} of {{ total }}</p>
+{{ knp_pagination_render(pagination) }}
+</div>
+
+<table border="1" cellpadding="3" cellspacing="3">
+<thead>
+<tr>
+<th>{{ knp_pagination_sortable(pagination, 'Date', 't.date', {'defaultDirection': 'desc'}) }}</th>
+                    <th>Payer/Payee</th>
+                    <th>Category</th>
+                    <th>Check Number</th>
+                    <th>Memo</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Inflow', 'l.inflow', { 'defaultDirection': 'desc' }) }}</th>
+                    <th>{{ knp_pagination_sortable(pagination, 'Outflow', 'l.outflow', { 'defaultDirection': 'desc' }) }}</th>
+                    <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for lineItem in pagination %}
+<tr>
+<th>{{ lineItem.transaction.date|date('Y-m-d') }}</td>
+<td>
+{% if lineItem.payee %}
+{{ lineItem.payee }}
+{% elseif lineItem.payer %}
+{{ lineItem.payer }}
+{% elseif lineItem.transferAccount %}
+{% if lineItem.inflow != 0 %}
+Transfer from
+{% else %}
+Transfer to
+{% endif %}
+<a href="{{ path('accounts', {'id': lineItem.transferAccount.id}) }}">
+{{ lineItem.transferAccount }}
+</a>
+{% endif %}
+</td>
+<td>
+{% if lineItem.category %}
+<a href="{{ path('categories_show', {'id': lineItem.category.category.id}) }}">
+{{ lineItem.category }}
+</a>
+{% elseif lineItem.assignedMonth  %}
+Income for {{ lineItem.assignedMonth.month|date('F Y') }}
+{% endif %}
+</td>
+<td>
+{{ lineItem.checkNumber }}
+</td>
+<td>
+{{ lineItem.memo }}
+</td>
+<td>${{ lineItem.inflow }}</td>
+<td>${{ lineItem.outflow }}</td>
+<td>
+<a href="{{ path('transactions_edit', {'id': lineItem.transaction.id}) }}">
+Edit
+</a> |
+<a href="{{ url("lineitems_delete", {"id": lineItem.id}) }}">
+Delete
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<div class="pagination">
+<p>Showing items {{ startResult }}-{{ endResult }} of {{ total }}</p>
+{{ knp_pagination_render(pagination) }}
+</div>
