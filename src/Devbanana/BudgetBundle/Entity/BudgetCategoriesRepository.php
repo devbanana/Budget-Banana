@@ -158,4 +158,23 @@ public function getTotalBudgetedBefore(Budget $budget)
     return $budgeted;
 }
 
+public function findBalanceByCategory(Category $category)
+{
+    $month = new \DateTime(
+            sprintf('%04d-%02d-%02d',
+                date('Y'), date('n'), 1
+                ));
+    $query = $this->createQueryBuilder('bc')
+        ->select('bc.balance')
+        ->innerJoin('bc.budget', 'b')
+        ->where('bc.category = :category')
+        ->andWhere('b.month = :month')
+        ->setParameter('category', $category)
+        ->setParameter('month', $month)
+        ->getQuery()
+        ;
+
+        return $query->getSingleScalarResult();
+}
+
 }

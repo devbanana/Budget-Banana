@@ -133,6 +133,17 @@ class LineItemRepository extends EntityRepository
             ;
     }
 
+    public function queryByCategory(Category $category)
+    {
+        return $this->createQueryBuilder('l')
+            ->innerJoin('l.category', 'bc')
+            ->innerJoin('l.transaction', 't')
+            ->where('bc.category = :category')
+            ->setParameter('category', $category)
+            ->addOrderBy('l.id', 'DESC')
+            ;
+    }
+
     /**
      * Checks whether any line item has a specified category
      * 

@@ -1,0 +1,40 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ entity }}{% endblock %}
+
+{% set startResult = pagination.getItemNumberPerPage * (pagination.getCurrentPageNumber() - 1) + 1 %}
+{% set endResult = startResult + pagination.getItemNumberPerPage - 1 %}
+{% set total = pagination.getTotalItemCount %}
+
+{% if endResult > total %}
+{% set endResult = total %}
+{% endif %}
+
+{% block body %}
+<h1>{{ entity }}</h1>
+
+<table cellpadding="3" cellspacing="3">
+<tr>
+<th>Total Outflow</th>
+<td>{{ outflow|money }}</td>
+</tr>
+
+<tr>
+<th>Current Balance</th>
+<td>{{ balance|money }}</td>
+</tr>
+</table>
+
+{% if total > 0 %}
+{{ include('DevbananaBudgetBundle:LineItem:show_content.html.twig',
+        {'pagination': pagination}) }}
+{% else %}
+<p>There are no transactions in this category.</p>
+{% endif %}
+
+<ul>
+<li>
+<a href="{{ path('categories_index') }}">Back to Categories</a>
+</li>
+</ul>
+{% endblock %}

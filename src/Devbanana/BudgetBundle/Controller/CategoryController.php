@@ -37,10 +37,49 @@ class CategoryController extends Controller
         /**
          * @Route("/{id}",
          *     name="categories_show")
+         * @Template()
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
          */
-        public function showAction(Category $category)
+        public function showAction(Request $request, Category $category)
         {
+            $this->authorizeAccess($category->getMasterCategory());
+
+            $em = $this->getDoctrine()->getManager();
+
+            // Get all line items for this category
+            $qb = $em->getRepository('DevbananaBudgetBundle:LineItem')
+                ->queryByCategory($category);
+
+            $paginator = $this->get('knp_paginator');
+            $pagination = $paginator->paginate($qb,
+                    $request->query->get('page', 1),
+                    50,
+                    array(
+                        'defaultSortFieldName' => 't.date',
+                        'defaultSortDirection' => 'desc',
+                        ));
+
+            // Get sums of outflows
+$outflow = '0.00';
+
+$lineItems = $qb->getQuery()->getResult();
+
+foreach ($lineItems as $lineItem)
+{
+    $outflow = bcsub($outflow, $lineItem->getInflow(), 2);
+    $outflow = bcadd($outflow, $lineItem->getOutflow(), 2);
+}
+
+// Get current balance
+$balance = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+->findBalanceByCategory($category);
+
+return array(
+        'pagination' => $pagination,
+        'entity' => $category,
+        'outflow' => $outflow,
+        'balance' => $balance,
+        );
         }
 
         /**
