@@ -22,6 +22,6 @@ Budget Banana is a web-based interface to help you to live out these four rules 
 Change Log
 -------------
 
-### 0.1.0 - 2014-09-17 ###
+### v0.1.0-alpha - 2014-09-17 ###
 
 * Initial release. Contains most major features.
