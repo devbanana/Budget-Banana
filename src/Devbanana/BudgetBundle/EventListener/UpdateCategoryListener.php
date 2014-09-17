@@ -149,8 +149,7 @@ public function prePersist(LifecycleEventArgs $e)
         $category = $entity->getCategory();
 
         if ($category) {
-        $outflow = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
-            ->getOutflowForCategory($category);
+            $outflow = $category->getOutflow();
         $outflow = bcsub($outflow, $entity->getOutflow(), 2);
         $outflow = bcadd($outflow, $entity->getInflow(), 2);
 
