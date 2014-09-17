@@ -769,7 +769,6 @@ $('#submit').on('click', function(e)
                 $collectionHolder.data('index', 1);
                 }
                 });
-            $('#devbanana_budgetbundle_transaction_date_year').focus();
 
             var timeout;
 
