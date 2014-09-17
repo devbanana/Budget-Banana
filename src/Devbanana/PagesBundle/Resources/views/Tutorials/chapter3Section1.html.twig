@@ -39,4 +39,29 @@
 
 <p>When interest is charged, you can either categorize it in the debt category for this account, or you can create an Interest account and pay it off as any other expense.</p>
 
+<h2>Other Loans and Liabilities</h2>
+
+<p>Now let's say instead that you have student loans that you need to pay off. It's not something that's going to affect your budget, so it shouldn't be an on-budget account. Here you have two choices:</p>
+
+<ol>
+<li>Simply create a Student Loans category, and budget some towards it every month</li>
+<li>Create an <a href="{{ path('tutorials_glossary') }}#off-budget-account">off-budget</a> student loans account with the exact amount of your student loans</li>
+</ol>
+
+<p>The first is the easiest, but as mentioned in <a href="{{ path('tutorials_2_1') }}">chapter 2.1</a>, some people like to have an accurate view of their net worth, so they will create an account for each of their debts. It's also handy to have a record of exactly what you owe on each debt. The choice is yours of how you want to handle it.</p>
+
+<p>If you select the first method, then all you do is budget some money in that category every month, and create an <a href="{{ path('tutorials_glossary') }}#expense-transaction">expense transaction</a> when you actually make the payment.</p>
+
+<p>If you choose the second method, it is a bit more involved, though not much. First go and <a href="{{ path('accounts_new') }}">create</a> an off-budget account. Again make your starting balance negative. For type, select Other Loan/Liability. Off-budget will be selected automatically.</p>
+
+<p>Now when it sees your starting balance, it will no longer create a category, since off-budget accounts don't have categories. The outflow will not affect your budget at all.</p>
+
+<p>To make a payment on the loan, create a transfer from your checking to your off-budget loan account for the amount of the payment. Be sure to categorize it since the money is leaving your budget. You categorize it as Student Loans, or whatever category you choose for this debt.</p>
+
+<p>When interest comes out, you simply record it as an outflow from the account, again with no category. It adds to the amount you owe, but in no way affects your budget.</p>
+
+<p>
+<a href="{{ path('tutorials_3') }}" title="Chapter 3. Tips & Tricks" accesskey="p" rel="prev">&larr; Previous</a>
+<a href="{{ path('tutorials_3') }}" title="Chapter 3. Tips & Tricks" accesskey="u">Up &uarr;</a>
+
 {% endblock %}
