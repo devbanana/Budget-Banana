@@ -1,0 +1,42 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Tutorial Chapter 3: 1. Handling Debt{% endblock %}
+
+{% block body %}
+<h1>3.1. Handling Debt</h1>
+
+<p>In Budget Banana, one of your first priorities, besides building a <a href="{{ path('tutorials_glossary') }}#buffer">buffer</a>, is to get rid of your debt as quickly as possible.</p>
+
+<p>Using credit cards is perfectly okay, but after you start using BB, you should pay off your credit cards in full every month. But of course it is possible that you may have some credit card debt, or other types of debt, before using BB. This section will show you how to best handle such debt.</p>
+
+<p>There are two types of debt you can set up in BB. The first type is debt from a credit card, which you will continue to spend from, but still want to gradually pay off your debt. The second type is debt that is already spent and won't be growing in any way, except by interest.</p>
+
+<h2>Credit Card Debt</h2>
+
+<p>Let's say you own a credit card with a credit limit of $5,000. When you start using BB, you have a balance of $2,500 on your card. However, you'd still like to keep using your card because its rewards or other benefits.</p>
+
+<p>What you do is set up your credit card as an <a href="{{ path('tutorials_glossary') }}#on-budget-account">on-budget account</a>. Recall that an on-budget account is any <a href="{{ path('tutorials_glossary') }}#account">account</a> that counts towards your budget. Since you will regularly spend from your credit card, you want it to be an on-budget account.</p>
+
+<p>So, you navigate to the <a href="{{ path('accounts_new') }}">new account screen</a>, and enter in the name of your credit card.</p>
+
+<p>Under starting balance, you want to enter the starting balance of your card as a negative amount. In this example, you would enter <strong>-2500</strong>.</p>
+
+<p>Under type, you want to select <strong>Credit Card</strong> Notice that it is automatically selected to be an on-budget account. Keep this selection as-is, and click <strong>Add</strong>.</p>
+
+<p>When BB sees your negative balance, it creates a <a href="{{ path('tutorials_glossary') }}#category">category</a> underneath the Debt master category with the same name of the account. The starting balance <a href="{{ path('tutorials_glossary') }}#transaction">transaction</a> will be categorized into this category. So, you will see a big fat outflow of -$2,500 when you look at your budget.</p>
+
+<p>This category will be set to carry over to the same category next month, as opposed to the entire budget, as discussed in <a href="{{ path('tutorials_1_3') }}">chapter 1.3</a>. This means that this negative balance won't affect your Available to Budget next month. It will just remind you how much you have left to pay on your card.</p>
+
+<p>Now let's say you buy some groceries and put it on your card. The groceries come to $100. So you go in and enter a <a href="{{ path('transactions_new') }}">new transaction</a>. Under Account you select your credit card. You categorize it as <strong>Everyday Expenses &gt; Groceries</strong> just as you normally would, and you enter <strong>100</strong> in the outflow.</p>
+
+<p>Now once you go back to your credit card account, you see the balance is <strong>-$2,600</strong>. This reflects the $100 outflow for Groceries. However, your Debt category is still <strong>-$2,500</strong>, since the new outflow did not come out of that category.</p>
+
+<p>At the end of the month, you want to pay off the $100 you spent. You should do this every month, paying exactly whatever you spent on the credit card. So you create a <a href="{{ path('tutorials_glossary') }}#transfer-transaction">transfer transaction</a>, transferring $100 from checking to the credit card account. It is <strong>not</strong> categorized since both accounts are on-budget, and you only categorize when money is leaving the budget. Now when you check back, your checking is $100 less, and your credit card account is <strong>-$2,500</strong>, the amount of your initial debt.</p>
+
+<p>Now you decide to pay off $250 of the debt. So, you create a transfer transaction from your checking to the credit card account for <strong>$250</strong>. You do <strong>not</strong> categorize it, since both the source and destination accounts are on-budget.</p>
+
+<p>To reflect this transfer, go into your <a href="{{ path('budget') }}">budget screen</a> and enter a budget of $250 for the debt category. This will take the balance of the category down to <strong>-$2,250</strong>.</p>
+
+<p>When interest is charged, you can either categorize it in the debt category for this account, or you can create an Interest account and pay it off as any other expense.</p>
+
+{% endblock %}
