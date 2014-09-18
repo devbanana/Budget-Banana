@@ -33,7 +33,8 @@ class BudgetCategoriesController extends Controller
         $budget = $em->getRepository('DevbananaBudgetBundle:Budget')
             ->findOneOrCreateByDate($date, $user);
 
-            $categories = $budget->getCategories();
+        $categories = $em->getRepository('DevbananaBudgetBundle:BudgetCategories')
+            ->findOrderedCategories($budget);
 
             $content = array();
             $content['categories'] = array();

@@ -177,4 +177,22 @@ public function findBalanceByCategory(Category $category)
         return $query->getSingleScalarResult();
 }
 
+public function findOrderedCategories(Budget $budget)
+{
+    $query = $this->createQueryBuilder('bc')
+->innerJoin('bc.budget', 'b')
+->innerJoin('bc.category', 'c')
+->innerJoin('c.masterCategory', 'mc')
+->where('bc.budget = :budget')
+->andWhere('b.user = :user')
+->setParameter('budget', $budget)
+->setParameter('user', $budget->getUser())
+->addOrderBy('mc.order', 'ASC')
+->addOrderBy('c.order', 'ASC')
+->getQuery()
+;
+
+    return $query->getResult();
+}
+
 }

@@ -58,7 +58,7 @@
 </thead>
 
 <tbody id="budget" data-id="{{ entity.id }}">
-{% for category in form.categories %}
+{% for category in form.orderedCategories %}
 <tr class="category" data-id="{{ category.vars.data.id }}">
 <th class="name">{{ category.vars.data }}</th>
 <td class="budgeted">{{ form_widget(category.budgeted) }}</td>
