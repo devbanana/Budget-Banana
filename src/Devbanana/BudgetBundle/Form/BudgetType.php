@@ -17,7 +17,7 @@ class BudgetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('categories', 'collection', array(
+            ->add('orderedCategories', 'collection', array(
                         'type' => new BudgetCategoriesType(),
                         'by_reference' => false,
                         ))

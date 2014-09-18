@@ -99,6 +99,46 @@ class Budget
     {
         return $this->categories;
     }
+
+    public function getOrderedCategories()
+    {
+        $collection = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $array = $this->categories->toArray();
+
+        usort($array, function ($a, $b)
+                {
+                if ($a->getCategory()->getMasterCategory()->getOrder()
+                    == $b->getCategory()->getMasterCategory()->getOrder()) {
+                if ($a->getCategory()->getOrder()
+                    == $b->getCategory()->getOrder()) {
+                return strcmp($a->getName(), $b->getName());
+                }
+                elseif ($a->getCategory()->getOrder()
+                    < $b->getCategory()->getOrder()) {
+                return -1;
+                }
+                else {
+                return 1;
+                }
+                }
+                elseif ($a->getCategory()->getMasterCategory()->getOrder()
+                    < $b->getCategory()->getMasterCategory()->getOrder()) {
+                return -1;
+                }
+                else {
+                return 1;
+                }
+                });
+
+        foreach ($array as $category)
+        {
+            $collection->add($category);
+        }
+
+        return $collection;
+    }
+
     /**
      * Constructor
      */
