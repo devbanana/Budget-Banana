@@ -22,7 +22,7 @@ Change Log
 
 ### v0.1.1-alpha - 2014-09-17 ###
 
-* Fixed sorting for budget categories - #3
+* Fixed sorting for budget categories ([#3](issues/3))
 
 ### v0.1.0-alpha - 2014-09-17 ###
 
