@@ -3,8 +3,6 @@ Budget-Banana
 
 Budget Banana is a comprehensive budgeting system with the aim of helping you to better manage your financial situation.
 
-It is inspired by [You Need a Budget](http://www.youneedabudget.com), but with additional features not present in YNAB. It has also been developed with accessibility in mind to be equally usable for the sighted and visually impaired alike.
-
 **NOTE**: This project is just starting development. Please watch this project for updates. I hope to have something usable soon.
 
 Budgeting Philosophy
@@ -24,7 +22,7 @@ Change Log
 
 ### v0.1.1-alpha - 2014-09-17 ###
 
-* Fixed sorting for budget categories (#3)
+* Fixed sorting for budget categories (issue #3)
 
 ### v0.1.0-alpha - 2014-09-17 ###
 
