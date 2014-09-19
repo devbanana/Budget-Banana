@@ -20,10 +20,14 @@ Budget Banana is a web-based interface to help you to live out these four rules 
 Change Log
 -------------
 
-### v0.1.1-alpha - 2014-09-17 ###
+### v0.1.2 - 2014-09-18 ###
+
+* Fixed broken images on category page ([#12](https://github.com/devbanana/Budget-Banana/issues/12))
+
+### v0.1.1 - 2014-09-17 ###
 
 * Fixed sorting for budget categories ([#3](http://github.com/devbanana/Budget-Banana/issues/3))
 
-### v0.1.0-alpha - 2014-09-17 ###
+### v0.1.0 - 2014-09-17 ###
 
 * Initial release. Contains most major features.

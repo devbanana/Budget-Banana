@@ -41,10 +41,10 @@ color: #fff;
     padding-left: 40px;
 }
 .tree .hasChildren a {background-image: none; padding-left: 30px;}
-.tree li .noChildren a {background-image: url("img/raquo-blue.png"); padding-left: 25px;}
+.tree li .noChildren a {background-image: url("../images/raquo-blue.png"); padding-left: 25px;}
 .toggle {background-position: left top; background-repeat: no-repeat; cursor: pointer; height: 14px; width: 14px; position: absolute; left: 10px; top: 0.4em;}
-.tree .expanded {background-image: url("img/minus-fblue.png");}
+.tree .expanded {background-image: url("../images/minus-blue.png");}
 .tree .collapsed {background-image: url("../images/plus-blue.png");}
-.tree .expanded.hover {background-image: url("img/minus-blue-hover.png");}
-.tree .collapsed.hover {background-image: url("img/plus-blue-hover.png");}
+.tree .expanded.hover {background-image: url("../images/minus-blue-hover.png");}
+.tree .collapsed.hover {background-image: url("../images/plus-blue-hover.png");}
 
