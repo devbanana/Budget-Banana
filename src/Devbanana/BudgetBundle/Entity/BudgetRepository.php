@@ -116,16 +116,17 @@ class BudgetRepository extends EntityRepository
      */
     public function getNotBudgetedLastMonth(Budget $budget)
     {
-        // Get all income assigned to months before this month
-        $totalIncome = $this->getEntityManager()
-            ->getRepository('DevbananaBudgetBundle:LineItem')
-            ->getTotalIncomeBefore($budget);
+        $lastMonth = clone $budget->getMonth();
+        $lastMonth->modify('-1 month');
 
-        $totalBudgeted = $this->getEntityManager()
-            ->getRepository('DevbananaBudgetBundle:BudgetCategories')
-          ->getTotalBudgetedBefore($budget);
+        $lastMonthBudget = $this->findOneByMonth($lastMonth);
 
-            return bcsub($totalIncome, $totalBudgeted, 2);
+        if ($lastMonthBudget) {
+            return $this->getAvailableToBudget($lastMonthBudget);
+        }
+        else {
+            return '0.00';
+        }
     }
 
     public function getOverSpentLastMonth(Budget $budget)
