@@ -20,6 +20,10 @@ Budget Banana is a web-based interface to help you to live out these four rules 
 Change Log
 -------------
 
+### v0.1.4 - 2014-10-13 ###
+
+* Fixed how previous month's budget is found ([#19](https://github.com/devbanana/Budget-Banana/issues/19))
+
 ### v0.1.3 - 2014-10-01 ###
 
 * Fixed calculation of **Not Budgeted Last Month** ([#17](https://github.com/devbanana/Budget-Banana/issues/17))
