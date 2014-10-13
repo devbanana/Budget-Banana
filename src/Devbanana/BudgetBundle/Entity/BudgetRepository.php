@@ -119,7 +119,10 @@ class BudgetRepository extends EntityRepository
         $lastMonth = clone $budget->getMonth();
         $lastMonth->modify('-1 month');
 
-        $lastMonthBudget = $this->findOneByMonth($lastMonth);
+        $lastMonthBudget = $this->findOneBy(array(
+                    'month' => $lastMonth,
+                    'user' => $budget->getUser(),
+                    ));
 
         if ($lastMonthBudget) {
             return $this->getAvailableToBudget($lastMonthBudget);
