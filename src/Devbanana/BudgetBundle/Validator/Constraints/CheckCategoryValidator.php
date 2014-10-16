@@ -26,7 +26,8 @@ class CheckCategoryValidator extends ConstraintValidator
         if ($lineItem->getType() == 'transfer'
                 && $lineItem->getAccount()->getBudgeted() == true
                 && $lineItem->getTransferAccount()
-                && $lineItem->getTransferAccount()->getBudgeted() == false) {
+                && $lineItem->getTransferAccount()->getBudgeted() == false
+                && !$lineItem->getCategory()) {
             $this->context->addViolationAt('category', $constraint->message);
         }
     }
